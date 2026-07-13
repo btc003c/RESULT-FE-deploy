@@ -162,7 +162,7 @@ export default function HomeFeedPage() {
       <div className="flex-1 min-w-0 transition-all duration-300">
           
           {/* Live Events (Story Balls) */}
-          <div className="mb-6">
+          <div className="pt-4 mb-6">
             <h2 className="text-sm font-bold text-foreground mb-3 px-1">Live Matches and Updates Results</h2>
             <div className="flex gap-4 overflow-x-auto pb-2 hide-scrollbar items-center">
               {liveStories.map(story => (
@@ -191,6 +191,7 @@ export default function HomeFeedPage() {
             )}
             </div>
           </div>
+          
           {/* Create Post Input */}
           <div className="bg-background rounded-2xl shadow-sm border border-muted p-4 mb-6">
             <div className="flex gap-4 items-center">
