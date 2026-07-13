@@ -1,65 +1,57 @@
-# ResultHub Web Frontend
+# ResultHub Public Web
 
-This repository contains the web-based frontend application for the ResultHub platform. It is a modern, responsive web application designed for high performance and excellent user experience.
+## 🌍 Complete Project Overview
+**ResultHub** is a comprehensive, multi-platform social and organizational ecosystem designed to bridge the gap between institutions, data, and the community. It allows organizations (like sports leagues, educational institutions, or event organizers) to securely upload and manage complex datasets. Simultaneously, it provides end-users with an engaging, modern social network to view these results, interact with posts, customize their profiles, and stay connected with real-time feeds.
 
-## 🚀 Technology Stack
+The platform is decoupled into four codebases:
+1. **Backend API**
+2. **Public Web (This repository)**
+3. **Business Web** (Enterprise dashboard)
+4. **Mobile App** (Flagship Flutter app)
 
-- **Framework:** Next.js (App Router)
-- **Library:** React
-- **Styling:** Tailwind CSS
-- **Language:** TypeScript
-- **Bundler:** Turbopack (for local development speed)
+---
 
-## 📋 Prerequisites
+## 🎯 Purpose of This Repository
+The Public Web platform is the browser-based social experience for the end-users of ResultHub. It provides a rich, dynamic interface where users can view their feeds, search for results, view public profiles, and interact with community content without needing to download the mobile app.
 
-Before you begin, ensure you have met the following requirements:
-* **Node.js** (v18 or higher) installed.
-* **npm** or **yarn** installed.
+## 🔌 How It Integrates with the Backend
+This frontend is completely stateless and contains no database of its own. It relies entirely on the Node.js backend (`backend-mern`) to function:
 
-## 🛠️ Getting Started
+1. **Data Fetching:** The Next.js React components utilize standard fetch APIs (both Server-Side and Client-Side) to request data from the backend's REST endpoints (e.g., `/api/social/feed`).
+2. **Authentication Flow:** When a user logs in via this website, the form data is sent to the backend. The backend verifies the credentials and returns a secure JWT (JSON Web Token). This website stores that token (typically in local storage or secure cookies) and attaches it to the `Authorization` header of all subsequent API requests.
+3. **State Reflection:** If a user likes a post on this website, it sends a `POST` request to the backend. The backend updates the MongoDB database, and the frontend state is updated to reflect the new like count.
 
-Follow these steps to set up the web frontend locally:
+## 📦 What It Has
+- **Social Feed & Interaction:** A dynamic feed interface featuring posts, likes, and comments.
+- **Search & Discovery:** Robust search capabilities for finding other users, public results, and sports data.
+- **User Authentication:** Complete login, signup, and forgotten password workflows.
+- **Public Profiles:** Viewable profiles displaying user stats and activity.
 
-### 1. Install Dependencies
+## 🛠️ How It Is Built
+### Tech Stack
+- **Framework:** [Next.js 16](https://nextjs.org/) (App Router)
+- **Library:** React 19
+- **Styling:** [Tailwind CSS v4](https://tailwindcss.com/)
+- **Animations:** Framer Motion
 
-Install the required Node.js packages:
-```bash
-npm install
-```
+### Prerequisites
+- [Node.js](https://nodejs.org/) (v20+ recommended)
+- A running instance of the `backend-mern` API.
 
-### 2. Environment Setup
+### Getting Started
 
-Create a local environment file (`.env.local`) based on the project requirements to securely store your API keys and configuration variables:
-```bash
-# Example .env.local variables
-NEXT_PUBLIC_API_URL=http://localhost:8080/api/v1
-# Add any required secret keys (e.g. SPORTSRC_V2_KEY)
-```
-*Never commit `.env.local` to the repository.*
+1. **Install Dependencies**
+   ```bash
+   npm install
+   ```
 
-### 3. Run the Development Server
+2. **Environment Configuration**
+   Create a `.env.local` file pointing to your backend API:
+   ```env
+   NEXT_PUBLIC_API_URL=http://localhost:3001/api
+   ```
 
-Start the local development server with Turbopack for ultra-fast compilation:
-```bash
-npm run dev
-```
-Open [http://localhost:3000](http://localhost:3000) in your browser to see the application.
-
-## 📁 Repository Structure
-
-* `src/app/` - Contains the Next.js App Router pages and API routes.
-* `src/components/` - Contains reusable React UI components.
-* `src/context/` - Contains React context providers (e.g., AuthContext).
-* `public/` - Contains static assets like images and icons.
-
-## 📦 Building for Production
-
-To create an optimized production build, run:
-```bash
-npm run build
-npm start
-```
-
-## 🤝 Contributing
-
-When contributing, please follow the established code style, ensure there are no TypeScript errors (`npm run build` will catch these), and submit a Pull Request.
+3. **Start the Server**
+   ```bash
+   npm run dev
+   ```
