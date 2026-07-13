@@ -201,7 +201,7 @@ export default function LeftSidebar() {
           ${isExpanded ? "px-5" : "justify-center px-3"}`}>
           <Link href="/" className="flex items-center gap-3 group min-w-0">
             {/* Logo mark */}
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#6C5CE7] to-[#a29bfe] flex items-center justify-center shadow-lg shadow-primary/25 shrink-0 group-hover:scale-105 transition-transform duration-200">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#F97316] to-[#fdba74] flex items-center justify-center shadow-lg shadow-primary/25 shrink-0 group-hover:scale-105 transition-transform duration-200">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round">
                 <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
               </svg>
@@ -239,7 +239,7 @@ export default function LeftSidebar() {
           <button
             onClick={() => setIsPostModalOpen(true)}
             className={`group relative overflow-hidden font-bold text-white rounded-xl
-              bg-gradient-to-r from-[#6C5CE7] to-[#a29bfe]
+              bg-gradient-to-r from-[#F97316] to-[#fdba74]
               shadow-lg shadow-primary/20 hover:shadow-primary/40
               transition-all duration-200 active:scale-95 hover:scale-[1.02]
               ${isExpanded
@@ -347,7 +347,7 @@ export default function LeftSidebar() {
               >
                 {/* Avatar */}
                 <div className="relative shrink-0">
-                  <div className="w-9 h-9 rounded-xl overflow-hidden bg-gradient-to-tr from-[#6C5CE7] to-[#a29bfe] text-white flex items-center justify-center font-black text-base shadow-sm">
+                  <div className="w-9 h-9 rounded-xl overflow-hidden bg-gradient-to-tr from-[#F97316] to-[#fdba74] text-white flex items-center justify-center font-black text-base shadow-sm">
                     {userProfile.profilePictureBase64 ? (
                       <img
                         src={`data:image/jpeg;base64,${userProfile.profilePictureBase64}`}
@@ -434,7 +434,7 @@ export default function LeftSidebar() {
               <Link
                 href="/login"
                 className={`flex items-center gap-3 rounded-xl font-bold text-white
-                  bg-gradient-to-r from-[#6C5CE7] to-[#a29bfe] shadow-md shadow-primary/20
+                  bg-gradient-to-r from-[#F97316] to-[#fdba74] shadow-md shadow-primary/20
                   hover:shadow-primary/40 transition-all active:scale-95 p-2.5
                   ${isExpanded ? "justify-start px-4" : "justify-center w-12 h-12"}`}
               >

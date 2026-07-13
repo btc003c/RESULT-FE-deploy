@@ -20,14 +20,14 @@ import Link from 'next/link';
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-[#0A0A0A] text-zinc-100 font-sans selection:bg-[#635BFF]/30 overflow-hidden">
+    <div className="min-h-screen bg-[#0A0A0A] text-zinc-100 font-sans selection:bg-[#F97316]/30 overflow-hidden">
       
       {/* 1. PREMIUM NAVIGATION */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-[#0A0A0A]/80 backdrop-blur-xl border-b border-zinc-800/50">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-8">
             <Link href="/" className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#635BFF] to-purple-600 flex items-center justify-center shadow-lg shadow-[#635BFF]/20">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#F97316] to-orange-600 flex items-center justify-center shadow-lg shadow-[#F97316]/20">
                 <span className="text-white font-black text-sm">RH</span>
               </div>
               <span className="font-extrabold text-lg tracking-tight text-white hidden sm:block">ResultHub</span>
@@ -53,8 +53,8 @@ export default function Home() {
       {/* 2. MASSIVE HERO SECTION */}
       <main className="relative pt-32 pb-20 md:pt-48 md:pb-32 px-6 max-w-7xl mx-auto">
         {/* Animated Background Gradients */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-[#635BFF]/20 blur-[120px] rounded-full pointer-events-none" />
-        <div className="absolute top-40 left-1/2 translate-x-1/4 w-[600px] h-[300px] bg-purple-600/20 blur-[100px] rounded-full pointer-events-none" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-[#F97316]/20 blur-[120px] rounded-full pointer-events-none" />
+        <div className="absolute top-40 left-1/2 translate-x-1/4 w-[600px] h-[300px] bg-orange-600/20 blur-[100px] rounded-full pointer-events-none" />
 
         <div className="relative z-10 flex flex-col items-center text-center">
           <motion.div
@@ -63,7 +63,7 @@ export default function Home() {
             transition={{ duration: 0.5 }}
           >
             <Link href="/search" className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-900/50 border border-zinc-800 text-xs font-bold text-zinc-400 hover:text-white hover:border-zinc-700 transition-all mb-8">
-              <span className="w-2 h-2 rounded-full bg-[#635BFF] animate-pulse" />
+              <span className="w-2 h-2 rounded-full bg-[#F97316] animate-pulse" />
               Introducing Universal Search
               <ChevronRight className="w-3 h-3" />
             </Link>
@@ -76,7 +76,7 @@ export default function Home() {
             className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter text-white mb-6 leading-[1.1]"
           >
             The Operating System <br className="hidden md:block" />
-            for <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#635BFF] via-purple-500 to-indigo-400">Public Data.</span>
+            for <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#F97316] via-orange-500 to-amber-400">Public Data.</span>
           </motion.h1>
 
           <motion.p 
@@ -146,10 +146,10 @@ export default function Home() {
           
           {/* Results Space */}
           <div className="md:col-span-2 bg-gradient-to-br from-zinc-900 to-zinc-950 border border-zinc-800/80 rounded-3xl p-8 md:p-12 relative overflow-hidden group hover:border-zinc-700 transition-colors">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-[#635BFF]/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 group-hover:bg-[#635BFF]/20 transition-colors" />
+            <div className="absolute top-0 right-0 w-64 h-64 bg-[#F97316]/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 group-hover:bg-[#F97316]/20 transition-colors" />
             <div className="relative z-10 h-full flex flex-col justify-between">
               <div>
-                <div className="w-12 h-12 bg-zinc-800 rounded-2xl flex items-center justify-center mb-6 text-[#635BFF]">
+                <div className="w-12 h-12 bg-zinc-800 rounded-2xl flex items-center justify-center mb-6 text-[#F97316]">
                   <Database className="w-6 h-6" />
                 </div>
                 <h3 className="text-2xl font-bold text-white mb-3">Results Space</h3>
@@ -182,10 +182,10 @@ export default function Home() {
 
           {/* Organization Portal */}
           <div className="md:col-span-2 bg-gradient-to-br from-zinc-900 to-zinc-950 border border-zinc-800/80 rounded-3xl p-8 md:p-12 relative overflow-hidden group hover:border-zinc-700 transition-colors">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 group-hover:bg-purple-500/20 transition-colors" />
+            <div className="absolute top-0 right-0 w-64 h-64 bg-orange-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 group-hover:bg-orange-500/20 transition-colors" />
             <div className="relative z-10 h-full flex flex-col justify-between">
               <div>
-                <div className="w-12 h-12 bg-zinc-800 rounded-2xl flex items-center justify-center mb-6 text-purple-400">
+                <div className="w-12 h-12 bg-zinc-800 rounded-2xl flex items-center justify-center mb-6 text-orange-400">
                   <BarChart3 className="w-6 h-6" />
                 </div>
                 <h3 className="text-2xl font-bold text-white mb-3">Organization Portal</h3>
@@ -201,7 +201,7 @@ export default function Home() {
       <section id="architecture" className="py-24 px-6 max-w-7xl mx-auto border-t border-zinc-900">
         <div className="flex flex-col md:flex-row gap-16 items-center">
           <div className="flex-1 space-y-6">
-            <span className="text-[#635BFF] font-bold text-sm tracking-widest uppercase">Built for Scale</span>
+            <span className="text-[#F97316] font-bold text-sm tracking-widest uppercase">Built for Scale</span>
             <h2 className="text-3xl md:text-4xl font-black text-white tracking-tight">Enterprise-grade architecture by default.</h2>
             <p className="text-zinc-400 font-medium text-lg leading-relaxed">
               ResultHub doesn't cut corners. Our backend is powered by <strong className="text-white">Java 21</strong> and <strong className="text-white">Spring Boot 3.5</strong>. 
@@ -215,7 +215,7 @@ export default function Home() {
             </div>
           </div>
           <div className="flex-1 w-full relative">
-            <div className="absolute inset-0 bg-gradient-to-tr from-[#635BFF]/20 to-purple-600/20 blur-3xl rounded-full" />
+            <div className="absolute inset-0 bg-gradient-to-tr from-[#F97316]/20 to-orange-600/20 blur-3xl rounded-full" />
             <div className="bg-zinc-950 border border-zinc-800 rounded-2xl p-6 font-mono text-xs text-zinc-300 relative z-10 shadow-2xl overflow-hidden">
               <div className="flex gap-2 mb-4 border-b border-zinc-800 pb-4">
                 <span className="text-emerald-400">~/resulthub/backend</span>
@@ -225,7 +225,7 @@ export default function Home() {
                 <p>Starting postgres_db_1 ... <span className="text-emerald-400">done</span></p>
                 <p>Starting redis_cache_1 ... <span className="text-emerald-400">done</span></p>
                 <p>Starting spring_boot_api ... <span className="text-emerald-400">done</span></p>
-                <p className="text-purple-400 pt-2">ResultHub Engine v3.5.0 initialized successfully.</p>
+                <p className="text-orange-400 pt-2">ResultHub Engine v3.5.0 initialized successfully.</p>
                 <p className="text-zinc-500">Listening on port 8080...</p>
               </div>
             </div>
@@ -239,7 +239,7 @@ export default function Home() {
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 mb-12">
             <div className="col-span-2 lg:col-span-2">
               <Link href="/" className="flex items-center gap-2 mb-6">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#635BFF] to-purple-600 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#F97316] to-orange-600 flex items-center justify-center">
                   <span className="text-white font-black text-sm">RH</span>
                 </div>
                 <span className="font-extrabold text-lg tracking-tight text-white">ResultHub</span>
