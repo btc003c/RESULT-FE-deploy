@@ -155,7 +155,7 @@ export default function CreatePostModal({ isOpen, onClose, defaultType = "UPDATE
         }
         await api.posts.create(formData);
         
-      } else if (activeTab === "COMPLAINT") {
+      } else if ((activeTab as string) === "COMPLAINT") {
         const requestData = {
           title: postText.substring(0, 100),
           description: postText,
