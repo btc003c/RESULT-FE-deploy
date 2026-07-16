@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 
-type PostType = "UPDATE" | "COMPLAINT" | "POLL";
+type PostType = "UPDATE" | "CLIPS" | "POLL" | "LIVE" | "FLASH";
 
 interface CreatePostModalProps {
   isOpen: boolean;
@@ -132,7 +132,7 @@ export default function CreatePostModal({ isOpen, onClose, defaultType = "UPDATE
       
       const { api } = await import('@/lib/api');
       
-      if (activeTab === "UPDATE") {
+      if (activeTab === "UPDATE" || activeTab === "CLIPS" || activeTab === "LIVE" || activeTab === "FLASH") {
         let postType = "UPDATE";
         if (fileInputRef.current?.files && fileInputRef.current.files.length > 0) {
           const firstFile = fileInputRef.current.files[0];
@@ -278,8 +278,10 @@ export default function CreatePostModal({ isOpen, onClose, defaultType = "UPDATE
               onChange={(e) => setPostText(e.target.value)}
               placeholder={
                 activeTab === "UPDATE" ? "What do you want to talk about?" :
-                activeTab === "COMPLAINT" ? "Describe the issue in detail..." :
-                "Ask a question..."
+                activeTab === "CLIPS" ? "Share a quick moment..." :
+                activeTab === "POLL" ? "Ask a question..." :
+                activeTab === "LIVE" ? "What's this stream about?" :
+                "Share a flash update..."
               }
               className={`w-full resize-none bg-transparent border-none outline-none text-xl placeholder:text-muted-foreground min-h-[140px] transition-colors ${isOverLimit ? 'text-danger' : 'text-foreground'}`}
               aria-label="Post Body"
@@ -312,42 +314,58 @@ export default function CreatePostModal({ isOpen, onClose, defaultType = "UPDATE
               </div>
             )}
 
-            {/* Complaint Specific Fields */}
-            {activeTab === "COMPLAINT" && (
-              <div className="space-y-4 animate-in fade-in slide-in-from-top-2 mb-4">
-                <div className="grid md:grid-cols-2 gap-3">
-                  <div className="flex items-center gap-3 border border-muted rounded-xl px-4 py-3 bg-muted/30 focus-within:border-primary focus-within:bg-background transition-colors">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-amber-500 shrink-0"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-                    <input type="text" value={locationName} onChange={(e) => setLocationName(e.target.value)} placeholder="Location (e.g. OMR Road)" aria-label="Location" className="bg-transparent border-none outline-none w-full text-sm font-medium text-foreground" />
-                  </div>
-                  
-                  <div className="flex items-center gap-3 border border-muted rounded-xl px-4 py-3 bg-muted/30 focus-within:border-primary focus-within:bg-background transition-colors">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-blue-500 shrink-0"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg>
-                    <input type="text" value={targetDepartment} onChange={(e) => setTargetDepartment(e.target.value)} placeholder="Target Department (@Agency)" aria-label="Target Department" className="bg-transparent border-none outline-none w-full text-sm font-medium text-foreground" />
-                  </div>
+            {/* Update (Post) Specific Fields */}
+            {activeTab === "UPDATE" && (
+              <div className="flex flex-col items-center justify-center p-8 border-2 border-dashed border-muted hover:border-primary hover:bg-primary/5 rounded-2xl transition-colors mb-4 cursor-pointer" onClick={() => fileInputRef.current?.click()}>
+                <input 
+                 type="file" 
+                 ref={fileInputRef} 
+                 onChange={handleFileChange} 
+                 accept="image/*,video/*" 
+                 multiple
+                 className="hidden" 
+                />
+                <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-3">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                 </div>
+                <span className="font-bold text-foreground">Add Images or Videos</span>
+              </div>
+            )}
 
-                <div className="flex items-center gap-4 py-2">
-                  <span className="text-sm font-semibold text-muted-foreground">Priority Level:</span>
-                  <div className="flex gap-2 bg-muted/30 p-1 rounded-xl">
-                    {["Normal", "High", "Critical"].map(level => (
-                      <button 
-                        key={level}
-                        onClick={() => setPriority(level)}
-                        type="button"
-                        className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-colors ${
-                          priority === level 
-                            ? level === "Critical" ? "bg-danger text-white shadow-sm" :
-                              level === "High" ? "bg-amber-500 text-white shadow-sm" :
-                              "bg-foreground text-background shadow-sm"
-                            : "text-muted-foreground hover:bg-muted"
-                        }`}
-                      >
-                        {level}
-                      </button>
-                    ))}
-                  </div>
-                </div>
+            {/* Clips Specific Fields */}
+            {activeTab === "CLIPS" && (
+              <div className="flex gap-4 mb-4">
+                  <button className="flex-1 flex flex-col items-center justify-center p-6 border-2 border-dashed border-muted hover:border-primary hover:bg-primary/5 rounded-2xl transition-colors">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-primary mb-2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    <span className="font-bold text-foreground">Story</span>
+                  </button>
+                  <button className="flex-1 flex flex-col items-center justify-center p-6 border-2 border-dashed border-muted hover:border-primary hover:bg-primary/5 rounded-2xl transition-colors">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-primary mb-2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                    <span className="font-bold text-foreground">Status</span>
+                  </button>
+              </div>
+            )}
+            
+            {/* Live Specific Fields */}
+            {activeTab === "LIVE" && (
+              <div className="flex gap-4 mb-4">
+                  <button className="flex-1 flex flex-col items-center justify-center p-6 border-2 border-dashed border-muted hover:border-emerald-500 hover:bg-emerald-500/5 rounded-2xl transition-colors">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-emerald-500 mb-2"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg>
+                    <span className="font-bold text-foreground">Live Video</span>
+                  </button>
+                  <button className="flex-1 flex flex-col items-center justify-center p-6 border-2 border-dashed border-muted hover:border-emerald-500 hover:bg-emerald-500/5 rounded-2xl transition-colors">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-emerald-500 mb-2"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect><line x1="7" y1="2" x2="7" y2="22"></line><line x1="17" y1="2" x2="17" y2="22"></line><line x1="2" y1="12" x2="22" y2="12"></line><line x1="2" y1="7" x2="7" y2="7"></line><line x1="2" y1="17" x2="7" y2="17"></line><line x1="17" y1="17" x2="22" y2="17"></line><line x1="17" y1="7" x2="22" y2="7"></line></svg>
+                    <span className="font-bold text-foreground">Shorts</span>
+                  </button>
+              </div>
+            )}
+
+            {/* Flash Specific Fields */}
+            {activeTab === "FLASH" && (
+              <div className="space-y-4 animate-in fade-in slide-in-from-top-2 mb-4">
+                 <div className="p-4 bg-purple-500/10 rounded-xl border border-purple-500/20">
+                    <p className="text-purple-600 text-sm font-semibold">Flash posts are ephemeral and disappear after 24 hours.</p>
+                 </div>
               </div>
             )}
 
@@ -414,64 +432,47 @@ export default function CreatePostModal({ isOpen, onClose, defaultType = "UPDATE
 
         {/* Footer Actions */}
         <div className="p-4 px-6 border-t border-muted bg-background/50 flex flex-col sm:flex-row gap-4 items-center justify-between">
-           <div className="flex gap-2">
+           <div className="flex gap-2 flex-wrap">
              <button 
                 onClick={() => setActiveTab("UPDATE")}
-                aria-label="Switch to Standard Post"
                 aria-pressed={activeTab === "UPDATE"}
-                className={`p-3 rounded-full transition-colors ${activeTab === "UPDATE" ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-muted"}`}
-                title="Standard Update"
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-full transition-colors font-semibold text-sm ${activeTab === "UPDATE" ? "bg-blue-500/10 text-blue-600" : "text-muted-foreground hover:bg-muted"}`}
              >
-               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                <span className="hidden sm:inline">Post</span>
              </button>
              <button 
-                onClick={() => setActiveTab("COMPLAINT")}
-                aria-label="Switch to Complaint"
-                aria-pressed={activeTab === "COMPLAINT"}
-                className={`p-3 rounded-full transition-colors ${activeTab === "COMPLAINT" ? "bg-amber-500/10 text-amber-600" : "text-muted-foreground hover:bg-muted"}`}
-                title="File a Complaint"
+                onClick={() => setActiveTab("CLIPS")}
+                aria-pressed={activeTab === "CLIPS"}
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-full transition-colors font-semibold text-sm ${activeTab === "CLIPS" ? "bg-red-500/10 text-red-600" : "text-muted-foreground hover:bg-muted"}`}
              >
-               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
+                <span className="hidden sm:inline">Clips</span>
              </button>
              <button 
                 onClick={() => setActiveTab("POLL")}
-                aria-label="Switch to Poll"
                 aria-pressed={activeTab === "POLL"}
-                className={`p-3 rounded-full transition-colors ${activeTab === "POLL" ? "bg-accent/10 text-accent" : "text-muted-foreground hover:bg-muted"}`}
-                title="Create a Poll"
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-full transition-colors font-semibold text-sm ${activeTab === "POLL" ? "bg-amber-500/10 text-amber-600" : "text-muted-foreground hover:bg-muted"}`}
              >
-               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 4h3v16h-3z"/><path d="M11 9h3v11h-3z"/><path d="M4 14h3v6H4z"/></svg>
+                <span className="hidden sm:inline">Poll</span>
              </button>
-             <div className="w-px h-8 bg-muted mx-1 self-center"></div>
-             
-             {/* Add Media Button */}
-             <div className="relative">
-               <input 
-                 type="file" 
-                 ref={fileInputRef} 
-                 onChange={handleFileChange} 
-                 accept="image/*,video/*" 
-                 multiple
-                 className="hidden" 
-               />
-               <button 
-                 onClick={() => {
-                   if (mediaPreviews.length < MAX_MEDIA) {
-                     fileInputRef.current?.click();
-                   }
-                 }} 
-                 disabled={mediaPreviews.length >= MAX_MEDIA}
-                 aria-label="Add Media" 
-                 className={`p-3 rounded-full transition-colors ${
-                   mediaPreviews.length >= MAX_MEDIA 
-                     ? 'text-muted-foreground/30 cursor-not-allowed' 
-                     : 'text-muted-foreground hover:bg-primary hover:text-white'
-                 }`}
-                 title="Add Media"
-               >
-                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-               </button>
-             </div>
+             <button 
+                onClick={() => setActiveTab("LIVE")}
+                aria-pressed={activeTab === "LIVE"}
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-full transition-colors font-semibold text-sm ${activeTab === "LIVE" ? "bg-emerald-500/10 text-emerald-600" : "text-muted-foreground hover:bg-muted"}`}
+             >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
+                <span className="hidden sm:inline">Live</span>
+             </button>
+             <button 
+                onClick={() => setActiveTab("FLASH")}
+                aria-pressed={activeTab === "FLASH"}
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-full transition-colors font-semibold text-sm ${activeTab === "FLASH" ? "bg-purple-500/10 text-purple-600" : "text-muted-foreground hover:bg-muted"}`}
+             >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                <span className="hidden sm:inline">Flash</span>
+             </button>
            </div>
            
            <div className="flex items-center gap-4">

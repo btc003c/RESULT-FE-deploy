@@ -23,7 +23,51 @@ const NAV_SECTIONS = [
         ),
       },
       {
-        label: "Notifications",
+        label: "Result Hub",
+        href: "/results",
+        icon: (
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M4 22h14a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v4"/>
+            <path d="M14 2v4a2 2 0 0 0 2 2h4"/>
+            <path d="M3 15h6"/><path d="M3 18h6"/>
+          </svg>
+        ),
+      },
+      {
+        label: "Complaint",
+        href: "/complaints",
+        icon: (
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+             <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+        ),
+      },
+      {
+        label: "Chats",
+        href: "/chats",
+        icon: (
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          </svg>
+        ),
+      },
+    ],
+  },
+  {
+    label: "Discover",
+    links: [
+      {
+        label: "Search",
+        href: "/search",
+        icon: (
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="11" cy="11" r="8"/>
+            <path d="m21 21-4.3-4.3"/>
+          </svg>
+        ),
+      },
+      {
+        label: "Notification",
         href: "/notifications",
         badge: "live",
         icon: (
@@ -49,54 +93,6 @@ const NAV_SECTIONS = [
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="12" cy="8" r="4"/>
             <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
-          </svg>
-        ),
-      },
-    ],
-  },
-  {
-    label: "Discover",
-    links: [
-      {
-        label: "Search",
-        href: "/search",
-        icon: (
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="11" cy="11" r="8"/>
-            <path d="m21 21-4.3-4.3"/>
-          </svg>
-        ),
-      },
-      {
-        label: "Results Hub",
-        href: "/results",
-        badge: "NEW",
-        icon: (
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M4 22h14a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v4"/>
-            <path d="M14 2v4a2 2 0 0 0 2 2h4"/>
-            <path d="M3 15h6"/><path d="M3 18h6"/>
-          </svg>
-        ),
-      },
-      {
-        label: "Sports",
-        href: "/results/sports",
-        icon: (
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="12" cy="12" r="10"/>
-            <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/>
-            <path d="M2 12h20"/>
-          </svg>
-        ),
-      },
-      {
-        label: "Explore",
-        href: "/results",
-        icon: (
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="12" cy="12" r="10"/>
-            <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
           </svg>
         ),
       },
@@ -260,7 +256,6 @@ export default function LeftSidebar() {
             )}
           </button>
         </div>
-
         {/* ── Navigation ────────────────────────────────────────────── */}
         <nav className="flex-1 overflow-y-auto overflow-x-hidden hide-scrollbar px-3 pb-2">
           {NAV_SECTIONS.map((section) => (
@@ -415,21 +410,7 @@ export default function LeftSidebar() {
           ) : (
             /* Not logged in */
             <div className={`flex flex-col gap-2 ${!isExpanded && "items-center"}`}>
-              <div className="relative group/tip">
-                <Link
-                  href="/organization/login"
-                  className={`flex items-center gap-3 rounded-xl text-zinc-500 hover:bg-zinc-50 hover:text-zinc-900
-                    font-semibold transition-colors p-2.5 ${!isExpanded && "justify-center"}`}
-                >
-                  <div className="w-8 h-8 rounded-lg bg-zinc-100 flex items-center justify-center shrink-0 text-zinc-400">
-                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
-                      <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>
-                    </svg>
-                  </div>
-                  {isExpanded && <span className="text-[13.5px]">Organizations</span>}
-                </Link>
-                {!isExpanded && <Tooltip label="Organizations" />}
-              </div>
+
 
               <Link
                 href="/login"

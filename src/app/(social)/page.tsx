@@ -202,23 +202,44 @@ export default function HomeFeedPage() {
                 onClick={() => openCreateModal("UPDATE")}
                 className="flex-1 bg-muted/50 rounded-full px-4 py-3 cursor-text hover:bg-muted transition-colors"
               >
-                 <span className="text-muted-foreground font-medium text-sm">Post a complaint, poll, or discussion...</span>
+                 <span className="text-muted-foreground font-medium text-sm">What's on your mind?</span>
               </div>
             </div>
-            <div className="flex gap-4 mt-4 ml-14 border-t border-muted/50 pt-3">
+            <div className="flex gap-2 mt-4 ml-14 border-t border-muted/50 pt-3 flex-wrap">
                <button 
-                 onClick={() => openCreateModal("COMPLAINT")}
-                 className="flex items-center gap-2 text-primary font-semibold text-sm hover:bg-primary/5 px-3 py-1.5 rounded-lg transition-colors group"
+                 onClick={() => openCreateModal("UPDATE")}
+                 className="flex items-center gap-2 text-foreground/80 font-semibold text-sm hover:bg-primary/5 px-3 py-1.5 rounded-lg transition-colors group"
                >
-                 <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" opacity="0.9" className="group-hover:scale-110 transition-transform"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
-                 Complaint
+                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-500 group-hover:scale-110 transition-transform"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                 Post
+               </button>
+               <button 
+                 onClick={() => openCreateModal("CLIPS" as any)}
+                 className="flex items-center gap-2 text-foreground/80 font-semibold text-sm hover:bg-primary/5 px-3 py-1.5 rounded-lg transition-colors group"
+               >
+                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-red-500 group-hover:scale-110 transition-transform"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
+                 Clips
                </button>
                <button 
                  onClick={() => openCreateModal("POLL")}
-                 className="flex items-center gap-2 text-accent font-semibold text-sm hover:bg-accent/5 px-3 py-1.5 rounded-lg transition-colors group"
+                 className="flex items-center gap-2 text-foreground/80 font-semibold text-sm hover:bg-primary/5 px-3 py-1.5 rounded-lg transition-colors group"
                >
-                 <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" opacity="0.9" className="group-hover:scale-110 transition-transform"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-amber-500 group-hover:scale-110 transition-transform"><path d="M18 4h3v16h-3z"/><path d="M11 9h3v11h-3z"/><path d="M4 14h3v6H4z"/></svg>
                  Poll
+               </button>
+               <button 
+                 onClick={() => openCreateModal("LIVE" as any)}
+                 className="flex items-center gap-2 text-foreground/80 font-semibold text-sm hover:bg-primary/5 px-3 py-1.5 rounded-lg transition-colors group"
+               >
+                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-emerald-500 group-hover:scale-110 transition-transform"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
+                 Live
+               </button>
+               <button 
+                 onClick={() => openCreateModal("FLASH" as any)}
+                 className="flex items-center gap-2 text-foreground/80 font-semibold text-sm hover:bg-primary/5 px-3 py-1.5 rounded-lg transition-colors group"
+               >
+                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-purple-500 group-hover:scale-110 transition-transform"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                 Flash
                </button>
             </div>
           </div>
