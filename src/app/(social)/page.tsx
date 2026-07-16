@@ -29,7 +29,7 @@ function getTimeAgo(dateStr: string | null) {
 export default function HomeFeedPage() {
   const router = useRouter();
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [modalDefaultType, setModalDefaultType] = useState<"UPDATE" | "CLICKS" | "POLL" | "LIVE" | "FLASH">("UPDATE");
+  const [modalDefaultType, setModalDefaultType] = useState<"UPDATE" | "CLIPS" | "POLL" | "LIVE" | "FLASH">("UPDATE");
   const [posts, setPosts] = useState<any[]>([]);
   const [liveStories, setLiveStories] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -146,7 +146,7 @@ export default function HomeFeedPage() {
     }
   };
 
-  const openCreateModal = (type: "UPDATE" | "CLICKS" | "POLL" | "LIVE" | "FLASH") => {
+  const openCreateModal = (type: "UPDATE" | "CLIPS" | "POLL" | "LIVE" | "FLASH") => {
     if (!getAuthToken()) {
       router.push('/login');
       return;
@@ -289,21 +289,42 @@ export default function HomeFeedPage() {
               </>
             ) : null}
             {posts.length === 0 && !isLoading && !isLoadingMore && (
-              <div className="flex flex-col items-center justify-center py-20 text-center">
-                <div className="w-20 h-20 bg-muted/50 rounded-full flex items-center justify-center mb-6 text-muted-foreground/60 shadow-inner">
-                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
-                </div>
-                <h3 className="text-xl font-bold text-foreground mb-2">Your feed is quiet</h3>
-                <p className="text-muted-foreground max-w-sm">
-                  Follow organizations, explore topics, or post your own updates to populate your feed.
-                </p>
-                <button 
-                  onClick={() => setIsCreateModalOpen(true)}
-                  className="mt-6 px-6 py-2 bg-primary text-white font-bold rounded-full hover:bg-primary/90 transition-colors shadow-sm"
-                >
-                  Create a Post
-                </button>
-              </div>
+              <>
+                {[
+                  {
+                    id: "mock1",
+                    type: "UPDATE",
+                    author: { name: "VDart", handle: "@vdart", initials: "VD", color: "bg-blue-600", isVerified: true },
+                    timeAgo: "1d",
+                    title: "Football fever met VDart energy. ⚽💙",
+                    description: "Our office FIFA Watch Party brought VDartians together for match excitement. Because the best moments are even better when shared as One VDart 🌍",
+                    stats: { upvotes: 132, comments: 1 },
+                    mediaUrls: ["https://images.unsplash.com/photo-1528081682859-994364023249?auto=format&fit=crop&q=80&w=1000"]
+                  },
+                  {
+                    id: "mock2",
+                    type: "UPDATE",
+                    author: { name: "Ankur Kesharwani", handle: "@ankur", initials: "AK", color: "bg-amber-600", isVerified: true },
+                    timeAgo: "1d",
+                    title: "7 years of experience. Strong resume. Multiple projects.",
+                    description: "Yet many software engineers still struggle to get Senior SDE offers ‼️ Let's talk about the missing pieces in system design and leadership that interviewers look for.",
+                    stats: { upvotes: 208, comments: 40 },
+                    mediaUrls: ["https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?auto=format&fit=crop&q=80&w=1000"]
+                  },
+                  {
+                    id: "mock3",
+                    type: "UPDATE",
+                    author: { name: "Alexey Navolokin", handle: "@alexey", initials: "AN", color: "bg-purple-600", isVerified: true },
+                    timeAgo: "1d",
+                    title: "Sometimes, the most unexpected things happen for a reason. Would you agree?",
+                    description: "In business and in life, not every setback is a failure. Sometimes it's exactly what you need to redirect your path. Keep moving forward.",
+                    stats: { upvotes: 644, comments: 75 },
+                    mediaUrls: ["https://images.unsplash.com/photo-1518605368461-1ee7e550c609?auto=format&fit=crop&q=80&w=1000"]
+                  }
+                ].map(mockPost => (
+                  <PostCard key={mockPost.id} post={mockPost as any} />
+                ))}
+              </>
             )}
           </div>
         </div>
