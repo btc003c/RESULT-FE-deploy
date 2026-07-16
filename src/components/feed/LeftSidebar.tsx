@@ -302,8 +302,8 @@ export default function LeftSidebar() {
                       )}
 
                       {/* Badge */}
-                      {isExpanded && link.badge && (
-                        link.badge === "live" ? (
+                      {isExpanded && (link as any).badge && (
+                        (link as any).badge === "live" ? (
                           badgeNum && badgeNum > 0 ? (
                             <span className="ml-auto flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-primary text-white text-[10px] font-black shadow-sm">
                               {badgeNum > 99 ? "99+" : badgeNum}
@@ -311,13 +311,13 @@ export default function LeftSidebar() {
                           ) : null
                         ) : (
                           <span className="ml-auto text-[9px] font-black bg-gradient-to-r from-rose-500 to-pink-500 text-white px-1.5 py-0.5 rounded-full tracking-wider shadow-sm">
-                            {link.badge}
+                            {(link as any).badge}
                           </span>
                         )
                       )}
 
                       {/* Collapsed badge dot */}
-                      {!isExpanded && link.badge === "live" && badgeNum && badgeNum > 0 && (
+                      {!isExpanded && (link as any).badge === "live" && badgeNum && badgeNum > 0 && (
                         <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-primary rounded-full ring-2 ring-white animate-pulse" />
                       )}
                     </Link>
