@@ -146,7 +146,7 @@ export default function HomeFeedPage() {
     }
   };
 
-  const openCreateModal = (type: "UPDATE" | "CLIPS" | "POLL" | "LIVE" | "FLASH") => {
+  const openCreateModal = (type: "UPDATE" | "CLICKS" | "POLL" | "LIVE" | "FLASH") => {
     if (!getAuthToken()) {
       router.push('/login');
       return;
