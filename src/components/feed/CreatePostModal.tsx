@@ -278,7 +278,7 @@ export default function CreatePostModal({ isOpen, onClose, defaultType = "UPDATE
               onChange={(e) => setPostText(e.target.value)}
               placeholder={
                 activeTab === "UPDATE" ? "What do you want to talk about?" :
-                activeTab === "CLIPS" ? "Share a quick moment..." :
+                activeTab === "CLICKS" ? "Share a link to track..." :
                 activeTab === "POLL" ? "Ask a question..." :
                 activeTab === "LIVE" ? "What's this stream about?" :
                 "Share a flash update..."
