@@ -268,7 +268,7 @@ export default function LeftSidebar() {
         </div>
 
         {/* ── Navigation ────────────────────────────────────────────── */}
-        <nav className="flex-1 overflow-y-auto overflow-x-hidden hide-scrollbar px-3 pb-2">
+        <nav className="flex-1 overflow-y-auto overflow-x-hidden px-3 pb-2">
           {NAV_SECTIONS.map((section) => (
             <div key={section.label} className="mb-1">
               {isExpanded && (
