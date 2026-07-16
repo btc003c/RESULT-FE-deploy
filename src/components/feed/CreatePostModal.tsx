@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 
-type PostType = "UPDATE" | "CLIPS" | "POLL" | "LIVE" | "FLASH";
+type PostType = "UPDATE" | "CLICKS" | "POLL" | "LIVE" | "FLASH";
 
 interface CreatePostModalProps {
   isOpen: boolean;
@@ -132,7 +132,7 @@ export default function CreatePostModal({ isOpen, onClose, defaultType = "UPDATE
       
       const { api } = await import('@/lib/api');
       
-      if (activeTab === "UPDATE" || activeTab === "CLIPS" || activeTab === "LIVE" || activeTab === "FLASH") {
+      if (activeTab === "UPDATE" || activeTab === "CLICKS" || activeTab === "LIVE" || activeTab === "FLASH") {
         let postType = "UPDATE";
         if (fileInputRef.current?.files && fileInputRef.current.files.length > 0) {
           const firstFile = fileInputRef.current.files[0];
@@ -316,39 +316,43 @@ export default function CreatePostModal({ isOpen, onClose, defaultType = "UPDATE
 
             {/* Update (Post) Specific Fields */}
             {activeTab === "UPDATE" && (
-              <div className="flex flex-col items-center justify-center p-8 border-2 border-dashed border-muted hover:border-primary hover:bg-primary/5 rounded-2xl transition-colors mb-4 cursor-pointer" onClick={() => fileInputRef.current?.click()}>
-                <input 
-                 type="file" 
-                 ref={fileInputRef} 
-                 onChange={handleFileChange} 
-                 accept="image/*,video/*" 
-                 multiple
-                 className="hidden" 
-                />
-                <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-3">
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                </div>
-                <span className="font-bold text-foreground">Add Images or Videos</span>
+              <div className="flex gap-4 mb-4 animate-in fade-in slide-in-from-top-2">
+                 <div className="flex-1 flex flex-col items-center justify-center p-6 border-2 border-dashed border-muted hover:border-primary hover:bg-primary/5 rounded-2xl transition-colors cursor-pointer" onClick={() => fileInputRef.current?.click()}>
+                   <input 
+                    type="file" 
+                    ref={fileInputRef} 
+                    onChange={handleFileChange} 
+                    accept="image/*,video/*" 
+                    multiple
+                    className="hidden" 
+                   />
+                   <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-primary mb-2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                   <span className="font-bold text-foreground">Media</span>
+                 </div>
+                 <button className="flex-1 flex flex-col items-center justify-center p-6 border-2 border-dashed border-muted hover:border-primary hover:bg-primary/5 rounded-2xl transition-colors">
+                   <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-primary mb-2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+                   <span className="font-bold text-foreground">Link</span>
+                 </button>
               </div>
             )}
 
-            {/* Clips Specific Fields */}
-            {activeTab === "CLIPS" && (
-              <div className="flex gap-4 mb-4">
-                  <button className="flex-1 flex flex-col items-center justify-center p-6 border-2 border-dashed border-muted hover:border-primary hover:bg-primary/5 rounded-2xl transition-colors">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-primary mb-2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                    <span className="font-bold text-foreground">Story</span>
-                  </button>
-                  <button className="flex-1 flex flex-col items-center justify-center p-6 border-2 border-dashed border-muted hover:border-primary hover:bg-primary/5 rounded-2xl transition-colors">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-primary mb-2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
-                    <span className="font-bold text-foreground">Status</span>
-                  </button>
+            {/* Clicks Specific Fields */}
+            {activeTab === "CLICKS" && (
+              <div className="flex gap-4 mb-4 animate-in fade-in slide-in-from-top-2">
+                  <div className="flex-1 flex flex-col items-center justify-center p-4 border border-muted rounded-xl bg-muted/5">
+                    <div className="flex items-center gap-2 mb-3 text-primary font-bold">
+                       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
+                       Add Tracking Link
+                    </div>
+                    <input type="url" placeholder="https://example.com/product" className="w-full bg-transparent border-b border-muted py-2 outline-none mb-3 text-sm focus:border-primary transition-colors" />
+                    <button className="w-full py-2 bg-primary/10 text-primary font-bold rounded-lg hover:bg-primary/20 transition-colors text-sm">Verify Link</button>
+                  </div>
               </div>
             )}
             
             {/* Live Specific Fields */}
             {activeTab === "LIVE" && (
-              <div className="flex gap-4 mb-4">
+              <div className="flex gap-4 mb-4 animate-in fade-in slide-in-from-top-2">
                   <button className="flex-1 flex flex-col items-center justify-center p-6 border-2 border-dashed border-muted hover:border-emerald-500 hover:bg-emerald-500/5 rounded-2xl transition-colors">
                     <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-emerald-500 mb-2"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg>
                     <span className="font-bold text-foreground">Live Video</span>
@@ -362,17 +366,27 @@ export default function CreatePostModal({ isOpen, onClose, defaultType = "UPDATE
 
             {/* Flash Specific Fields */}
             {activeTab === "FLASH" && (
-              <div className="space-y-4 animate-in fade-in slide-in-from-top-2 mb-4">
-                 <div className="p-4 bg-purple-500/10 rounded-xl border border-purple-500/20">
-                    <p className="text-purple-600 text-sm font-semibold">Flash posts are ephemeral and disappear after 24 hours.</p>
-                 </div>
+              <div className="flex gap-4 mb-4 animate-in fade-in slide-in-from-top-2">
+                  <button className="flex-1 flex flex-col items-center justify-center p-4 border-2 border-dashed border-muted hover:border-purple-500 hover:bg-purple-500/5 rounded-2xl transition-colors">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-purple-500 mb-2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                    <span className="font-bold text-foreground text-sm">Photo</span>
+                  </button>
+                  <button className="flex-1 flex flex-col items-center justify-center p-4 border-2 border-dashed border-muted hover:border-purple-500 hover:bg-purple-500/5 rounded-2xl transition-colors">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-purple-500 mb-2"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
+                    <span className="font-bold text-foreground text-sm">Video</span>
+                  </button>
+                  <button className="flex-1 flex flex-col items-center justify-center p-4 border-2 border-dashed border-muted hover:border-purple-500 hover:bg-purple-500/5 rounded-2xl transition-colors">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-purple-500 mb-2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                    <span className="font-bold text-foreground text-sm">Promo</span>
+                  </button>
               </div>
             )}
 
             {/* Poll Specific Fields */}
             {activeTab === "POLL" && (
-              <div className="space-y-4 animate-in fade-in slide-in-from-top-2 border border-muted rounded-xl p-5 mb-4 bg-muted/10">
-                <h4 className="font-bold text-foreground mb-2">Poll Options</h4>
+              <div className="space-y-4 animate-in fade-in slide-in-from-top-2 mb-4">
+                 <div className="border border-muted rounded-xl p-5 bg-muted/10">
+                   <h4 className="font-bold text-foreground mb-2">Poll Options</h4>
                 {pollOptions.map((opt, i) => (
                   <div key={i} className="flex gap-2 items-center">
                     <div className="flex-1 flex items-center border border-muted rounded-xl px-4 py-3 bg-background focus-within:border-accent">
@@ -426,6 +440,7 @@ export default function CreatePostModal({ isOpen, onClose, defaultType = "UPDATE
                   </div>
                 </div>
               </div>
+            </div>
             )}
 
         </div>
@@ -438,23 +453,23 @@ export default function CreatePostModal({ isOpen, onClose, defaultType = "UPDATE
                 aria-pressed={activeTab === "UPDATE"}
                 className={`flex items-center gap-2 px-3 py-1.5 rounded-full transition-colors font-semibold text-sm ${activeTab === "UPDATE" ? "bg-blue-500/10 text-blue-600" : "text-muted-foreground hover:bg-muted"}`}
              >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path><path d="M2 2l7.586 7.586"></path><circle cx="11" cy="11" r="2"></circle></svg>
                 <span className="hidden sm:inline">Post</span>
              </button>
              <button 
-                onClick={() => setActiveTab("CLIPS")}
-                aria-pressed={activeTab === "CLIPS"}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-full transition-colors font-semibold text-sm ${activeTab === "CLIPS" ? "bg-red-500/10 text-red-600" : "text-muted-foreground hover:bg-muted"}`}
+                onClick={() => setActiveTab("CLICKS")}
+                aria-pressed={activeTab === "CLICKS"}
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-full transition-colors font-semibold text-sm ${activeTab === "CLICKS" ? "bg-red-500/10 text-red-600" : "text-muted-foreground hover:bg-muted"}`}
              >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
-                <span className="hidden sm:inline">Clips</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+                <span className="hidden sm:inline">Clicks</span>
              </button>
              <button 
                 onClick={() => setActiveTab("POLL")}
                 aria-pressed={activeTab === "POLL"}
                 className={`flex items-center gap-2 px-3 py-1.5 rounded-full transition-colors font-semibold text-sm ${activeTab === "POLL" ? "bg-amber-500/10 text-amber-600" : "text-muted-foreground hover:bg-muted"}`}
              >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 4h3v16h-3z"/><path d="M11 9h3v11h-3z"/><path d="M4 14h3v6H4z"/></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="20" x2="12" y2="10"></line><line x1="18" y1="20" x2="18" y2="4"></line><line x1="6" y1="20" x2="6" y2="16"></line></svg>
                 <span className="hidden sm:inline">Poll</span>
              </button>
              <button 
@@ -462,7 +477,7 @@ export default function CreatePostModal({ isOpen, onClose, defaultType = "UPDATE
                 aria-pressed={activeTab === "LIVE"}
                 className={`flex items-center gap-2 px-3 py-1.5 rounded-full transition-colors font-semibold text-sm ${activeTab === "LIVE" ? "bg-emerald-500/10 text-emerald-600" : "text-muted-foreground hover:bg-muted"}`}
              >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3" fill="currentColor"></circle></svg>
                 <span className="hidden sm:inline">Live</span>
              </button>
              <button 
@@ -470,7 +485,7 @@ export default function CreatePostModal({ isOpen, onClose, defaultType = "UPDATE
                 aria-pressed={activeTab === "FLASH"}
                 className={`flex items-center gap-2 px-3 py-1.5 rounded-full transition-colors font-semibold text-sm ${activeTab === "FLASH" ? "bg-purple-500/10 text-purple-600" : "text-muted-foreground hover:bg-muted"}`}
              >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
                 <span className="hidden sm:inline">Flash</span>
              </button>
            </div>

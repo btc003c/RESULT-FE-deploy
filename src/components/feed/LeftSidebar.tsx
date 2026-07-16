@@ -38,7 +38,8 @@ const NAV_SECTIONS = [
         href: "/complaints",
         icon: (
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-             <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+            <path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"></path>
+            <path d="M13 5v2"></path><path d="M13 17v2"></path><path d="M13 11v2"></path>
           </svg>
         ),
       },
@@ -47,8 +48,12 @@ const NAV_SECTIONS = [
         href: "/clips",
         icon: (
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-            <polygon points="23 7 16 12 23 17 23 7"></polygon>
-            <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+            <path d="M20 21H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2z"></path>
+            <line x1="2" y1="9" x2="22" y2="9"></line>
+            <line x1="6" y1="3" x2="6" y2="9"></line>
+            <line x1="10" y1="3" x2="10" y2="9"></line>
+            <line x1="14" y1="3" x2="14" y2="9"></line>
+            <line x1="18" y1="3" x2="18" y2="9"></line>
           </svg>
         ),
       },
@@ -57,7 +62,7 @@ const NAV_SECTIONS = [
         href: "/chats",
         icon: (
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"></path>
           </svg>
         ),
       },
