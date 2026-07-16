@@ -268,7 +268,7 @@ export default function LeftSidebar() {
               {!isExpanded && <div className="my-2 mx-auto w-6 border-t border-zinc-100" />}
 
               {section.links.map((link) => {
-                const active = isActive(link.href, link.exact);
+                const active = isActive(link.href, (link as any).exact);
                 const badgeNum = link.badge === "live" ? notifCount : null;
 
                 return (
