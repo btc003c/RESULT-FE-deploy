@@ -269,7 +269,7 @@ export default function LeftSidebar() {
 
               {section.links.map((link) => {
                 const active = isActive(link.href, (link as any).exact);
-                const badgeNum = link.badge === "live" ? notifCount : null;
+                const badgeNum = (link as any).badge === "live" ? notifCount : null;
 
                 return (
                   <div key={link.label} className="relative group/tip">
