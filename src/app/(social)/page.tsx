@@ -29,7 +29,7 @@ function getTimeAgo(dateStr: string | null) {
 export default function HomeFeedPage() {
   const router = useRouter();
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [modalDefaultType, setModalDefaultType] = useState<"UPDATE" | "CLIPS" | "POLL" | "LIVE" | "FLASH">("UPDATE");
+  const [modalDefaultType, setModalDefaultType] = useState<"UPDATE" | "CLICKS" | "POLL" | "LIVE" | "FLASH">("UPDATE");
   const [posts, setPosts] = useState<any[]>([]);
   const [liveStories, setLiveStories] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
