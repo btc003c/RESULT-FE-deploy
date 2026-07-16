@@ -43,6 +43,16 @@ const NAV_SECTIONS = [
         ),
       },
       {
+        label: "Clips",
+        href: "/clips",
+        icon: (
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <polygon points="23 7 16 12 23 17 23 7"></polygon>
+            <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+          </svg>
+        ),
+      },
+      {
         label: "Chats",
         href: "/chats",
         icon: (
@@ -230,32 +240,7 @@ export default function LeftSidebar() {
           </button>
         </div>
 
-        {/* ── Create Post CTA ────────────────────────────────────────── */}
-        <div className={`px-3 pt-4 pb-2 ${!isExpanded && "flex justify-center"}`}>
-          <button
-            onClick={() => setIsPostModalOpen(true)}
-            className={`group relative overflow-hidden font-bold text-white rounded-xl
-              bg-gradient-to-r from-[#F97316] to-[#fdba74]
-              shadow-lg shadow-primary/20 hover:shadow-primary/40
-              transition-all duration-200 active:scale-95 hover:scale-[1.02]
-              ${isExpanded
-                ? "w-full flex items-center gap-3 px-4 py-3"
-                : "w-12 h-12 flex items-center justify-center"}`}
-            title="Create Post"
-          >
-            {/* Shimmer effect */}
-            <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-700 ease-out" />
 
-            <div className="w-5 h-5 rounded-full border-2 border-white/60 flex items-center justify-center shrink-0">
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round">
-                <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
-              </svg>
-            </div>
-            {isExpanded && (
-              <span className="text-[14px] tracking-wide whitespace-nowrap">Create Post</span>
-            )}
-          </button>
-        </div>
         {/* ── Navigation ────────────────────────────────────────────── */}
         <nav className="flex-1 overflow-y-auto overflow-x-hidden hide-scrollbar px-3 pb-2">
           {NAV_SECTIONS.map((section) => (
