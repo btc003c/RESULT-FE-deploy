@@ -114,10 +114,10 @@ function FollowInline({ userId, mode }: { userId: string; mode: "followers" | "f
               {u.profilePictureBase64 ? <img src={`data:image/jpeg;base64,${u.profilePictureBase64}`} className="w-full h-full object-cover" alt="" /> : init}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-bold text-zinc-800 truncate group-hover:text-[#635BFF] transition-colors">{u.name}</p>
+              <p className="text-sm font-bold text-zinc-800 truncate group-hover:text-[#FFC82A] transition-colors">{u.name}</p>
               {u.bio && <p className="text-xs text-zinc-400 truncate">{u.bio}</p>}
             </div>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-zinc-200 group-hover:text-[#635BFF] transition-colors shrink-0"><polyline points="9 18 15 12 9 6"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-zinc-200 group-hover:text-[#FFC82A] transition-colors shrink-0"><polyline points="9 18 15 12 9 6"/></svg>
           </Link>
         );
       })}
@@ -181,7 +181,7 @@ export default function PublicProfilePage() {
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-zinc-400"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
       </div>
       <p className="text-base font-bold text-zinc-600">{error || "User not found."}</p>
-      <Link href="/" className="px-6 py-2 bg-[#635BFF] text-white text-sm font-bold rounded-full">Go Home</Link>
+      <Link href="/" className="px-6 py-2 bg-[#FFC82A] text-white text-sm font-bold rounded-full">Go Home</Link>
     </div>
   );
 
@@ -245,7 +245,7 @@ export default function PublicProfilePage() {
               className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold transition-all border-2 shadow-sm ${
                 isFollowing
                   ? "border-zinc-200 bg-white text-zinc-700 hover:border-red-200 hover:text-red-500 hover:bg-red-50"
-                  : "bg-[#635BFF] border-[#635BFF] text-white hover:bg-[#5249E5] shadow-[#635BFF]/25"
+                  : "bg-[#FFC82A] border-[#FFC82A] text-white hover:bg-[#E5B426] shadow-[#FFC82A]/25"
               } disabled:opacity-60`}
             >
               {followLoading ? (
@@ -299,7 +299,7 @@ export default function PublicProfilePage() {
               { label: "Following", val: profile.followingCount, onClick: () => setFollowModal({ open: true, mode: "following" }) },
             ].map(s => (
               <button key={s.label} onClick={s.onClick} className="flex items-center gap-1.5 py-4 group">
-                <span className="text-xl font-black text-zinc-900 tabular-nums group-hover:text-[#635BFF] transition-colors">{fmtNum(s.val)}</span>
+                <span className="text-xl font-black text-zinc-900 tabular-nums group-hover:text-[#FFC82A] transition-colors">{fmtNum(s.val)}</span>
                 <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">{s.label}</span>
               </button>
             ))}
@@ -310,12 +310,12 @@ export default function PublicProfilePage() {
               <button
                 key={t.key}
                 onClick={() => setTab(t.key)}
-                className={`relative px-4 py-4 text-sm font-bold transition-colors whitespace-nowrap ${tab === t.key ? "text-[#635BFF]" : "text-zinc-500 hover:text-zinc-900"}`}
+                className={`relative px-4 py-4 text-sm font-bold transition-colors whitespace-nowrap ${tab === t.key ? "text-[#FFC82A]" : "text-zinc-500 hover:text-zinc-900"}`}
               >
                 {t.label}{t.count !== undefined && t.count > 0 && (
                   <span className="ml-1.5 text-[11px] font-black bg-zinc-100 text-zinc-500 px-1.5 py-0.5 rounded-full">{fmtNum(t.count)}</span>
                 )}
-                {tab === t.key && <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#635BFF] rounded-t-full" />}
+                {tab === t.key && <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#FFC82A] rounded-t-full" />}
               </button>
             ))}
           </div>
@@ -335,7 +335,7 @@ export default function PublicProfilePage() {
                 {profile.bio && <p className="text-sm text-zinc-700 leading-relaxed">{profile.bio}</p>}
                 <div className="space-y-2 pt-1">
                   {profile.website && (
-                    <a href={profile.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2.5 text-xs font-semibold text-[#635BFF] hover:underline">
+                    <a href={profile.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2.5 text-xs font-semibold text-[#FFC82A] hover:underline">
                       <span className="w-5 h-5 flex items-center justify-center shrink-0">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
                       </span>
@@ -361,7 +361,7 @@ export default function PublicProfilePage() {
             <div className="bg-white border border-zinc-100 rounded-2xl overflow-hidden shadow-sm">
               <div className="px-4 py-3 border-b border-zinc-50 flex items-center justify-between">
                 <p className="text-xs font-black text-zinc-400 uppercase tracking-widest">Followers</p>
-                <button onClick={() => setFollowModal({ open: true, mode: "followers" })} className="text-[11px] font-bold text-[#635BFF] hover:underline">See all</button>
+                <button onClick={() => setFollowModal({ open: true, mode: "followers" })} className="text-[11px] font-bold text-[#FFC82A] hover:underline">See all</button>
               </div>
               <FollowInline userId={userId} mode="followers" />
             </div>
@@ -426,7 +426,7 @@ export default function PublicProfilePage() {
                       <div className="min-w-0">
                         <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider">{row.label}</p>
                         {row.isLink ? (
-                          <a href={row.val} target="_blank" rel="noopener noreferrer" className="text-sm font-semibold text-[#635BFF] hover:underline truncate block mt-0.5">
+                          <a href={row.val} target="_blank" rel="noopener noreferrer" className="text-sm font-semibold text-[#FFC82A] hover:underline truncate block mt-0.5">
                             {row.val!.replace(/^https?:\/\//, "")}
                           </a>
                         ) : (

@@ -8,12 +8,15 @@ import {
   GraduationCap, Landmark, Trophy, Vote, TrendingUp, Clapperboard, 
   Monitor, Scale, Heart, Briefcase, MapPin, ChevronRight, Play, Activity
 } from 'lucide-react';
+import CreateResultModal from "@/components/results/CreateResultModal";
 
 export default function ExplorePage() {
   const [datasets, setDatasets] = useState<any[]>([]);
   const [footballLive, setFootballLive] = useState<any[]>([]);
   const [cricketLive, setCricketLive] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [createAccessType, setCreateAccessType] = useState('OPEN');
 
   useEffect(() => {
     fetchData();
@@ -108,20 +111,96 @@ export default function ExplorePage() {
               <p className="text-zinc-500 font-medium text-sm">Explore the Global Catalog</p>
             </div>
           </div>
-          
-          <div className="relative group max-w-2xl">
-            <input 
-              type="text" 
-              placeholder="Search results, organizations, datasets..." 
-              className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl py-4 pl-14 pr-16 text-sm font-semibold text-zinc-950 focus:outline-none focus:border-[#635BFF] focus:ring-1 focus:ring-[#635BFF] transition-all placeholder:text-zinc-400 shadow-sm"
-            />
-            <div className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-[#635BFF] transition-colors">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          {/* Action Area: Create Card & Search (Based on Sketch) */}
+          <div className="flex flex-col lg:flex-row gap-6 w-full max-w-5xl items-center">
+            
+            {/* Left: Create Result Card */}
+            <div className="bg-white border-2 border-zinc-200 rounded-[2rem] p-5 flex flex-col justify-center gap-5 shadow-sm flex-[3] min-w-[280px] w-full">
+              
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-[#FFC82A]/10 flex items-center justify-center text-[#FFC82A] font-bold shrink-0">
+                  R
+                </div>
+                <h3 className="text-zinc-800 font-bold text-sm tracking-tight">Create Result</h3>
+              </div>
+
+              <div className="flex gap-2">
+                <button 
+                  onClick={() => { setCreateAccessType('OPEN'); setIsCreateModalOpen(true); }}
+                  className="flex-1 px-4 py-3 text-sm font-bold rounded-xl transition-colors bg-emerald-50 text-emerald-600 border border-emerald-100 hover:bg-emerald-100 shadow-sm"
+                >
+                  Open Result
+                </button>
+                <button 
+                  onClick={() => { setCreateAccessType('CLOSED'); setIsCreateModalOpen(true); }}
+                  className="flex-1 px-4 py-3 text-sm font-bold rounded-xl transition-colors bg-red-50 text-red-600 border border-red-100 hover:bg-red-100 shadow-sm"
+                >
+                  Closed Result
+                </button>
+              </div>
             </div>
-            <div className="absolute right-3 top-1/2 -translate-y-1/2 px-2 py-1 bg-white rounded text-[10px] font-black text-zinc-400 border border-zinc-200 tracking-wider">
-              ⌘ K
+
+            {/* Right: Search Bar */}
+            <div className="flex-[2.5] min-w-[280px] w-full flex items-center">
+              <div className="relative w-full">
+                <input 
+                  type="text" 
+                  className="w-full h-[64px] pl-14 pr-[110px] bg-transparent border-2 border-zinc-300 rounded-full text-lg font-semibold text-zinc-800 focus:outline-none focus:border-zinc-400 transition-all shadow-sm"
+                />
+                <div className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-400">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                </div>
+                
+                <div className="absolute right-1.5 top-1/2 -translate-y-1/2">
+                  <button className="px-6 h-[50px] bg-[#FFC82A] hover:bg-[#E5B426] text-white font-bold rounded-full transition-colors shadow-sm">
+                    Search
+                  </button>
+                </div>
+              </div>
             </div>
+
           </div>
+          
+          {/* Quick Results Bar */}
+          <div className="max-w-5xl mt-6 pt-6 border-t border-zinc-100 flex gap-6 overflow-x-auto hide-scrollbar pb-2 items-center">
+              {[
+                { id: 'm1', type: 'flash', title: 'ARS v CHE', text: '⚽', color: 'bg-blue-100', textCol: 'text-blue-600' },
+                { id: 'm2', type: 'live', title: 'IND v AUS', text: '🏏', color: 'bg-emerald-100', textCol: 'text-emerald-600' },
+                { id: 'm3', type: 'flash', title: 'Exam 26', text: '🎓', color: 'bg-purple-100', textCol: 'text-purple-600' },
+                { id: 'm4', type: 'live', title: 'US Election', text: '🗳️', color: 'bg-red-100', textCol: 'text-red-600' },
+                { id: 'm5', type: 'flash', title: 'NAVI v FAZ', text: '🎮', color: 'bg-amber-100', textCol: 'text-amber-600' },
+                { id: 'm6', type: 'live', title: 'RMA v BAR', text: '⚽', color: 'bg-blue-100', textCol: 'text-blue-600' },
+                { id: 'm7', type: 'flash', title: 'Market Wrap', text: '📈', color: 'bg-emerald-100', textCol: 'text-emerald-600' },
+                { id: 'm8', type: 'live', title: 'UK Election', text: '🗳️', color: 'bg-indigo-100', textCol: 'text-indigo-600' },
+                { id: 'm9', type: 'flash', title: 'Tech Stocks', text: '💻', color: 'bg-slate-100', textCol: 'text-slate-600' },
+                { id: 'm10', type: 'live', title: 'LAL v GSW', text: '🏀', color: 'bg-orange-100', textCol: 'text-orange-600' },
+                { id: 'm11', type: 'flash', title: 'Weather', text: '🌪️', color: 'bg-teal-100', textCol: 'text-teal-600' },
+                { id: 'm12', type: 'live', title: 'News', text: '📰', color: 'bg-rose-100', textCol: 'text-rose-600' },
+              ].map(story => (
+                <div key={story.id} className="flex flex-col items-center gap-1.5 cursor-pointer shrink-0 transition-transform active:scale-95 group/story relative">
+                  <div className="relative rounded-full p-[3px]">
+                    
+                    {/* Ring Logic (Different from Home Page) */}
+                    {story.type === 'flash' ? (
+                      <div className="absolute inset-0 rounded-full bg-emerald-500 shadow-inner"></div>
+                    ) : (
+                      <div className="absolute inset-0 rounded-full bg-amber-500 shadow-inner"></div>
+                    )}
+
+                    <div className={`relative z-10 w-14 h-14 rounded-full border-[3px] border-white flex items-center justify-center font-black text-xl ${story.color} ${story.textCol} shadow-sm`}>
+                      {story.text}
+                    </div>
+                    {story.type === 'live' && (
+                      <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 z-20 bg-amber-500 text-white text-[8px] font-black tracking-widest px-1.5 py-[2px] rounded-full border-2 border-white shadow-sm">
+                        LIVE
+                      </div>
+                    )}
+                  </div>
+                  <span className="text-[11px] font-bold text-zinc-700 truncate max-w-[64px] text-center">{story.title}</span>
+                </div>
+              ))}
+          </div>
+
         </div>
       </div>
 
@@ -179,7 +258,7 @@ export default function ExplorePage() {
           <div className="flex items-center gap-3 mb-6">
             <Activity className="w-6 h-6 text-red-500" />
             <h2 className="text-xl font-black tracking-tight text-zinc-950">Live Now</h2>
-            <Link href="/results/sports" className="ml-auto text-sm font-bold text-[#635BFF] hover:text-[#5249E5]">View All Live</Link>
+            <Link href="/results/sports" className="ml-auto text-sm font-bold text-[#FFC82A] hover:text-[#E5B426]">View All Live</Link>
           </div>
           
           <div className="flex gap-4 overflow-x-auto hide-scrollbar pb-4 snap-x">
@@ -224,7 +303,7 @@ export default function ExplorePage() {
         {/* 11 Categories */}
         <section>
           <div className="flex items-center gap-3 mb-6">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="text-[#635BFF]" strokeWidth="2.5"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="text-[#FFC82A]" strokeWidth="2.5"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
             <h2 className="text-xl font-black tracking-tight text-zinc-950">Browse Categories</h2>
           </div>
           
@@ -331,8 +410,13 @@ export default function ExplorePage() {
             })}
           </div>
         </section>
-
       </div>
+      
+      <CreateResultModal 
+        isOpen={isCreateModalOpen} 
+        onClose={() => setIsCreateModalOpen(false)} 
+        accessType={createAccessType}
+      />
     </div>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import EmojiPicker from 'emoji-picker-react';
 
 // Mock Data
 const MOCK_CONTACTS = [
@@ -19,6 +20,8 @@ const MOCK_MESSAGES = [
 export default function ChatsPage() {
   const [activeContactId, setActiveContactId] = useState(MOCK_CONTACTS[1].id);
   const [messageInput, setMessageInput] = useState("");
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [showAttachmentMenu, setShowAttachmentMenu] = useState(false);
   
   const activeContact = MOCK_CONTACTS.find(c => c.id === activeContactId) || MOCK_CONTACTS[0];
 
@@ -138,10 +141,24 @@ export default function ChatsPage() {
          </div>
 
          {/* Message Input Area */}
-         <div className="p-4 bg-white border-t border-zinc-100 shrink-0">
+         <div className="p-4 bg-white border-t border-zinc-100 shrink-0 relative">
+           
+           {showEmojiPicker && (
+             <div className="absolute bottom-full left-4 mb-2 z-50 shadow-xl rounded-xl overflow-hidden border border-zinc-100">
+               <EmojiPicker 
+                 onEmojiClick={(emojiObject) => {
+                   setMessageInput(prev => prev + emojiObject.emoji);
+                 }}
+               />
+             </div>
+           )}
+
            <div className="flex items-end gap-2 bg-zinc-50 border border-zinc-200 rounded-2xl p-2 focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary transition-all shadow-sm">
-             <button className="p-2.5 text-muted-foreground hover:bg-zinc-200 rounded-xl transition-colors shrink-0">
-               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+             <button 
+               onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+               className="p-2.5 text-muted-foreground hover:bg-zinc-200 hover:text-zinc-800 rounded-xl transition-colors shrink-0"
+             >
+               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg>
              </button>
              <textarea 
                rows={1}
@@ -150,12 +167,59 @@ export default function ChatsPage() {
                placeholder="Type a message..." 
                className="w-full bg-transparent border-none outline-none resize-none text-foreground text-sm font-medium py-3 max-h-[120px] hide-scrollbar"
              />
+             {showAttachmentMenu && (
+               <div className="absolute bottom-full right-16 mb-2 z-50 bg-white shadow-xl rounded-2xl border border-zinc-100 p-2 w-48 flex flex-col gap-1">
+                 <button 
+                   onClick={() => setShowAttachmentMenu(false)}
+                   className="flex items-center gap-3 px-3 py-2 hover:bg-zinc-50 rounded-xl transition-colors text-sm font-semibold text-zinc-700 text-left"
+                 >
+                   <div className="w-8 h-8 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center shrink-0">
+                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                   </div>
+                   Photos & Videos
+                 </button>
+                 <button 
+                   onClick={() => setShowAttachmentMenu(false)}
+                   className="flex items-center gap-3 px-3 py-2 hover:bg-zinc-50 rounded-xl transition-colors text-sm font-semibold text-zinc-700 text-left"
+                 >
+                   <div className="w-8 h-8 rounded-full bg-purple-50 text-purple-500 flex items-center justify-center shrink-0">
+                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                   </div>
+                   Document
+                 </button>
+                 <button 
+                   onClick={() => setShowAttachmentMenu(false)}
+                   className="flex items-center gap-3 px-3 py-2 hover:bg-zinc-50 rounded-xl transition-colors text-sm font-semibold text-zinc-700 text-left"
+                 >
+                   <div className="w-8 h-8 rounded-full bg-emerald-50 text-emerald-500 flex items-center justify-center shrink-0">
+                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                   </div>
+                   Location
+                 </button>
+                 <button 
+                   onClick={() => setShowAttachmentMenu(false)}
+                   className="flex items-center gap-3 px-3 py-2 hover:bg-zinc-50 rounded-xl transition-colors text-sm font-semibold text-zinc-700 text-left"
+                 >
+                   <div className="w-8 h-8 rounded-full bg-orange-50 text-orange-500 flex items-center justify-center shrink-0">
+                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                   </div>
+                   Contact
+                 </button>
+               </div>
+             )}
+
+             <button 
+               onClick={() => setShowAttachmentMenu(!showAttachmentMenu)}
+               className="p-2.5 text-muted-foreground hover:bg-zinc-200 hover:text-zinc-800 rounded-xl transition-colors shrink-0 mb-0.5"
+             >
+               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+             </button>
              {messageInput.trim() ? (
                <button className="p-2.5 bg-primary text-white rounded-xl hover:bg-primary/90 transition-all shadow-md shrink-0 mb-0.5 mr-0.5 active:scale-95">
                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
                </button>
              ) : (
-               <button className="p-2.5 text-muted-foreground hover:bg-zinc-200 rounded-xl transition-colors shrink-0 mb-0.5 mr-0.5">
+               <button className="p-2.5 text-muted-foreground hover:bg-zinc-200 hover:text-zinc-800 rounded-xl transition-colors shrink-0 mb-0.5 mr-0.5">
                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="22"></line></svg>
                </button>
              )}

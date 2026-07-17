@@ -9,10 +9,10 @@ export default function NotFound() {
   const router = useRouter();
 
   return (
-    <div className="min-h-screen bg-[#F9FAFB] flex flex-col items-center justify-center p-4 relative overflow-hidden selection:bg-[#635BFF]/20">
+    <div className="min-h-screen bg-[#F9FAFB] flex flex-col items-center justify-center p-4 relative overflow-hidden selection:bg-[#FFC82A]/20">
       
       {/* Abstract Background Elements */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-tr from-[#635BFF]/5 to-purple-500/5 rounded-full blur-3xl pointer-events-none -z-10"></div>
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-tr from-[#FFC82A]/5 to-purple-500/5 rounded-full blur-3xl pointer-events-none -z-10"></div>
       <div className="absolute top-0 right-0 w-96 h-96 bg-orange-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none -z-10"></div>
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/3 pointer-events-none -z-10"></div>
 
@@ -34,7 +34,7 @@ export default function NotFound() {
           <motion.div 
             animate={{ rotate: 360 }}
             transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-            className="absolute -top-4 -right-8 text-[#635BFF]/20 pointer-events-none"
+            className="absolute -top-4 -right-8 text-[#FFC82A]/20 pointer-events-none"
           >
             <Search size={80} strokeWidth={1.5} />
           </motion.div>
@@ -59,7 +59,7 @@ export default function NotFound() {
           
           <Link 
             href="/"
-            className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-[#635BFF] text-white font-bold rounded-xl shadow-sm shadow-[#635BFF]/20 hover:shadow-md hover:bg-[#5249E5] hover:-translate-y-0.5 transition-all group"
+            className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-[#FFC82A] text-white font-bold rounded-xl shadow-sm shadow-[#FFC82A]/20 hover:shadow-md hover:bg-[#E5B426] hover:-translate-y-0.5 transition-all group"
           >
             <Home size={18} className="group-hover:scale-110 transition-transform" />
             Back to Home

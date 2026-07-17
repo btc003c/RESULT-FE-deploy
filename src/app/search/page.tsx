@@ -102,12 +102,12 @@ export default function UniversalSearchPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F9FAFB] text-zinc-900 font-sans selection:bg-[#635BFF]/20 flex flex-col">
+    <div className="min-h-screen bg-[#F9FAFB] text-zinc-900 font-sans selection:bg-[#FFC82A]/20 flex flex-col">
       
       {/* 1. COMPACT NAVBAR (For when scrolled or just standard top) */}
       <header className="h-16 bg-white/80 backdrop-blur-xl border-b border-zinc-200 sticky top-0 z-50 flex items-center justify-between px-4 md:px-8">
         <Link href="/" className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#635BFF] to-purple-600 flex items-center justify-center shadow-sm">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#FFC82A] to-purple-600 flex items-center justify-center shadow-sm">
             <span className="text-white font-black text-sm">RH</span>
           </div>
           <span className="font-extrabold text-lg tracking-tight text-zinc-900 hidden sm:block">ResultHub</span>
@@ -135,7 +135,7 @@ export default function UniversalSearchPage() {
                   className="overflow-hidden"
                 >
                   <h1 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-zinc-900 mb-6">
-                    The Universal <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#635BFF] to-purple-600">Data Space</span>
+                    The Universal <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FFC82A] to-purple-600">Data Space</span>
                   </h1>
                   <p className="text-zinc-500 text-lg md:text-xl font-medium max-w-2xl mx-auto mb-10">
                     Search across thousands of organizations, millions of public datasets, and verified records instantly.
@@ -148,11 +148,11 @@ export default function UniversalSearchPage() {
             <motion.div 
               layout
               className={`relative mx-auto bg-white rounded-3xl transition-all duration-300 ${
-                isFocused ? 'shadow-[0_8px_30px_rgb(0,0,0,0.08)] scale-[1.02] border-[#635BFF]/30' : 'shadow-sm border-zinc-200'
+                isFocused ? 'shadow-[0_8px_30px_rgb(0,0,0,0.08)] scale-[1.02] border-[#FFC82A]/30' : 'shadow-sm border-zinc-200'
               } border-2 overflow-hidden flex flex-col`}
             >
               <div className="flex items-center px-4">
-                <Search className={`w-7 h-7 ml-2 transition-colors ${isFocused ? 'text-[#635BFF]' : 'text-zinc-400'}`} />
+                <Search className={`w-7 h-7 ml-2 transition-colors ${isFocused ? 'text-[#FFC82A]' : 'text-zinc-400'}`} />
                 <input 
                   type="text"
                   value={searchQuery}
@@ -172,7 +172,7 @@ export default function UniversalSearchPage() {
                   </button>
                 )}
 
-                <button className="hidden sm:flex items-center gap-2 px-8 py-3.5 bg-[#635BFF] hover:bg-[#5249E5] text-white font-bold rounded-2xl transition-colors shadow-sm shadow-[#635BFF]/20 my-2 mr-1">
+                <button className="hidden sm:flex items-center gap-2 px-8 py-3.5 bg-[#FFC82A] hover:bg-[#E5B426] text-white font-bold rounded-2xl transition-colors shadow-sm shadow-[#FFC82A]/20 my-2 mr-1">
                   Search
                 </button>
               </div>
@@ -188,15 +188,15 @@ export default function UniversalSearchPage() {
                   >
                     <div className="flex items-center gap-6 whitespace-nowrap text-sm font-medium text-zinc-600">
                       <label className="flex items-center gap-2 cursor-pointer group">
-                        <input type="radio" name="searchScope" defaultChecked className="w-4 h-4 text-[#635BFF] focus:ring-[#635BFF] border-zinc-300" />
+                        <input type="radio" name="searchScope" defaultChecked className="w-4 h-4 text-[#FFC82A] focus:ring-[#FFC82A] border-zinc-300" />
                         <span className="group-hover:text-zinc-900 transition-colors">Everything</span>
                       </label>
                       <label className="flex items-center gap-2 cursor-pointer group">
-                        <input type="radio" name="searchScope" className="w-4 h-4 text-[#635BFF] focus:ring-[#635BFF] border-zinc-300" />
+                        <input type="radio" name="searchScope" className="w-4 h-4 text-[#FFC82A] focus:ring-[#FFC82A] border-zinc-300" />
                         <span className="group-hover:text-zinc-900 transition-colors">Organizations Only</span>
                       </label>
                       <label className="flex items-center gap-2 cursor-pointer group">
-                        <input type="radio" name="searchScope" className="w-4 h-4 text-[#635BFF] focus:ring-[#635BFF] border-zinc-300" />
+                        <input type="radio" name="searchScope" className="w-4 h-4 text-[#FFC82A] focus:ring-[#FFC82A] border-zinc-300" />
                         <span className="group-hover:text-zinc-900 transition-colors">Datasets Only</span>
                       </label>
                     </div>
@@ -258,7 +258,7 @@ export default function UniversalSearchPage() {
                       onClick={() => toggleFilter(filter)}
                       className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                         activeFilters.includes(filter) 
-                          ? 'bg-[#635BFF]/10 text-[#635BFF]' 
+                          ? 'bg-[#FFC82A]/10 text-[#FFC82A]' 
                           : 'text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900'
                       }`}
                     >
@@ -275,12 +275,12 @@ export default function UniversalSearchPage() {
                 <div className="space-y-3">
                   {['Education', 'Government', 'Healthcare', 'Corporate', 'Non-Profit'].map(ind => (
                     <label key={ind} className="flex items-center gap-3 cursor-pointer group">
-                      <input type="checkbox" className="w-4 h-4 rounded border-zinc-300 text-[#635BFF] focus:ring-[#635BFF]" />
+                      <input type="checkbox" className="w-4 h-4 rounded border-zinc-300 text-[#FFC82A] focus:ring-[#FFC82A]" />
                       <span className="text-sm font-medium text-zinc-600 group-hover:text-zinc-900">{ind}</span>
                     </label>
                   ))}
                 </div>
-                <button className="text-sm font-bold text-[#635BFF] hover:underline">Show all sectors</button>
+                <button className="text-sm font-bold text-[#FFC82A] hover:underline">Show all sectors</button>
               </div>
             </div>
 
@@ -292,7 +292,7 @@ export default function UniversalSearchPage() {
                 </h2>
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-medium text-zinc-500">Sort by:</span>
-                  <select className="bg-transparent border border-zinc-200 rounded-lg px-3 py-1.5 text-sm font-medium text-zinc-900 outline-none focus:border-[#635BFF]">
+                  <select className="bg-transparent border border-zinc-200 rounded-lg px-3 py-1.5 text-sm font-medium text-zinc-900 outline-none focus:border-[#FFC82A]">
                     <option>Most Relevant</option>
                     <option>Newest First</option>
                     <option>Popularity</option>
@@ -340,7 +340,7 @@ export default function UniversalSearchPage() {
                           {/* Content */}
                           <div className="flex-1 min-w-0">
                             <div className="flex items-start justify-between gap-4 mb-1">
-                              <h3 className="text-lg font-bold text-zinc-900 truncate group-hover:text-[#635BFF] transition-colors flex items-center gap-2">
+                              <h3 className="text-lg font-bold text-zinc-900 truncate group-hover:text-[#FFC82A] transition-colors flex items-center gap-2">
                                 {result.title}
                                 {result.verified && <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />}
                               </h3>

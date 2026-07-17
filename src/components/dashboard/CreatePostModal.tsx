@@ -96,7 +96,7 @@ export function CreatePostModal({ isOpen, onClose }: CreatePostModalProps) {
                 placeholder="What's happening?"
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
-                className="w-full bg-zinc-50 border border-zinc-200 rounded-xl p-4 text-zinc-900 focus:outline-none focus:border-[#635BFF] focus:ring-1 focus:ring-[#635BFF] transition-all resize-none min-h-[120px]"
+                className="w-full bg-zinc-50 border border-zinc-200 rounded-xl p-4 text-zinc-900 focus:outline-none focus:border-[#FFC82A] focus:ring-1 focus:ring-[#FFC82A] transition-all resize-none min-h-[120px]"
               />
 
               <div className="grid grid-cols-2 gap-3">
@@ -105,14 +105,14 @@ export function CreatePostModal({ isOpen, onClose }: CreatePostModalProps) {
                   placeholder="Category (e.g. Announcement)"
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
-                  className="w-full px-4 py-2.5 bg-zinc-50 border border-zinc-200 rounded-xl text-sm text-zinc-900 focus:outline-none focus:border-[#635BFF]"
+                  className="w-full px-4 py-2.5 bg-zinc-50 border border-zinc-200 rounded-xl text-sm text-zinc-900 focus:outline-none focus:border-[#FFC82A]"
                 />
                 <input 
                   type="text" 
                   placeholder="Location (e.g. Headquarters)"
                   value={locationName}
                   onChange={(e) => setLocationName(e.target.value)}
-                  className="w-full px-4 py-2.5 bg-zinc-50 border border-zinc-200 rounded-xl text-sm text-zinc-900 focus:outline-none focus:border-[#635BFF]"
+                  className="w-full px-4 py-2.5 bg-zinc-50 border border-zinc-200 rounded-xl text-sm text-zinc-900 focus:outline-none focus:border-[#FFC82A]"
                 />
               </div>
 
@@ -127,14 +127,14 @@ export function CreatePostModal({ isOpen, onClose }: CreatePostModalProps) {
             <div className="p-5 border-t border-zinc-100 bg-zinc-50 flex items-center justify-between">
               <div>
                 <input type="file" id="postImageUpload" className="hidden" accept="image/*" onChange={(e) => { if(e.target.files && e.target.files[0]) setFile(e.target.files[0]); }} />
-                <label htmlFor="postImageUpload" className="p-2.5 text-[#635BFF] hover:bg-[#635BFF]/10 rounded-xl cursor-pointer transition-colors inline-block">
+                <label htmlFor="postImageUpload" className="p-2.5 text-[#FFC82A] hover:bg-[#FFC82A]/10 rounded-xl cursor-pointer transition-colors inline-block">
                   <ImageIcon className="w-5 h-5" />
                 </label>
               </div>
               <button 
                 onClick={handleSubmit}
                 disabled={isSubmitting}
-                className="flex items-center gap-2 px-6 py-2.5 bg-[#635BFF] hover:bg-[#5249E5] text-white font-bold rounded-xl shadow-md disabled:opacity-50 transition-all"
+                className="flex items-center gap-2 px-6 py-2.5 bg-[#FFC82A] hover:bg-[#E5B426] text-white font-bold rounded-xl shadow-md disabled:opacity-50 transition-all"
               >
                 {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
                 Publish

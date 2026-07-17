@@ -31,7 +31,7 @@ function Field({ label, required, children }: { label: string; required?: boolea
   );
 }
 
-const inputCls = "w-full px-3.5 py-2.5 rounded-xl border border-zinc-200 bg-zinc-50/50 text-sm font-medium text-zinc-900 placeholder:text-zinc-300 outline-none focus:border-[#635BFF] focus:bg-white focus:ring-2 focus:ring-[#635BFF]/10 transition-all";
+const inputCls = "w-full px-3.5 py-2.5 rounded-xl border border-zinc-200 bg-zinc-50/50 text-sm font-medium text-zinc-900 placeholder:text-zinc-300 outline-none focus:border-[#FFC82A] focus:bg-white focus:ring-2 focus:ring-[#FFC82A]/10 transition-all";
 const iconCls = "absolute left-3 top-1/2 -translate-y-1/2 text-zinc-300 pointer-events-none";
 
 export default function EditProfileDrawer({ isOpen, onClose, profile, onSaved }: EditProfileDrawerProps) {
@@ -138,8 +138,8 @@ export default function EditProfileDrawer({ isOpen, onClose, profile, onSaved }:
         {/* ── Header ── */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-zinc-100 shrink-0 bg-white">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-[#635BFF]/10 flex items-center justify-center">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="text-[#635BFF]">
+            <div className="w-8 h-8 rounded-lg bg-[#FFC82A]/10 flex items-center justify-center">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="text-[#FFC82A]">
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
               </svg>
             </div>
@@ -171,7 +171,7 @@ export default function EditProfileDrawer({ isOpen, onClose, profile, onSaved }:
                   </div>
                   <button
                     onClick={() => fileInputRef.current?.click()}
-                    className="absolute -bottom-0.5 -right-0.5 w-6 h-6 rounded-full bg-[#635BFF] text-white flex items-center justify-center shadow-md hover:bg-[#5249E5] transition-colors border-2 border-white"
+                    className="absolute -bottom-0.5 -right-0.5 w-6 h-6 rounded-full bg-[#FFC82A] text-white flex items-center justify-center shadow-md hover:bg-[#E5B426] transition-colors border-2 border-white"
                   >
                     <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round">
                       <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/>
@@ -182,7 +182,7 @@ export default function EditProfileDrawer({ isOpen, onClose, profile, onSaved }:
                 <div className="flex-1">
                   <button
                     onClick={() => fileInputRef.current?.click()}
-                    className="w-full py-2 px-3 border-2 border-dashed border-zinc-200 rounded-xl text-xs font-bold text-zinc-500 hover:border-[#635BFF] hover:text-[#635BFF] transition-all text-center mb-2"
+                    className="w-full py-2 px-3 border-2 border-dashed border-zinc-200 rounded-xl text-xs font-bold text-zinc-500 hover:border-[#FFC82A] hover:text-[#FFC82A] transition-all text-center mb-2"
                   >
                     Upload new photo
                   </button>
@@ -351,7 +351,7 @@ export default function EditProfileDrawer({ isOpen, onClose, profile, onSaved }:
               onClick={handleSave}
               disabled={isSaving || success}
               className={`flex-1 py-2.5 rounded-xl text-sm font-bold text-white transition-all flex items-center justify-center gap-2 shadow-sm ${
-                success ? "bg-emerald-500 shadow-emerald-200" : "bg-[#635BFF] hover:bg-[#5249E5] shadow-[#635BFF]/20"
+                success ? "bg-emerald-500 shadow-emerald-200" : "bg-[#FFC82A] hover:bg-[#E5B426] shadow-[#FFC82A]/20"
               } disabled:opacity-60 disabled:cursor-not-allowed`}
             >
               {success ? (

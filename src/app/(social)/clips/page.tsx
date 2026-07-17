@@ -1,156 +1,265 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import Link from "next/link";
 
-// Mock Video Data
+// Rich Mock Data for Clips
 const MOCK_CLIPS = [
   {
-    id: "c1",
+    id: "clip-1",
     author: "Jane Doe",
     handle: "@janedoe",
-    description: "The sunset in Santorini is unreal! 🌅 #travel #sunset",
-    music: "Original Audio - Jane Doe",
-    likes: "1.2M",
-    comments: "45K",
+    category: "Match Highlights",
+    title: "Unbelievable last minute goal in the finals! ⚽🔥",
+    likes: "124K",
+    comments: "4.2K",
     shares: "12K",
-    bgColor: "bg-slate-900", // placeholder for video background
+    thumbnail: "https://picsum.photos/seed/sports/800/1200",
+    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
   },
   {
-    id: "c2",
+    id: "clip-2",
     author: "Tech Insider",
     handle: "@techinsider",
-    description: "Unboxing the new quantum smartphone. This thing is fast! 📱⚡",
-    music: "Tech Beats 2026 - Creator",
-    likes: "800K",
-    comments: "12K",
+    category: "Tech",
+    title: "Is the new Quantum Phone actually worth it? Hands-on review. 📱✨",
+    likes: "89K",
+    comments: "1.2K",
     shares: "5K",
-    bgColor: "bg-zinc-900",
+    thumbnail: "https://picsum.photos/seed/tech/800/1200",
+    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
   },
   {
-    id: "c3",
+    id: "clip-3",
+    author: "E-Sports Daily",
+    handle: "@esports",
+    category: "Gaming",
+    title: "Insane 1v5 clutch in the CS:GO Majors! Must watch. 🎮",
+    likes: "310K",
+    comments: "15K",
+    shares: "45K",
+    thumbnail: "https://picsum.photos/seed/gaming/800/1200",
+    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4",
+  },
+  {
+    id: "clip-4",
     author: "Chef Mike",
     handle: "@chefmike",
-    description: "The secret to the perfect carbonara 🍝 Wait for the egg drop!",
-    music: "Italian Cafe Music - Acoustic",
-    likes: "2.5M",
-    comments: "88K",
-    shares: "200K",
-    bgColor: "bg-stone-900",
+    category: "Food",
+    title: "The secret to the perfect carbonara 🍝 Wait for the egg drop!",
+    likes: "250K",
+    comments: "8.9K",
+    shares: "32K",
+    thumbnail: "https://picsum.photos/seed/food/800/1200",
+    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4",
+  },
+  {
+    id: "clip-5",
+    author: "Alexey Navolokin",
+    handle: "@alexey",
+    category: "Predictions",
+    title: "My prediction for the US Open finals. Don't miss this pick 🎾",
+    likes: "54K",
+    comments: "800",
+    shares: "1.2K",
+    thumbnail: "https://picsum.photos/seed/tennis/800/1200",
+    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
   }
 ];
 
-export default function ClipsPage() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [activeIndex, setActiveIndex] = useState(0);
+export default function ClipsDiscoveryPage() {
+  const [activeMenuId, setActiveMenuId] = useState<string | null>(null);
+  const [activeCategory, setActiveCategory] = useState("All");
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-  // Handle scroll snapping detection
+  const categories = ["All", "Match Highlights", "Predictions", "Tech", "Complaints", "Gaming", "Food"];
+
+  const filteredClips = activeCategory === "All" 
+    ? MOCK_CLIPS 
+    : MOCK_CLIPS.filter(c => c.category === activeCategory);
+
   useEffect(() => {
-    const handleScroll = () => {
-      if (containerRef.current) {
-        const index = Math.round(containerRef.current.scrollTop / containerRef.current.clientHeight);
-        setActiveIndex(index);
+    const handleClickOutside = (e: MouseEvent) => {
+      if (!(e.target as Element).closest('.more-options-menu')) {
+        setActiveMenuId(null);
       }
     };
-    
-    const container = containerRef.current;
-    if (container) {
-      container.addEventListener("scroll", handleScroll);
-      return () => container.removeEventListener("scroll", handleScroll);
-    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const scrollUp = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({ top: -700, behavior: 'smooth' });
+    }
+  };
+
+  const scrollDown = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({ top: 700, behavior: 'smooth' });
+    }
+  };
+
   return (
-    <div className="flex-1 w-full h-[calc(100vh-80px)] md:h-screen bg-black overflow-hidden relative">
+    <div className="flex-1 w-full h-[calc(100vh-80px)] md:h-screen bg-zinc-50/50 flex flex-col items-center overflow-hidden animate-in fade-in duration-300 relative">
       
-      {/* Floating Header */}
-      <div className="absolute top-6 left-0 w-full z-20 flex justify-center gap-6 text-white/80 font-bold text-lg drop-shadow-md">
-        <button className="hover:text-white transition-colors">Following</button>
-        <div className="w-1 h-1 bg-white/50 rounded-full mt-3"></div>
-        <button className="text-white border-b-2 border-white pb-1">For You</button>
+      {/* Header - Light Mode styled */}
+      <div className="w-full max-w-[1200px] mx-auto px-4 md:px-8 py-6 shrink-0 z-10 bg-zinc-50/95 backdrop-blur-md border-b border-zinc-200/50">
+        <h1 className="text-3xl font-extrabold text-foreground tracking-tight">Clips Discovery</h1>
+        <p className="text-muted-foreground mt-1 text-sm md:text-base mb-6">
+          Explore short-form updates, reactions, and highlights from the community.
+        </p>
+        
+        {/* Category Filters */}
+        <div className="flex gap-2 overflow-x-auto pb-2 hide-scrollbar max-w-full snap-x -mx-4 px-4 md:mx-0 md:px-0">
+          {categories.map(cat => (
+            <button
+              key={cat}
+              onClick={() => setActiveCategory(cat)}
+              className={`px-4 py-2 rounded-full text-sm font-bold whitespace-nowrap transition-all shrink-0 snap-start ${
+                activeCategory === cat 
+                  ? "bg-black text-white shadow-md" 
+                  : "bg-white text-zinc-600 border border-zinc-200 hover:border-zinc-300 shadow-sm"
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
       </div>
 
-      {/* Vertical Scroll Container */}
+      {/* Floating Scroll Navigation Arrows (Desktop) */}
+      <div className="hidden md:flex absolute right-10 top-1/2 -translate-y-1/2 flex-col gap-4 z-20">
+        <button 
+          onClick={scrollUp}
+          className="w-12 h-12 bg-white rounded-full shadow-lg border border-zinc-200 flex items-center justify-center text-zinc-600 hover:text-black hover:bg-zinc-50 hover:scale-105 transition-all"
+          title="Scroll Up"
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+        </button>
+        <button 
+          onClick={scrollDown}
+          className="w-12 h-12 bg-white rounded-full shadow-lg border border-zinc-200 flex items-center justify-center text-zinc-600 hover:text-black hover:bg-zinc-50 hover:scale-105 transition-all"
+          title="Scroll Down"
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </button>
+      </div>
+
+      {/* Feed Container */}
       <div 
-        ref={containerRef}
-        className="w-full h-full overflow-y-scroll snap-y snap-mandatory hide-scrollbar relative"
-        style={{ scrollBehavior: 'smooth' }}
+        ref={scrollContainerRef}
+        className="w-full h-full overflow-y-auto snap-y snap-mandatory hide-scrollbar flex flex-col items-center pt-8 pb-32 scroll-smooth"
       >
-        {MOCK_CLIPS.map((clip, index) => (
-          <div key={clip.id} className="w-full h-full snap-start relative flex items-center justify-center bg-black">
-            
-            {/* Mock Video Container */}
-            <div className={`w-full max-w-[450px] h-full sm:h-[90%] sm:rounded-2xl ${clip.bgColor} relative overflow-hidden flex items-center justify-center group`}>
-               
-               {/* Play placeholder icon (appears briefly or when paused, simplified for mockup) */}
-               <div className="w-20 h-20 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
-                 <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor" className="text-white ml-2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-               </div>
-
-               {/* Right Side Actions */}
-               <div className="absolute right-4 bottom-24 flex flex-col items-center gap-6 z-10">
-                 {/* Profile */}
-                 <div className="w-12 h-12 rounded-full border-2 border-white bg-zinc-800 flex items-center justify-center text-white font-bold mb-2 cursor-pointer hover:scale-110 transition-transform relative">
-                   {clip.author.charAt(0)}
-                   <div className="absolute -bottom-2 bg-primary rounded-full w-5 h-5 flex items-center justify-center">
-                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                   </div>
-                 </div>
-
-                 {/* Like */}
-                 <button className="flex flex-col items-center gap-1 group">
-                   <div className="p-3 bg-black/20 rounded-full backdrop-blur-sm group-hover:bg-black/40 transition-colors">
-                     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-                   </div>
-                   <span className="text-white text-xs font-bold drop-shadow-md">{clip.likes}</span>
-                 </button>
-
-                 {/* Comment */}
-                 <button className="flex flex-col items-center gap-1 group">
-                   <div className="p-3 bg-black/20 rounded-full backdrop-blur-sm group-hover:bg-black/40 transition-colors">
-                     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-                   </div>
-                   <span className="text-white text-xs font-bold drop-shadow-md">{clip.comments}</span>
-                 </button>
-
-                 {/* Share */}
-                 <button className="flex flex-col items-center gap-1 group">
-                   <div className="p-3 bg-black/20 rounded-full backdrop-blur-sm group-hover:bg-black/40 transition-colors">
-                     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
-                   </div>
-                   <span className="text-white text-xs font-bold drop-shadow-md">{clip.shares}</span>
-                 </button>
-               </div>
-
-               {/* Bottom Info */}
-               <div className="absolute left-4 bottom-6 right-20 z-10 text-white">
-                 <h3 className="font-bold text-lg drop-shadow-md">{clip.author} <span className="font-normal text-sm opacity-80">{clip.handle}</span></h3>
-                 <p className="text-sm mt-2 mb-3 drop-shadow-md line-clamp-2">{clip.description}</p>
-                 
-                 <div className="flex items-center gap-2 text-sm font-semibold opacity-90">
-                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="animate-[spin_4s_linear_infinite]"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
-                   <span className="truncate">{clip.music}</span>
-                 </div>
-               </div>
-
-               {/* Active state overlay (simulating video progress) */}
-               {activeIndex === index && (
-                 <div className="absolute bottom-0 left-0 h-1 bg-white/20 w-full">
-                   <div className="h-full bg-white/80 animate-[progress_15s_linear] w-[0%]" style={{ animationFillMode: 'forwards' }}></div>
-                 </div>
-               )}
-
-            </div>
+        {filteredClips.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-20 text-center text-zinc-500">
+             <h3 className="text-lg font-bold">No clips found</h3>
           </div>
-        ))}
+        ) : (
+          filteredClips.map((clip) => (
+            <div 
+              key={clip.id} 
+              className="w-full max-w-[450px] h-[calc(100vh-200px)] min-h-[500px] max-h-[850px] snap-center shrink-0 mb-8 relative rounded-[2rem] overflow-hidden shadow-2xl border border-zinc-200 bg-black group"
+            >
+              
+              {/* Auto-playing Video with Poster Fallback */}
+              <video 
+                src={clip.videoUrl}
+                poster={clip.thumbnail}
+                autoPlay loop muted playsInline
+                className="absolute inset-0 w-full h-full object-cover"
+              />
+
+              {/* Unique Glassmorphism Top Bar */}
+              <div className="absolute top-4 left-4 right-4 flex justify-between items-center z-10">
+                <span className="px-4 py-2 bg-black/40 backdrop-blur-xl border border-white/10 text-white text-[11px] font-black uppercase tracking-widest rounded-full shadow-lg">
+                  {clip.category}
+                </span>
+                
+                {/* Status Indicator */}
+                <div className="flex items-center gap-2 bg-black/40 backdrop-blur-xl border border-white/10 px-3 py-1.5 rounded-full">
+                  <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                  <span className="text-white text-[10px] font-bold tracking-widest uppercase">Playing</span>
+                </div>
+              </div>
+
+              {/* Unique Glassmorphism Bottom Panel */}
+              <div className="absolute bottom-4 left-4 right-[80px] bg-black/20 backdrop-blur-xl border border-white/20 p-4 rounded-2xl shadow-xl z-10 flex flex-col gap-2">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#00a896] to-[#FFC82A] text-white flex items-center justify-center font-bold text-sm shrink-0 border border-white/30 shadow-md">
+                    {clip.author.charAt(0)}
+                  </div>
+                  <div className="flex flex-col">
+                    <h3 className="text-[14px] font-bold text-white hover:text-white/80 cursor-pointer transition-colors leading-tight">{clip.author}</h3>
+                    <p className="text-[11px] text-white/70 font-semibold">{clip.handle}</p>
+                  </div>
+                  <button className="ml-auto px-3 py-1 bg-white text-black text-xs font-bold rounded-full hover:bg-zinc-200 transition-colors">
+                    Follow
+                  </button>
+                </div>
+                
+                <p className="text-sm text-white/90 font-medium leading-snug drop-shadow-md">
+                  {clip.title}
+                </p>
+                
+                <div className="flex items-center gap-2 text-white/80 text-[10px] font-bold uppercase tracking-wider mt-1">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+                  <span>Original Audio</span>
+                </div>
+              </div>
+
+              {/* Right Side Vertical Action Bar (Glassmorphism Pill) */}
+              <div className="absolute bottom-4 right-4 bg-black/20 backdrop-blur-xl border border-white/20 rounded-[2rem] py-4 px-2 flex flex-col items-center gap-5 z-10 shadow-xl">
+                
+                <button className="flex flex-col items-center gap-1 group/btn">
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center text-white hover:bg-white/20 transition-colors">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="group-hover/btn:fill-red-500 group-hover/btn:stroke-red-500 transition-all"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                  </div>
+                  <span className="text-[10px] font-bold text-white/90">{clip.likes}</span>
+                </button>
+
+                <button className="flex flex-col items-center gap-1 group/btn">
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center text-white hover:bg-white/20 transition-colors">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="group-hover/btn:fill-[#00a896] group-hover/btn:stroke-[#00a896] transition-all"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                  </div>
+                  <span className="text-[10px] font-bold text-white/90">{clip.comments}</span>
+                </button>
+
+                <button className="flex flex-col items-center gap-1 group/btn">
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center text-white hover:bg-white/20 transition-colors">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="group-hover/btn:stroke-[#FFC82A] transition-all"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                  </div>
+                  <span className="text-[10px] font-bold text-white/90">{clip.shares}</span>
+                </button>
+
+                {/* More Options */}
+                <div className="relative more-options-menu mt-2 pt-2 border-t border-white/30">
+                  <button 
+                    onClick={() => setActiveMenuId(activeMenuId === clip.id ? null : clip.id)}
+                    className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${activeMenuId === clip.id ? 'bg-white text-black' : 'text-white hover:bg-white/20'}`}
+                  >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><circle cx="12" cy="12" r="1.5"></circle><circle cx="12" cy="5" r="1.5"></circle><circle cx="12" cy="19" r="1.5"></circle></svg>
+                  </button>
+
+                  {/* Popover Menu inside the card */}
+                  {activeMenuId === clip.id && (
+                    <div className="absolute bottom-0 right-14 w-[240px] bg-white/95 backdrop-blur-2xl rounded-2xl shadow-2xl border border-zinc-200 py-2 z-50 animate-in fade-in zoom-in-95 duration-200">
+                      <button className="w-full flex items-center px-4 py-3 hover:bg-red-50 text-sm font-bold text-red-600 transition-colors text-left border-b border-zinc-100">Report</button>
+                      <button className="w-full flex items-center px-4 py-3 hover:bg-zinc-50 text-sm font-semibold text-zinc-900 transition-colors text-left">Go to Post</button>
+                      <button className="w-full flex items-center px-4 py-3 hover:bg-zinc-50 text-sm font-semibold text-zinc-900 transition-colors text-left">Share to</button>
+                      <button className="w-full flex items-center px-4 py-3 hover:bg-zinc-50 text-sm font-semibold text-zinc-900 transition-colors text-left border-b border-zinc-100">Copy link</button>
+                      <button className="w-full flex items-center px-4 py-3 hover:bg-zinc-50 text-sm font-semibold text-zinc-900 transition-colors text-left">Embed</button>
+                      <button className="w-full flex items-center px-4 py-3 hover:bg-zinc-50 text-sm font-semibold text-zinc-900 transition-colors text-left">About this account</button>
+                      <button className="w-full flex items-center px-4 py-3 hover:bg-zinc-50 text-sm font-semibold text-zinc-900 transition-colors text-left">About This Clip</button>
+                    </div>
+                  )}
+                </div>
+              </div>
+              
+            </div>
+          ))
+        )}
       </div>
-      
-      {/* Global Styles for Animations */}
-      <style dangerouslySetInnerHTML={{__html: `
-        @keyframes progress {
-          from { width: 0%; }
-          to { width: 100%; }
-        }
-      `}} />
     </div>
   );
 }

@@ -205,14 +205,14 @@ export default function LeftSidebar() {
       <aside
         className={`sticky top-0 hidden md:flex flex-col h-screen z-40 transition-all duration-300 shrink-0
           ${isExpanded ? "w-[268px]" : "w-[76px]"}
-          bg-white border-r border-zinc-100 shadow-[1px_0_0_0_#f4f4f5]`}
+          bg-[#FFC82A]/10 border-r border-[#FFC82A]/20 shadow-[1px_0_0_0_#f4f4f5]`}
       >
         {/* ── Brand ─────────────────────────────────────────────────── */}
         <div className={`flex items-center h-[72px] shrink-0 border-b border-zinc-100 relative
           ${isExpanded ? "px-5" : "justify-center px-3"}`}>
           <Link href="/" className="flex items-center gap-3 group min-w-0">
             {/* Logo mark */}
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#F97316] to-[#fdba74] flex items-center justify-center shadow-lg shadow-primary/25 shrink-0 group-hover:scale-105 transition-transform duration-200">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#00a896] to-[#FFC82A] flex items-center justify-center shadow-lg shadow-[#00a896]/25 shrink-0 group-hover:scale-105 transition-transform duration-200">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round">
                 <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
               </svg>
@@ -220,10 +220,7 @@ export default function LeftSidebar() {
             {isExpanded && (
               <div className="overflow-hidden">
                 <span className="text-[17px] font-black tracking-tight text-zinc-900 whitespace-nowrap block leading-tight">
-                  ResultHub
-                </span>
-                <span className="text-[10px] font-semibold text-zinc-400 tracking-widest uppercase whitespace-nowrap block">
-                  Public Data
+                  BillionsWord
                 </span>
               </div>
             )}
@@ -249,9 +246,9 @@ export default function LeftSidebar() {
         <div className={`px-3 pt-4 pb-2 ${!isExpanded && "flex justify-center"}`}>
           <button
             onClick={() => setIsPostModalOpen(true)}
-            className={`group relative overflow-hidden font-bold text-white rounded-xl
-              bg-gradient-to-r from-[#F97316] to-[#fdba74]
-              shadow-lg shadow-primary/20 hover:shadow-primary/40
+            className={`group relative overflow-hidden font-bold text-[#FAFAF7] rounded-xl
+              bg-black
+              shadow-lg shadow-black/20 hover:shadow-black/40
               transition-all duration-200 active:scale-95 hover:scale-[1.02]
               ${isExpanded
                 ? "w-full flex items-center gap-3 px-4 py-3"
@@ -294,20 +291,17 @@ export default function LeftSidebar() {
                       className={`relative flex items-center gap-3.5 rounded-xl transition-all duration-150
                         ${isExpanded ? "px-3 py-2.5" : "justify-center px-0 py-2.5"}
                         ${active
-                          ? "bg-primary/8 text-primary font-bold"
-                          : "text-zinc-500 hover:bg-zinc-50 hover:text-zinc-900 font-semibold"
+                          ? "bg-transparent text-zinc-950 font-black"
+                          : "text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 font-semibold"
                         }`}
                     >
-                      {/* Active left bar */}
-                      {active && (
-                        <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 bg-primary rounded-r-full" />
-                      )}
+                      {/* Active left bar (Removed) */}
 
                       {/* Icon container */}
                       <div className={`flex items-center justify-center w-8 h-8 rounded-lg shrink-0 transition-all duration-150
                         ${active
-                          ? "bg-primary/12 text-primary"
-                          : "text-zinc-400 group-hover:bg-zinc-100 group-hover:text-zinc-700"
+                          ? "bg-transparent text-zinc-950"
+                          : "text-zinc-400 group-hover:bg-zinc-200/50 group-hover:text-zinc-700"
                         }`}>
                         {link.icon}
                       </div>
@@ -430,9 +424,9 @@ export default function LeftSidebar() {
 
               <Link
                 href="/login"
-                className={`flex items-center gap-3 rounded-xl font-bold text-white
-                  bg-gradient-to-r from-[#F97316] to-[#fdba74] shadow-md shadow-primary/20
-                  hover:shadow-primary/40 transition-all active:scale-95 p-2.5
+                className={`flex items-center gap-3 rounded-xl font-bold text-[#FAFAF7]
+                  bg-black shadow-md shadow-black/10
+                  hover:shadow-black/40 transition-all active:scale-95 p-2.5
                   ${isExpanded ? "justify-start px-4" : "justify-center w-12 h-12"}`}
               >
                 <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">

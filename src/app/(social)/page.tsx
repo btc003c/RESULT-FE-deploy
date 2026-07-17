@@ -161,89 +161,55 @@ export default function HomeFeedPage() {
       {/* Center Feed */}
       <div className="flex-1 min-w-0 transition-all duration-300">
           
-          {/* Live Events (Story Balls) */}
+          {/* Top Story Balls (Flashes and Matches) */}
           <div className="pt-4 mb-6">
-            <h2 className="text-sm font-bold text-foreground mb-3 px-1">Live Matches and Updates Results</h2>
-            <div className="flex gap-4 overflow-x-auto pb-2 hide-scrollbar items-center">
-              {liveStories.map(story => (
-              <div key={story.id} onClick={() => story.href ? router.push(story.href) : null} className="flex flex-col items-center gap-1.5 cursor-pointer shrink-0 transition-transform active:scale-95 group/story relative">
-                <div className="relative rounded-full p-[3px]">
-                  {/* Rotating gradient background on hover */}
-                  <div className={`absolute inset-0 rounded-full transition-all duration-500 ease-in-out ${story.hasUnread ? (story.avatarText === '🏏' ? 'bg-gradient-to-tr from-emerald-400 via-emerald-500 to-teal-400' : 'bg-gradient-to-tr from-primary via-secondary to-accent') : 'bg-muted'} group-hover/story:animate-[spin_3s_linear_infinite]`}></div>
-                  
-                  {/* Inner content */}
-                  <div className={`relative z-10 w-14 h-14 rounded-full border-[3px] border-background flex items-center justify-center font-black text-lg ${story.bgColor || 'bg-zinc-100'} text-zinc-600`}>
-                    {story.avatarText || (story.title || "U").substring(0, 2).toUpperCase()}
-                  </div>
-                  
-                  {/* LIVE pill */}
-                  {story.avatarText === '🏏' && (
-                    <div className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 z-20 bg-red-500 text-white text-[8px] font-black tracking-widest px-1.5 py-0.5 rounded-full border-2 border-background shadow-sm">
-                      LIVE
+            <div className="flex gap-4 overflow-x-auto pb-2 hide-scrollbar items-center px-1">
+              
+              {/* Full Line of Flashes & Live Stories */}
+              {[
+                { id: 'f1', type: 'flash', title: 'Sports Daily', img: 'https://loremflickr.com/150/150/sports' },
+                { id: 'l1', type: 'live', title: 'IND v AUS', img: 'https://loremflickr.com/150/150/cricket' },
+                { id: 'f2', type: 'flash', title: 'EduTech Hub', img: 'https://loremflickr.com/150/150/education' },
+                { id: 'l2', type: 'live', title: 'Election 26', img: 'https://loremflickr.com/150/150/election' },
+                { id: 'f3', type: 'flash', title: 'Jane Doe', img: 'https://loremflickr.com/150/150/woman' },
+                { id: 'f4', type: 'flash', title: 'E-Sports', img: 'https://loremflickr.com/150/150/gaming' },
+                { id: 'l3', type: 'live', title: 'RMA v BAR', img: 'https://loremflickr.com/150/150/soccer' },
+                { id: 'f5', type: 'flash', title: 'News Now', img: 'https://loremflickr.com/150/150/news' },
+                { id: 'f6', type: 'flash', title: 'Tech Talk', img: 'https://loremflickr.com/150/150/technology' },
+                { id: 'l4', type: 'live', title: 'Campus News', img: 'https://loremflickr.com/150/150/campus' },
+                { id: 'f7', type: 'flash', title: 'Market Wrap', img: 'https://loremflickr.com/150/150/finance' },
+                { id: 'f8', type: 'flash', title: 'Creator', img: 'https://loremflickr.com/150/150/youtube' },
+              ].map(story => (
+                <div key={story.id} className="flex flex-col items-center gap-1.5 cursor-pointer shrink-0 transition-transform active:scale-95 group/story relative">
+                  <div className="relative rounded-full p-[3px]">
+                    
+                    {/* Ring Logic */}
+                    {story.type === 'flash' ? (
+                      <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-[#FFC82A] to-[#00A896] shadow-inner"></div>
+                    ) : (
+                      <div className="absolute inset-0 rounded-full bg-red-600 shadow-inner"></div>
+                    )}
+                    
+                    <div className="relative z-10 w-14 h-14 rounded-full border-[3px] border-background overflow-hidden flex items-center justify-center bg-zinc-100">
+                      <img src={story.img} alt={story.title} className="w-full h-full object-cover" />
                     </div>
-                  )}
+
+                    {/* Live Pill */}
+                    {story.type === 'live' && (
+                      <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 z-20 bg-red-600 text-white text-[8px] font-black tracking-widest px-1.5 py-[2px] rounded-full border-2 border-background shadow-sm">
+                        LIVE
+                      </div>
+                    )}
+                  </div>
+                  <span className="text-[11px] font-bold text-foreground/80 truncate max-w-[64px] text-center">{story.title}</span>
                 </div>
-                <span className="text-[11px] font-bold text-foreground/80 truncate max-w-[64px] text-center">{story.title}</span>
-              </div>
-            ))}
-            {liveStories.length === 0 && !isLoading && (
-              <div className="text-sm font-medium text-muted-foreground ml-2">No active live events right now.</div>
-            )}
+              ))}
+
+
+
             </div>
           </div>
           
-          {/* Create Post Input */}
-          <div className="bg-background rounded-2xl shadow-sm border border-muted p-4 mb-6">
-            <div className="flex gap-4 items-center">
-              <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold shrink-0">
-                A
-              </div>
-              <div 
-                onClick={() => openCreateModal("UPDATE")}
-                className="flex-1 bg-muted/50 rounded-full px-4 py-3 cursor-text hover:bg-muted transition-colors"
-              >
-                 <span className="text-muted-foreground font-medium text-sm">What's on your mind?</span>
-              </div>
-            </div>
-            <div className="flex gap-2 mt-4 ml-14 border-t border-muted/50 pt-3 flex-wrap">
-               <button 
-                 onClick={() => openCreateModal("UPDATE")}
-                 className="flex items-center gap-2 text-foreground/80 font-semibold text-sm hover:bg-primary/5 px-3 py-1.5 rounded-lg transition-colors group"
-               >
-                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-500 group-hover:scale-110 transition-transform"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                 Post
-               </button>
-               <button 
-                 onClick={() => openCreateModal("CLIPS" as any)}
-                 className="flex items-center gap-2 text-foreground/80 font-semibold text-sm hover:bg-primary/5 px-3 py-1.5 rounded-lg transition-colors group"
-               >
-                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-red-500 group-hover:scale-110 transition-transform"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
-                 Clips
-               </button>
-               <button 
-                 onClick={() => openCreateModal("POLL")}
-                 className="flex items-center gap-2 text-foreground/80 font-semibold text-sm hover:bg-primary/5 px-3 py-1.5 rounded-lg transition-colors group"
-               >
-                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-amber-500 group-hover:scale-110 transition-transform"><path d="M18 4h3v16h-3z"/><path d="M11 9h3v11h-3z"/><path d="M4 14h3v6H4z"/></svg>
-                 Poll
-               </button>
-               <button 
-                 onClick={() => openCreateModal("LIVE" as any)}
-                 className="flex items-center gap-2 text-foreground/80 font-semibold text-sm hover:bg-primary/5 px-3 py-1.5 rounded-lg transition-colors group"
-               >
-                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-emerald-500 group-hover:scale-110 transition-transform"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
-                 Live
-               </button>
-               <button 
-                 onClick={() => openCreateModal("FLASH" as any)}
-                 className="flex items-center gap-2 text-foreground/80 font-semibold text-sm hover:bg-primary/5 px-3 py-1.5 rounded-lg transition-colors group"
-               >
-                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-purple-500 group-hover:scale-110 transition-transform"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-                 Flash
-               </button>
-            </div>
-          </div>
-
           {/* Feed Posts */}
           <div className="space-y-4 mb-12">
             {isLoading && !isLoadingMore ? (

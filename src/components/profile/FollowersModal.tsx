@@ -60,7 +60,7 @@ function UserRow({ user, onFollowChange }: { user: FollowUser; onFollowChange: (
 
       <div className="flex-1 min-w-0">
         <Link href={`/profile/${user.id}`}>
-          <p className="text-sm font-bold text-zinc-900 truncate group-hover:text-[#635BFF] transition-colors">{user.name}</p>
+          <p className="text-sm font-bold text-zinc-900 truncate group-hover:text-[#FFC82A] transition-colors">{user.name}</p>
         </Link>
         {user.bio && <p className="text-xs text-zinc-500 truncate mt-0.5">{user.bio}</p>}
       </div>
@@ -71,7 +71,7 @@ function UserRow({ user, onFollowChange }: { user: FollowUser; onFollowChange: (
         className={`shrink-0 px-4 py-1.5 rounded-full text-xs font-bold transition-all border ${
           isFollowing
             ? "border-zinc-200 text-zinc-600 hover:border-red-200 hover:text-red-500 hover:bg-red-50"
-            : "bg-[#635BFF] text-white border-[#635BFF] hover:bg-[#5249E5]"
+            : "bg-[#FFC82A] text-white border-[#FFC82A] hover:bg-[#E5B426]"
         } disabled:opacity-50`}
       >
         {isLoading ? "..." : isFollowing ? "Following" : "Follow"}
