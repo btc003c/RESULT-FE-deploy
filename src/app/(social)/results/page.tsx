@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { api } from "@/lib/api";
 import { motion } from "framer-motion";
 import { 
@@ -17,6 +17,20 @@ export default function ExplorePage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [createAccessType, setCreateAccessType] = useState('OPEN');
+  const featuredScrollRef = useRef<HTMLDivElement>(null);
+  const liveScrollRef = useRef<HTMLDivElement>(null);
+
+  const scrollFeatured = (dir: 'left' | 'right') => {
+    if (featuredScrollRef.current) {
+      featuredScrollRef.current.scrollBy({ left: dir === 'left' ? -360 : 360, behavior: 'smooth' });
+    }
+  };
+
+  const scrollLive = (dir: 'left' | 'right') => {
+    if (liveScrollRef.current) {
+      liveScrollRef.current.scrollBy({ left: dir === 'left' ? -300 : 300, behavior: 'smooth' });
+    }
+  };
 
   useEffect(() => {
     fetchData();
@@ -112,28 +126,28 @@ export default function ExplorePage() {
             </div>
           </div>
           {/* Action Area: Create Card & Search (Based on Sketch) */}
-          <div className="flex flex-col lg:flex-row gap-6 w-full max-w-5xl items-center">
+          <div className="flex flex-col lg:flex-row gap-4 w-full max-w-5xl items-center">
             
-            {/* Left: Create Result Card */}
-            <div className="bg-white border-2 border-zinc-200 rounded-[2rem] p-5 flex flex-col justify-center gap-5 shadow-sm flex-[3] min-w-[280px] w-full">
+            {/* Left: Create Result Strip */}
+            <div className="bg-white border-2 border-zinc-200 rounded-full h-[64px] p-2 flex items-center shadow-sm w-full lg:flex-[1.2] min-w-0">
               
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-[#FFC82A]/10 flex items-center justify-center text-[#FFC82A] font-bold shrink-0">
+              <div className="hidden sm:flex items-center gap-2 px-3 border-r border-zinc-200 shrink-0">
+                <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center text-white font-bold text-xs shrink-0 shadow-md">
                   R
                 </div>
-                <h3 className="text-zinc-800 font-bold text-sm tracking-tight">Create Result</h3>
+                <h3 className="text-zinc-800 font-black text-[13px] uppercase tracking-wider whitespace-nowrap">Create Result</h3>
               </div>
 
-              <div className="flex gap-2">
+              <div className="flex gap-2 pl-0 sm:pl-3 w-full">
                 <button 
                   onClick={() => { setCreateAccessType('OPEN'); setIsCreateModalOpen(true); }}
-                  className="flex-1 px-4 py-3 text-sm font-bold rounded-xl transition-colors bg-emerald-50 text-emerald-600 border border-emerald-100 hover:bg-emerald-100 shadow-sm"
+                  className="flex-1 h-[44px] px-3 lg:px-4 text-[11px] sm:text-xs font-bold rounded-full transition-colors bg-emerald-50 text-emerald-600 border border-emerald-100 hover:bg-emerald-100 shadow-sm whitespace-nowrap"
                 >
                   Open Result
                 </button>
                 <button 
                   onClick={() => { setCreateAccessType('CLOSED'); setIsCreateModalOpen(true); }}
-                  className="flex-1 px-4 py-3 text-sm font-bold rounded-xl transition-colors bg-red-50 text-red-600 border border-red-100 hover:bg-red-100 shadow-sm"
+                  className="flex-1 h-[44px] px-3 lg:px-4 text-[11px] sm:text-xs font-bold rounded-full transition-colors bg-red-50 text-red-600 border border-red-100 hover:bg-red-100 shadow-sm whitespace-nowrap"
                 >
                   Closed Result
                 </button>
@@ -141,7 +155,7 @@ export default function ExplorePage() {
             </div>
 
             {/* Right: Search Bar */}
-            <div className="flex-[2.5] min-w-[280px] w-full flex items-center">
+            <div className="w-full lg:flex-[1.5] flex items-center min-w-0">
               <div className="relative w-full">
                 <input 
                   type="text" 
@@ -206,17 +220,48 @@ export default function ExplorePage() {
 
       <div className="max-w-7xl mx-auto w-full px-6 lg:px-12 py-10 space-y-16">
         
-        {/* Featured Carousel */}
-        <section>
-          <div className="flex gap-4 overflow-x-auto hide-scrollbar pb-6 snap-x">
+        {/* Featured Trending Carousel */}
+        <section className="relative">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-black tracking-tight text-zinc-950 flex items-center gap-2">
+              <TrendingUp className="w-6 h-6 text-orange-500" />
+              Trending Today
+            </h2>
+            <div className="flex items-center gap-2 hidden sm:flex">
+              <button onClick={() => scrollFeatured('left')} className="w-9 h-9 rounded-full bg-white border border-zinc-200 flex items-center justify-center hover:bg-zinc-50 hover:border-zinc-300 transition-all text-zinc-500 hover:text-zinc-900 shadow-sm">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+              </button>
+              <button onClick={() => scrollFeatured('right')} className="w-9 h-9 rounded-full bg-white border border-zinc-200 flex items-center justify-center hover:bg-zinc-50 hover:border-zinc-300 transition-all text-zinc-500 hover:text-zinc-900 shadow-sm">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div ref={featuredScrollRef} className="flex gap-4 overflow-x-auto hide-scrollbar pb-6 snap-x pt-2 px-1 -mx-1">
             
-            {/* Featured Dynamic */}
-            <Link href="/results/sports/cricket" className="snap-start shrink-0 w-[300px] sm:w-[340px] h-[180px] rounded-3xl bg-gradient-to-br from-emerald-500 to-emerald-700 border border-emerald-400/30 p-6 flex flex-col justify-between group overflow-hidden relative shadow-lg hover:shadow-xl transition-all hover:-translate-y-1">
+            {/* Sensational Result 1 */}
+            <Link href="/search?category=TECH" className="snap-start shrink-0 w-[300px] sm:w-[340px] h-[180px] rounded-3xl bg-gradient-to-br from-rose-500 to-red-700 border border-red-400/30 p-6 flex flex-col justify-between group overflow-hidden relative shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_8px_30px_rgb(225,29,72,0.3)] transition-all hover:-translate-y-1">
+              <div className="absolute -right-10 -bottom-10 opacity-20 text-9xl">💻</div>
+              <div>
+                <span className="text-[10px] font-black uppercase tracking-widest text-red-950 bg-white/30 px-2 py-1 rounded-full backdrop-blur-sm shadow-sm flex items-center gap-1.5 w-fit">
+                  <span className="w-1.5 h-1.5 rounded-full bg-red-950 animate-pulse"></span> SENSATIONAL TODAY
+                </span>
+                <h3 className="text-xl font-black text-white mt-4 leading-tight group-hover:text-rose-50 transition-colors">
+                  Global IT Outage Resolved Worldwide
+                </h3>
+              </div>
+              <div className="flex items-center gap-2 text-rose-50 font-bold text-sm bg-black/10 w-fit px-3 py-1.5 rounded-full backdrop-blur-sm">
+                View Coverage <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </Link>
+
+            {/* Cricket Live */}
+            <Link href="/results/sports/cricket" className="snap-start shrink-0 w-[300px] sm:w-[340px] h-[180px] rounded-3xl bg-gradient-to-br from-emerald-500 to-emerald-700 border border-emerald-400/30 p-6 flex flex-col justify-between group overflow-hidden relative shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_8px_30px_rgb(16,185,129,0.3)] transition-all hover:-translate-y-1">
               <div className="absolute -right-10 -bottom-10 opacity-20 text-9xl">🏏</div>
               <div>
                 <span className="text-[10px] font-black uppercase tracking-widest text-emerald-950 bg-white/30 px-2 py-1 rounded-full backdrop-blur-sm shadow-sm">LIVE CRICKET</span>
                 <h3 className="text-xl font-black text-white mt-4 leading-tight group-hover:text-emerald-50 transition-colors">
-                  {cricketLive.length > 0 ? cricketLive[0].name : "Global Cricket Scores"}
+                  {cricketLive.length > 0 ? cricketLive[0].name : "IND vs AUS Final Series"}
                 </h3>
               </div>
               <div className="flex items-center gap-2 text-emerald-50 font-bold text-sm bg-black/10 w-fit px-3 py-1.5 rounded-full backdrop-blur-sm">
@@ -224,32 +269,52 @@ export default function ExplorePage() {
               </div>
             </Link>
 
-            <Link href="/results/sports/football" className="snap-start shrink-0 w-[300px] sm:w-[340px] h-[180px] rounded-3xl bg-gradient-to-br from-blue-500 to-indigo-700 border border-blue-400/30 p-6 flex flex-col justify-between group overflow-hidden relative shadow-lg hover:shadow-xl transition-all hover:-translate-y-1">
+            {/* Football Live */}
+            <Link href="/results/sports/football" className="snap-start shrink-0 w-[300px] sm:w-[340px] h-[180px] rounded-3xl bg-gradient-to-br from-blue-500 to-indigo-700 border border-blue-400/30 p-6 flex flex-col justify-between group overflow-hidden relative shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_8px_30px_rgb(59,130,246,0.3)] transition-all hover:-translate-y-1">
               <div className="absolute -right-10 -bottom-10 opacity-20 text-9xl">⚽</div>
               <div>
                 <span className="text-[10px] font-black uppercase tracking-widest text-blue-950 bg-white/30 px-2 py-1 rounded-full backdrop-blur-sm shadow-sm">FOOTBALL ACTION</span>
                 <h3 className="text-xl font-black text-white mt-4 leading-tight group-hover:text-blue-50 transition-colors">
-                  {footballLive.length > 0 ? `${footballLive[0].leagueName} Live` : "Live Football Leagues"}
+                  {footballLive.length > 0 ? `${footballLive[0].leagueName} Live` : "Champions League Final"}
                 </h3>
               </div>
               <div className="flex items-center gap-2 text-blue-50 font-bold text-sm bg-black/10 w-fit px-3 py-1.5 rounded-full backdrop-blur-sm">
                 View Matches <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </div>
             </Link>
-            
-            {datasets.slice(0, 2).map((ds: any) => (
-              <Link href={`/search?category=${ds.domainType}`} key={ds.id} className="snap-start shrink-0 w-[300px] sm:w-[340px] h-[180px] rounded-3xl bg-gradient-to-br from-purple-500 to-fuchsia-700 border border-purple-400/30 p-6 flex flex-col justify-between group overflow-hidden relative shadow-lg hover:shadow-xl transition-all hover:-translate-y-1">
-                <div>
-                  <span className="text-[10px] font-black uppercase tracking-widest text-purple-950 bg-white/30 px-2 py-1 rounded-full backdrop-blur-sm shadow-sm">{ds.domainType || 'DATASET'}</span>
-                  <h3 className="text-xl font-black text-white mt-4 leading-tight line-clamp-2 group-hover:text-purple-50 transition-colors">
-                    {ds.name}
-                  </h3>
-                </div>
-                <div className="flex items-center gap-2 text-purple-50 font-bold text-sm bg-black/10 w-fit px-3 py-1.5 rounded-full backdrop-blur-sm">
-                  Explore Dataset <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </div>
-              </Link>
-            ))}
+
+            {/* Sensational Result 2 */}
+            <Link href="/search?category=SPORTS" className="snap-start shrink-0 w-[300px] sm:w-[340px] h-[180px] rounded-3xl bg-gradient-to-br from-purple-500 to-fuchsia-700 border border-purple-400/30 p-6 flex flex-col justify-between group overflow-hidden relative shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_8px_30px_rgb(168,85,247,0.3)] transition-all hover:-translate-y-1">
+              <div className="absolute -right-10 -bottom-10 opacity-20 text-9xl">🏅</div>
+              <div>
+                <span className="text-[10px] font-black uppercase tracking-widest text-purple-950 bg-white/30 px-2 py-1 rounded-full backdrop-blur-sm shadow-sm flex items-center gap-1.5 w-fit">
+                  TRENDING TODAY
+                </span>
+                <h3 className="text-xl font-black text-white mt-4 leading-tight group-hover:text-purple-50 transition-colors">
+                  Paris 2024 Olympic Medal Tally Updated
+                </h3>
+              </div>
+              <div className="flex items-center gap-2 text-purple-50 font-bold text-sm bg-black/10 w-fit px-3 py-1.5 rounded-full backdrop-blur-sm">
+                View Rankings <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </Link>
+
+            {/* Market Trending */}
+            <Link href="/search?category=FINANCE" className="snap-start shrink-0 w-[300px] sm:w-[340px] h-[180px] rounded-3xl bg-gradient-to-br from-amber-500 to-orange-600 border border-amber-400/30 p-6 flex flex-col justify-between group overflow-hidden relative shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_8px_30px_rgb(245,158,11,0.3)] transition-all hover:-translate-y-1">
+              <div className="absolute -right-10 -bottom-10 opacity-20 text-9xl">🚀</div>
+              <div>
+                <span className="text-[10px] font-black uppercase tracking-widest text-amber-950 bg-white/30 px-2 py-1 rounded-full backdrop-blur-sm shadow-sm flex items-center gap-1.5 w-fit">
+                  MARKET HOT TODAY
+                </span>
+                <h3 className="text-xl font-black text-white mt-4 leading-tight group-hover:text-amber-50 transition-colors">
+                  Tech Giant AI Earnings Surprise Revealed
+                </h3>
+              </div>
+              <div className="flex items-center gap-2 text-amber-50 font-bold text-sm bg-black/10 w-fit px-3 py-1.5 rounded-full backdrop-blur-sm">
+                View Charts <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </Link>
+
           </div>
         </section>
 
@@ -258,10 +323,17 @@ export default function ExplorePage() {
           <div className="flex items-center gap-3 mb-6">
             <Activity className="w-6 h-6 text-red-500" />
             <h2 className="text-xl font-black tracking-tight text-zinc-950">Live Now</h2>
-            <Link href="/results/sports" className="ml-auto text-sm font-bold text-[#FFC82A] hover:text-[#E5B426]">View All Live</Link>
+            <div className="flex items-center gap-2 ml-auto hidden sm:flex">
+              <button onClick={() => scrollLive('left')} className="w-9 h-9 rounded-full bg-white border border-zinc-200 flex items-center justify-center hover:bg-zinc-50 hover:border-zinc-300 transition-all text-zinc-500 hover:text-zinc-900 shadow-sm">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+              </button>
+              <button onClick={() => scrollLive('right')} className="w-9 h-9 rounded-full bg-white border border-zinc-200 flex items-center justify-center hover:bg-zinc-50 hover:border-zinc-300 transition-all text-zinc-500 hover:text-zinc-900 shadow-sm">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+              </button>
+            </div>
           </div>
           
-          <div className="flex gap-4 overflow-x-auto hide-scrollbar pb-4 snap-x">
+          <div ref={liveScrollRef} className="flex gap-4 overflow-x-auto hide-scrollbar pb-4 snap-x pt-2 px-1 -mx-1">
             {cricketLive.map(match => (
               <Link href={`/results/sports/cricket`} key={match.id} className="snap-start shrink-0 w-[280px] bg-white border border-zinc-200/80 rounded-2xl p-5 hover:border-emerald-500 hover:shadow-md transition-all group">
                 <div className="flex items-center justify-between mb-3">
@@ -286,17 +358,44 @@ export default function ExplorePage() {
               </Link>
             ))}
             
-            {cricketLive.length === 0 && footballLive.length === 0 && (
-              <div className="snap-start shrink-0 w-[280px] bg-white border border-zinc-200/80 rounded-2xl p-5 group shadow-sm opacity-90">
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-[10px] font-black uppercase tracking-widest text-orange-600 bg-orange-50 px-2 py-1 rounded border border-orange-100">MARKET</span>
-                  <span className="text-xs font-bold text-zinc-400">Market Open</span>
-                </div>
-                <div className="font-bold text-zinc-600 text-sm mb-1 truncate">Nifty 50 Index</div>
-                <div className="text-xl font-black text-zinc-950 mb-2">24,852.30</div>
-                <div className="text-xs font-semibold text-orange-500 truncate">+1.2% ▲</div>
+            {/* Live Finance / Market */}
+            <Link href="/search?category=FINANCE" className="snap-start shrink-0 w-[280px] bg-white border border-zinc-200/80 rounded-2xl p-5 hover:border-orange-500 hover:shadow-md transition-all group">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-[10px] font-black uppercase tracking-widest text-orange-600 bg-orange-50 px-2 py-1 rounded border border-orange-100">FINANCE</span>
+                <span className="text-xs font-bold text-zinc-400 flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span> Live</span>
               </div>
-            )}
+              <div className="font-bold text-zinc-600 text-sm mb-1 truncate">Global Market Index</div>
+              <div className="text-xl font-black text-zinc-950 mb-2">24,852.30</div>
+              <div className="text-xs font-semibold text-orange-500 truncate">+1.2% ▲ Today</div>
+            </Link>
+
+            {/* Live Politics / Election */}
+            <Link href="/search?category=POLITICS" className="snap-start shrink-0 w-[280px] bg-white border border-zinc-200/80 rounded-2xl p-5 hover:border-purple-500 hover:shadow-md transition-all group">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-[10px] font-black uppercase tracking-widest text-purple-600 bg-purple-50 px-2 py-1 rounded border border-purple-100">POLITICS</span>
+                <span className="text-xs font-bold text-zinc-400 flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span> Live</span>
+              </div>
+              <div className="font-bold text-zinc-600 text-sm mb-1 truncate">Mayoral Election Count</div>
+              <div className="text-xl font-black text-zinc-950 mb-2">52% to 48%</div>
+              <div className="text-xs font-semibold text-purple-600 truncate">90% votes counted</div>
+            </Link>
+
+            {/* Live Crypto */}
+            <Link href="/search?category=FINANCE" className="snap-start shrink-0 w-[280px] bg-white border border-zinc-200/80 rounded-2xl p-5 hover:border-amber-500 hover:shadow-md transition-all group">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-[10px] font-black uppercase tracking-widest text-amber-600 bg-amber-50 px-2 py-1 rounded border border-amber-100">CRYPTO</span>
+                <span className="text-xs font-bold text-zinc-400 flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span> Live</span>
+              </div>
+              <div className="font-bold text-zinc-600 text-sm mb-1 truncate">Bitcoin (BTC)</div>
+              <div className="text-xl font-black text-zinc-950 mb-2">$68,420.00</div>
+              <div className="text-xs font-semibold text-emerald-500 truncate">+3.4% ▲ Last 24h</div>
+            </Link>
+          </div>
+          
+          <div className="mt-4 flex justify-center">
+            <Link href="/results/sports" className="text-sm font-bold text-[#FFC82A] hover:text-[#E5B426] flex items-center gap-1 transition-colors">
+              View All Live <ChevronRight className="w-4 h-4" />
+            </Link>
           </div>
         </section>
 

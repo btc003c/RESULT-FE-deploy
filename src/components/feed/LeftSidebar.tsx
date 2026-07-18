@@ -327,7 +327,7 @@ export default function LeftSidebar() {
                       )}
 
                       {/* Collapsed badge dot */}
-                      {!isExpanded && (link as any).badge === "live" && badgeNum && badgeNum > 0 && (
+                      {!isExpanded && (link as any).badge === "live" && (badgeNum || 0) > 0 && (
                         <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-primary rounded-full ring-2 ring-white animate-pulse" />
                       )}
                     </Link>

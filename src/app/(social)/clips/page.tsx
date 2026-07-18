@@ -70,6 +70,7 @@ const MOCK_CLIPS = [
 export default function ClipsDiscoveryPage() {
   const [activeMenuId, setActiveMenuId] = useState<string | null>(null);
   const [activeCategory, setActiveCategory] = useState("All");
+  const [isMuted, setIsMuted] = useState(true);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const categories = ["All", "Match Highlights", "Predictions", "Tech", "Complaints", "Gaming", "Food"];
@@ -134,40 +135,44 @@ export default function ClipsDiscoveryPage() {
         ) : (
           filteredClips.map((clip) => (
             <div key={clip.id} className="w-full h-full shrink-0 snap-center flex items-center justify-center p-2 md:p-4">
-              <div className="w-full max-w-[450px] h-[90vh] max-h-[850px] relative rounded-[2rem] shadow-2xl border border-zinc-200 bg-black group">
+              <div className="flex items-end gap-2 md:gap-4 h-[90vh] max-h-[850px]">
+                
+                {/* Video Container */}
+                <div className="w-[calc(100vw-80px)] sm:w-[400px] h-full relative rounded-[2rem] shadow-2xl border border-zinc-200 bg-black group">
               
               {/* Auto-playing Video with Poster Fallback */}
               <video 
                 src={clip.videoUrl}
                 poster={clip.thumbnail}
-                autoPlay loop muted playsInline
+                autoPlay loop muted={isMuted} playsInline
                 className="absolute inset-0 w-full h-full object-cover rounded-[2rem]"
               />
 
-              {/* Unique Glassmorphism Top Bar */}
-              <div className="absolute top-4 left-4 right-4 flex justify-between items-center z-10">
-                <span className="px-4 py-2 bg-black/40 backdrop-blur-xl border border-white/10 text-white text-[11px] font-black uppercase tracking-widest rounded-full shadow-lg">
-                  {clip.category}
-                </span>
-                
-                {/* Status Indicator */}
-                <div className="flex items-center gap-2 bg-black/40 backdrop-blur-xl border border-white/10 px-3 py-1.5 rounded-full">
-                  <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-                  <span className="text-white text-[10px] font-bold tracking-widest uppercase">Playing</span>
-                </div>
+              {/* Top Right Mute Toggle Button */}
+              <div className="absolute top-4 right-4 z-20">
+                <button 
+                  onClick={() => setIsMuted(!isMuted)}
+                  className="w-8 h-8 flex items-center justify-center bg-black/40 backdrop-blur-xl border border-white/10 text-white rounded-full shadow-lg hover:bg-black/60 transition-colors"
+                >
+                  {isMuted ? (
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>
+                  ) : (
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>
+                  )}
+                </button>
               </div>
 
               {/* Unique Glassmorphism Bottom Panel -> Now Transparent */}
               <div className="absolute bottom-4 left-4 right-[80px] p-4 z-10 flex flex-col gap-2">
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#00a896] to-[#FFC82A] text-white flex items-center justify-center font-bold text-sm shrink-0 border border-white/30 shadow-md">
+                  <div className="w-9 h-9 rounded-full bg-zinc-800 text-white flex items-center justify-center font-bold text-sm shrink-0 border border-white/30 shadow-md">
                     {clip.author.charAt(0)}
                   </div>
                   <div className="flex flex-col">
                     <h3 className="text-[14px] font-bold text-white hover:text-white/80 cursor-pointer transition-colors leading-tight">{clip.author}</h3>
                     <p className="text-[11px] text-white/70 font-semibold">{clip.handle}</p>
                   </div>
-                  <button className="ml-auto px-3 py-1 bg-white text-black text-xs font-bold rounded-full hover:bg-zinc-200 transition-colors">
+                  <button className="ml-auto px-3 py-1 bg-white text-black text-xs font-bold rounded-full hover:bg-zinc-200 transition-colors shadow-sm">
                     Follow
                   </button>
                 </div>
@@ -182,35 +187,37 @@ export default function ClipsDiscoveryPage() {
                 </div>
               </div>
 
-              {/* Right Side Vertical Action Bar */}
-              <div className="absolute bottom-4 right-4 py-4 px-2 flex flex-col items-center gap-5 z-10">
+              </div> {/* Close Video Container */}
+
+              {/* Right Side Vertical Action Bar (Outside) */}
+              <div className="py-4 px-2 flex flex-col items-center gap-5 shrink-0">
                 
                 <button className="flex flex-col items-center gap-1 group/btn">
-                  <div className="w-10 h-10 rounded-full flex items-center justify-center text-white hover:bg-white/20 transition-colors">
+                  <div className="w-12 h-12 bg-white rounded-full shadow-md border border-zinc-200 flex items-center justify-center text-zinc-600 hover:text-black hover:bg-zinc-50 transition-colors">
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="group-hover/btn:fill-red-500 group-hover/btn:stroke-red-500 transition-all"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
                   </div>
-                  <span className="text-[10px] font-bold text-white/90">{clip.likes}</span>
+                  <span className="text-[11px] font-bold text-zinc-700">{clip.likes}</span>
                 </button>
 
                 <button className="flex flex-col items-center gap-1 group/btn">
-                  <div className="w-10 h-10 rounded-full flex items-center justify-center text-white hover:bg-white/20 transition-colors">
+                  <div className="w-12 h-12 bg-white rounded-full shadow-md border border-zinc-200 flex items-center justify-center text-zinc-600 hover:text-black hover:bg-zinc-50 transition-colors">
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="group-hover/btn:fill-[#00a896] group-hover/btn:stroke-[#00a896] transition-all"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
                   </div>
-                  <span className="text-[10px] font-bold text-white/90">{clip.comments}</span>
+                  <span className="text-[11px] font-bold text-zinc-700">{clip.comments}</span>
                 </button>
 
                 <button className="flex flex-col items-center gap-1 group/btn">
-                  <div className="w-10 h-10 rounded-full flex items-center justify-center text-white hover:bg-white/20 transition-colors">
+                  <div className="w-12 h-12 bg-white rounded-full shadow-md border border-zinc-200 flex items-center justify-center text-zinc-600 hover:text-black hover:bg-zinc-50 transition-colors">
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="group-hover/btn:stroke-[#FFC82A] transition-all"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
                   </div>
-                  <span className="text-[10px] font-bold text-white/90">{clip.shares}</span>
+                  <span className="text-[11px] font-bold text-zinc-700">{clip.shares}</span>
                 </button>
 
                 {/* More Options */}
-                <div className="relative more-options-menu mt-2 pt-2 border-t border-white/30">
+                <div className="relative more-options-menu mt-2 pt-2 border-t border-zinc-300">
                   <button 
                     onClick={() => setActiveMenuId(activeMenuId === clip.id ? null : clip.id)}
-                    className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${activeMenuId === clip.id ? 'bg-white text-black' : 'text-white hover:bg-white/20'}`}
+                    className={`w-12 h-12 bg-white rounded-full shadow-md border flex items-center justify-center transition-colors ${activeMenuId === clip.id ? 'border-zinc-900 text-black shadow-lg' : 'border-zinc-200 text-zinc-600 hover:text-black hover:bg-zinc-50'}`}
                   >
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><circle cx="12" cy="12" r="1.5"></circle><circle cx="12" cy="5" r="1.5"></circle><circle cx="12" cy="19" r="1.5"></circle></svg>
                   </button>
