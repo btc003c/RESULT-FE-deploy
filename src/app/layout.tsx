@@ -8,7 +8,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "ResultHub | The Public Data Ecosystem",
+  title: "BillionWord",
   description: "A modern public data ecosystem for exam results, government scores, sports data, and civic engagement.",
 };
 

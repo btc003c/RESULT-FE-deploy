@@ -167,16 +167,16 @@ export default function HomeFeedPage() {
               
               {/* Full Line of Flashes & Live Stories */}
               {[
-                { id: 'f1', type: 'flash', title: 'Sports Daily', img: 'https://loremflickr.com/150/150/sports' },
                 { id: 'l1', type: 'live', title: 'IND v AUS', img: 'https://loremflickr.com/150/150/cricket' },
-                { id: 'f2', type: 'flash', title: 'EduTech Hub', img: 'https://loremflickr.com/150/150/education' },
                 { id: 'l2', type: 'live', title: 'Election 26', img: 'https://loremflickr.com/150/150/election' },
+                { id: 'l3', type: 'live', title: 'RMA v BAR', img: 'https://loremflickr.com/150/150/soccer' },
+                { id: 'l4', type: 'live', title: 'Campus News', img: 'https://loremflickr.com/150/150/campus' },
+                { id: 'f1', type: 'flash', title: 'Sports Daily', img: 'https://loremflickr.com/150/150/sports' },
+                { id: 'f2', type: 'flash', title: 'EduTech Hub', img: 'https://loremflickr.com/150/150/education' },
                 { id: 'f3', type: 'flash', title: 'Jane Doe', img: 'https://loremflickr.com/150/150/woman' },
                 { id: 'f4', type: 'flash', title: 'E-Sports', img: 'https://loremflickr.com/150/150/gaming' },
-                { id: 'l3', type: 'live', title: 'RMA v BAR', img: 'https://loremflickr.com/150/150/soccer' },
                 { id: 'f5', type: 'flash', title: 'News Now', img: 'https://loremflickr.com/150/150/news' },
                 { id: 'f6', type: 'flash', title: 'Tech Talk', img: 'https://loremflickr.com/150/150/technology' },
-                { id: 'l4', type: 'live', title: 'Campus News', img: 'https://loremflickr.com/150/150/campus' },
                 { id: 'f7', type: 'flash', title: 'Market Wrap', img: 'https://loremflickr.com/150/150/finance' },
                 { id: 'f8', type: 'flash', title: 'Creator', img: 'https://loremflickr.com/150/150/youtube' },
               ].map(story => (

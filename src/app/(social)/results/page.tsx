@@ -164,34 +164,34 @@ export default function ExplorePage() {
           {/* Quick Results Bar */}
           <div className="max-w-5xl mt-6 pt-6 border-t border-zinc-100 flex gap-6 overflow-x-auto hide-scrollbar pb-2 items-center">
               {[
-                { id: 'm1', type: 'flash', title: 'ARS v CHE', text: '⚽', color: 'bg-blue-100', textCol: 'text-blue-600' },
                 { id: 'm2', type: 'live', title: 'IND v AUS', text: '🏏', color: 'bg-emerald-100', textCol: 'text-emerald-600' },
-                { id: 'm3', type: 'flash', title: 'Exam 26', text: '🎓', color: 'bg-purple-100', textCol: 'text-purple-600' },
                 { id: 'm4', type: 'live', title: 'US Election', text: '🗳️', color: 'bg-red-100', textCol: 'text-red-600' },
-                { id: 'm5', type: 'flash', title: 'NAVI v FAZ', text: '🎮', color: 'bg-amber-100', textCol: 'text-amber-600' },
                 { id: 'm6', type: 'live', title: 'RMA v BAR', text: '⚽', color: 'bg-blue-100', textCol: 'text-blue-600' },
-                { id: 'm7', type: 'flash', title: 'Market Wrap', text: '📈', color: 'bg-emerald-100', textCol: 'text-emerald-600' },
                 { id: 'm8', type: 'live', title: 'UK Election', text: '🗳️', color: 'bg-indigo-100', textCol: 'text-indigo-600' },
-                { id: 'm9', type: 'flash', title: 'Tech Stocks', text: '💻', color: 'bg-slate-100', textCol: 'text-slate-600' },
                 { id: 'm10', type: 'live', title: 'LAL v GSW', text: '🏀', color: 'bg-orange-100', textCol: 'text-orange-600' },
-                { id: 'm11', type: 'flash', title: 'Weather', text: '🌪️', color: 'bg-teal-100', textCol: 'text-teal-600' },
                 { id: 'm12', type: 'live', title: 'News', text: '📰', color: 'bg-rose-100', textCol: 'text-rose-600' },
+                { id: 'm1', type: 'flash', title: 'ARS v CHE', text: '⚽', color: 'bg-blue-100', textCol: 'text-blue-600' },
+                { id: 'm3', type: 'flash', title: 'Exam 26', text: '🎓', color: 'bg-purple-100', textCol: 'text-purple-600' },
+                { id: 'm5', type: 'flash', title: 'NAVI v FAZ', text: '🎮', color: 'bg-amber-100', textCol: 'text-amber-600' },
+                { id: 'm7', type: 'flash', title: 'Market Wrap', text: '📈', color: 'bg-emerald-100', textCol: 'text-emerald-600' },
+                { id: 'm9', type: 'flash', title: 'Tech Stocks', text: '💻', color: 'bg-slate-100', textCol: 'text-slate-600' },
+                { id: 'm11', type: 'flash', title: 'Weather', text: '🌪️', color: 'bg-teal-100', textCol: 'text-teal-600' },
               ].map(story => (
                 <div key={story.id} className="flex flex-col items-center gap-1.5 cursor-pointer shrink-0 transition-transform active:scale-95 group/story relative">
                   <div className="relative rounded-full p-[3px]">
                     
                     {/* Ring Logic (Different from Home Page) */}
                     {story.type === 'flash' ? (
-                      <div className="absolute inset-0 rounded-full bg-emerald-500 shadow-inner"></div>
+                      <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-[#00A896] to-[#FFC82A] shadow-inner"></div>
                     ) : (
-                      <div className="absolute inset-0 rounded-full bg-amber-500 shadow-inner"></div>
+                      <div className="absolute inset-0 rounded-full bg-blue-600 shadow-inner"></div>
                     )}
 
                     <div className={`relative z-10 w-14 h-14 rounded-full border-[3px] border-white flex items-center justify-center font-black text-xl ${story.color} ${story.textCol} shadow-sm`}>
                       {story.text}
                     </div>
                     {story.type === 'live' && (
-                      <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 z-20 bg-amber-500 text-white text-[8px] font-black tracking-widest px-1.5 py-[2px] rounded-full border-2 border-white shadow-sm">
+                      <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 z-20 bg-blue-600 text-white text-[8px] font-black tracking-widest px-1.5 py-[2px] rounded-full border-2 border-white shadow-sm">
                         LIVE
                       </div>
                     )}

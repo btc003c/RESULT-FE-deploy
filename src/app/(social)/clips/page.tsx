@@ -103,30 +103,6 @@ export default function ClipsDiscoveryPage() {
   return (
     <div className="flex-1 w-full h-[calc(100vh-80px)] md:h-screen bg-zinc-50/50 flex flex-col items-center overflow-hidden animate-in fade-in duration-300 relative">
       
-      {/* Header - Light Mode styled */}
-      <div className="w-full max-w-[1200px] mx-auto px-4 md:px-8 py-6 shrink-0 z-10 bg-zinc-50/95 backdrop-blur-md border-b border-zinc-200/50">
-        <h1 className="text-3xl font-extrabold text-foreground tracking-tight">Clips Discovery</h1>
-        <p className="text-muted-foreground mt-1 text-sm md:text-base mb-6">
-          Explore short-form updates, reactions, and highlights from the community.
-        </p>
-        
-        {/* Category Filters */}
-        <div className="flex gap-2 overflow-x-auto pb-2 hide-scrollbar max-w-full snap-x -mx-4 px-4 md:mx-0 md:px-0">
-          {categories.map(cat => (
-            <button
-              key={cat}
-              onClick={() => setActiveCategory(cat)}
-              className={`px-4 py-2 rounded-full text-sm font-bold whitespace-nowrap transition-all shrink-0 snap-start ${
-                activeCategory === cat 
-                  ? "bg-black text-white shadow-md" 
-                  : "bg-white text-zinc-600 border border-zinc-200 hover:border-zinc-300 shadow-sm"
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-      </div>
 
       {/* Floating Scroll Navigation Arrows (Desktop) */}
       <div className="hidden md:flex absolute right-10 top-1/2 -translate-y-1/2 flex-col gap-4 z-20">
@@ -149,7 +125,7 @@ export default function ClipsDiscoveryPage() {
       {/* Feed Container */}
       <div 
         ref={scrollContainerRef}
-        className="w-full h-full overflow-y-auto snap-y snap-mandatory hide-scrollbar flex flex-col items-center pt-8 pb-32 scroll-smooth"
+        className="w-full h-full overflow-y-auto snap-y snap-mandatory hide-scrollbar flex flex-col scroll-smooth"
       >
         {filteredClips.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center text-zinc-500">
@@ -157,17 +133,15 @@ export default function ClipsDiscoveryPage() {
           </div>
         ) : (
           filteredClips.map((clip) => (
-            <div 
-              key={clip.id} 
-              className="w-full max-w-[450px] h-[calc(100vh-200px)] min-h-[500px] max-h-[850px] snap-center shrink-0 mb-8 relative rounded-[2rem] overflow-hidden shadow-2xl border border-zinc-200 bg-black group"
-            >
+            <div key={clip.id} className="w-full h-full shrink-0 snap-center flex items-center justify-center p-2 md:p-4">
+              <div className="w-full max-w-[450px] h-[90vh] max-h-[850px] relative rounded-[2rem] shadow-2xl border border-zinc-200 bg-black group">
               
               {/* Auto-playing Video with Poster Fallback */}
               <video 
                 src={clip.videoUrl}
                 poster={clip.thumbnail}
                 autoPlay loop muted playsInline
-                className="absolute inset-0 w-full h-full object-cover"
+                className="absolute inset-0 w-full h-full object-cover rounded-[2rem]"
               />
 
               {/* Unique Glassmorphism Top Bar */}
@@ -183,8 +157,8 @@ export default function ClipsDiscoveryPage() {
                 </div>
               </div>
 
-              {/* Unique Glassmorphism Bottom Panel */}
-              <div className="absolute bottom-4 left-4 right-[80px] bg-black/20 backdrop-blur-xl border border-white/20 p-4 rounded-2xl shadow-xl z-10 flex flex-col gap-2">
+              {/* Unique Glassmorphism Bottom Panel -> Now Transparent */}
+              <div className="absolute bottom-4 left-4 right-[80px] p-4 z-10 flex flex-col gap-2">
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#00a896] to-[#FFC82A] text-white flex items-center justify-center font-bold text-sm shrink-0 border border-white/30 shadow-md">
                     {clip.author.charAt(0)}
@@ -208,8 +182,8 @@ export default function ClipsDiscoveryPage() {
                 </div>
               </div>
 
-              {/* Right Side Vertical Action Bar (Glassmorphism Pill) */}
-              <div className="absolute bottom-4 right-4 bg-black/20 backdrop-blur-xl border border-white/20 rounded-[2rem] py-4 px-2 flex flex-col items-center gap-5 z-10 shadow-xl">
+              {/* Right Side Vertical Action Bar */}
+              <div className="absolute bottom-4 right-4 py-4 px-2 flex flex-col items-center gap-5 z-10">
                 
                 <button className="flex flex-col items-center gap-1 group/btn">
                   <div className="w-10 h-10 rounded-full flex items-center justify-center text-white hover:bg-white/20 transition-colors">
@@ -241,9 +215,9 @@ export default function ClipsDiscoveryPage() {
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><circle cx="12" cy="12" r="1.5"></circle><circle cx="12" cy="5" r="1.5"></circle><circle cx="12" cy="19" r="1.5"></circle></svg>
                   </button>
 
-                  {/* Popover Menu inside the card */}
+                  {/* Popover Menu outside the card to the right */}
                   {activeMenuId === clip.id && (
-                    <div className="absolute bottom-0 right-14 w-[240px] bg-white/95 backdrop-blur-2xl rounded-2xl shadow-2xl border border-zinc-200 py-2 z-50 animate-in fade-in zoom-in-95 duration-200">
+                    <div className="absolute bottom-0 left-14 w-[240px] bg-white/95 backdrop-blur-2xl rounded-2xl shadow-2xl border border-zinc-200 py-2 z-50 animate-in fade-in zoom-in-95 duration-200">
                       <button className="w-full flex items-center px-4 py-3 hover:bg-red-50 text-sm font-bold text-red-600 transition-colors text-left border-b border-zinc-100">Report</button>
                       <button className="w-full flex items-center px-4 py-3 hover:bg-zinc-50 text-sm font-semibold text-zinc-900 transition-colors text-left">Go to Post</button>
                       <button className="w-full flex items-center px-4 py-3 hover:bg-zinc-50 text-sm font-semibold text-zinc-900 transition-colors text-left">Share to</button>
@@ -256,6 +230,7 @@ export default function ClipsDiscoveryPage() {
                 </div>
               </div>
               
+              </div>
             </div>
           ))
         )}

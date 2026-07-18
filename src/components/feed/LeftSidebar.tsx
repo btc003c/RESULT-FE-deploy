@@ -220,7 +220,7 @@ export default function LeftSidebar() {
             {isExpanded && (
               <div className="overflow-hidden">
                 <span className="text-[17px] font-black tracking-tight text-zinc-900 whitespace-nowrap block leading-tight">
-                  BillionsWord
+                  BillionWord
                 </span>
               </div>
             )}
