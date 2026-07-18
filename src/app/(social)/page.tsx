@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import RightSidebar from "@/components/feed/RightSidebar";
 import PostCard from "@/components/feed/PostCard";
 import CreatePostModal from "@/components/feed/CreatePostModal";
@@ -36,6 +36,13 @@ export default function HomeFeedPage() {
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [nextCursor, setNextCursor] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(false);
+  const storiesScrollRef = useRef<HTMLDivElement>(null);
+
+  const scrollStories = (dir: 'left' | 'right') => {
+    if (storiesScrollRef.current) {
+      storiesScrollRef.current.scrollBy({ left: dir === 'left' ? -300 : 300, behavior: 'smooth' });
+    }
+  };
 
   useEffect(() => {
     fetchFeed();
@@ -162,46 +169,70 @@ export default function HomeFeedPage() {
       <div className="flex-1 min-w-0 transition-all duration-300">
           
           {/* Top Story Balls (Flashes and Matches) */}
-          <div className="pt-4 mb-6">
-            <div className="flex gap-4 overflow-x-auto pb-2 hide-scrollbar items-center px-1">
+          <div className="pt-4 mb-6 relative group">
+            {/* Scroll Arrows */}
+            <button onClick={() => scrollStories('left')} className="absolute left-0 top-[28%] z-30 w-8 h-8 bg-white border border-zinc-200 rounded-full shadow-md flex items-center justify-center text-zinc-600 hover:text-zinc-950 hover:bg-zinc-50 transition-all opacity-0 group-hover:opacity-100 -ml-4">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+            </button>
+            <button onClick={() => scrollStories('right')} className="absolute right-0 top-[28%] z-30 w-8 h-8 bg-white border border-zinc-200 rounded-full shadow-md flex items-center justify-center text-zinc-600 hover:text-zinc-950 hover:bg-zinc-50 transition-all opacity-0 group-hover:opacity-100 -mr-4">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+            </button>
+            
+            <div ref={storiesScrollRef} className="flex gap-4 overflow-x-auto pb-4 hide-scrollbar items-center px-4 md:px-1 scroll-smooth w-full">
               
+              {/* Your Story (Create) */}
+              <div className="flex flex-col items-center gap-1.5 cursor-pointer shrink-0 transition-transform active:scale-95 relative mr-2">
+                <div className="relative rounded-full">
+                  <div className="relative z-10 w-[72px] h-[72px] rounded-full overflow-hidden flex items-center justify-center bg-zinc-100 border border-zinc-200">
+                    <div className="w-full h-full bg-zinc-200 flex items-center justify-center">
+                       <span className="text-3xl text-zinc-400">👤</span>
+                    </div>
+                  </div>
+                  {/* Plus Icon Badge */}
+                  <div className="absolute bottom-1 right-0 z-20 bg-blue-500 text-white rounded-full border-[3px] border-background w-6 h-6 flex items-center justify-center shadow-sm">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+                  </div>
+                </div>
+                <span className="text-[11px] font-medium text-zinc-500 tracking-tight truncate max-w-[70px] text-center">Your Story</span>
+              </div>
+
               {/* Full Line of Flashes & Live Stories */}
               {[
-                { id: 'l1', type: 'live', title: 'IND v AUS', img: 'https://loremflickr.com/150/150/cricket' },
-                { id: 'l2', type: 'live', title: 'Election 26', img: 'https://loremflickr.com/150/150/election' },
-                { id: 'l3', type: 'live', title: 'RMA v BAR', img: 'https://loremflickr.com/150/150/soccer' },
-                { id: 'l4', type: 'live', title: 'Campus News', img: 'https://loremflickr.com/150/150/campus' },
-                { id: 'f1', type: 'flash', title: 'Sports Daily', img: 'https://loremflickr.com/150/150/sports' },
-                { id: 'f2', type: 'flash', title: 'EduTech Hub', img: 'https://loremflickr.com/150/150/education' },
-                { id: 'f3', type: 'flash', title: 'Jane Doe', img: 'https://loremflickr.com/150/150/woman' },
-                { id: 'f4', type: 'flash', title: 'E-Sports', img: 'https://loremflickr.com/150/150/gaming' },
-                { id: 'f5', type: 'flash', title: 'News Now', img: 'https://loremflickr.com/150/150/news' },
-                { id: 'f6', type: 'flash', title: 'Tech Talk', img: 'https://loremflickr.com/150/150/technology' },
-                { id: 'f7', type: 'flash', title: 'Market Wrap', img: 'https://loremflickr.com/150/150/finance' },
-                { id: 'f8', type: 'flash', title: 'Creator', img: 'https://loremflickr.com/150/150/youtube' },
+                { id: 'l1', type: 'live', title: 'ind_aus_live', img: 'https://loremflickr.com/150/150/cricket' },
+                { id: 'l2', type: 'live', title: 'election_26', img: 'https://loremflickr.com/150/150/election' },
+                { id: 'l3', type: 'live', title: 'rma_bar_live', img: 'https://loremflickr.com/150/150/soccer' },
+                { id: 'l4', type: 'live', title: 'campus_news', img: 'https://loremflickr.com/150/150/campus' },
+                { id: 'f1', type: 'flash', title: 'sportsdaily', img: 'https://loremflickr.com/150/150/sports' },
+                { id: 'f2', type: 'flash', title: 'edutech_hub', img: 'https://loremflickr.com/150/150/education' },
+                { id: 'f3', type: 'flash', title: 'jane_doe', img: 'https://loremflickr.com/150/150/woman' },
+                { id: 'f4', type: 'flash', title: 'esports_now', img: 'https://loremflickr.com/150/150/gaming' },
+                { id: 'f5', type: 'flash', title: 'news_now', img: 'https://loremflickr.com/150/150/news' },
+                { id: 'f6', type: 'flash', title: 'tech_talk', img: 'https://loremflickr.com/150/150/technology' },
+                { id: 'f7', type: 'flash', title: 'market_wrap', img: 'https://loremflickr.com/150/150/finance' },
+                { id: 'f8', type: 'flash', title: 'the_creator', img: 'https://loremflickr.com/150/150/youtube' },
               ].map(story => (
                 <div key={story.id} className="flex flex-col items-center gap-1.5 cursor-pointer shrink-0 transition-transform active:scale-95 group/story relative">
                   <div className="relative rounded-full p-[3px]">
                     
                     {/* Ring Logic */}
                     {story.type === 'flash' ? (
-                      <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-[#FFC82A] to-[#00A896] shadow-inner"></div>
+                      <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-[#FFC82A] to-[#00A896]"></div>
                     ) : (
-                      <div className="absolute inset-0 rounded-full bg-red-600 shadow-inner"></div>
+                      <div className="absolute inset-0 rounded-full bg-red-500"></div>
                     )}
                     
-                    <div className="relative z-10 w-14 h-14 rounded-full border-[3px] border-background overflow-hidden flex items-center justify-center bg-zinc-100">
+                    <div className="relative z-10 w-[68px] h-[68px] rounded-full border-[3px] border-background overflow-hidden flex items-center justify-center bg-zinc-100">
                       <img src={story.img} alt={story.title} className="w-full h-full object-cover" />
                     </div>
 
                     {/* Live Pill */}
                     {story.type === 'live' && (
-                      <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 z-20 bg-red-600 text-white text-[8px] font-black tracking-widest px-1.5 py-[2px] rounded-full border-2 border-background shadow-sm">
+                      <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 z-20 bg-red-500 text-white text-[9px] font-bold tracking-wider px-1.5 py-[1px] rounded-[4px] border-2 border-background shadow-sm">
                         LIVE
                       </div>
                     )}
                   </div>
-                  <span className="text-[11px] font-bold text-foreground/80 truncate max-w-[64px] text-center">{story.title}</span>
+                  <span className="text-[11px] font-medium text-zinc-800 tracking-tight truncate max-w-[72px] text-center">{story.title}</span>
                 </div>
               ))}
 

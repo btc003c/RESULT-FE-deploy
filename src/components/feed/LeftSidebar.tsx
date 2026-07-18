@@ -133,19 +133,22 @@ export default function LeftSidebar() {
   const router = useRouter();
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
   const [userProfile, setUserProfile] = useState<any>(null);
-  // Auto-collapse on tablet (md–lg), expand on xl+
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(true);
   const [manualOverride, setManualOverride] = useState(false);
 
   useEffect(() => {
-    const checkWidth = () => {
-      if (!manualOverride) {
-        setIsExpanded(window.innerWidth >= 1280);
+    const handleResize = () => {
+      if (manualOverride) return;
+      if (window.innerWidth < 1280) {
+        setIsExpanded(false);
+      } else {
+        setIsExpanded(true);
       }
     };
-    checkWidth();
-    window.addEventListener("resize", checkWidth);
-    return () => window.removeEventListener("resize", checkWidth);
+    
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, [manualOverride]);
   const [notifCount, setNotifCount] = useState(0);
   const [showUserMenu, setShowUserMenu] = useState(false);
@@ -207,8 +210,23 @@ export default function LeftSidebar() {
           ${isExpanded ? "w-[268px]" : "w-[76px]"}
           bg-[#FFC82A]/10 border-r border-[#FFC82A]/20 shadow-[1px_0_0_0_#f4f4f5]`}
       >
+        {/* Collapse toggle (Vertically Centered on Sidebar) */}
+        <button
+          onClick={() => { setIsExpanded(!isExpanded); setManualOverride(true); }}
+          className={`absolute -right-3.5 top-1/2 -translate-y-1/2 w-7 h-7 bg-white border border-zinc-200
+            rounded-full flex items-center justify-center text-zinc-400 hover:text-zinc-900
+            hover:border-zinc-400 shadow-sm transition-all duration-200 hover:scale-110 z-50`}
+        >
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round">
+            {isExpanded
+              ? <polyline points="15 18 9 12 15 6"/>
+              : <polyline points="9 18 15 12 9 6"/>
+            }
+          </svg>
+        </button>
+
         {/* ── Brand ─────────────────────────────────────────────────── */}
-        <div className={`flex items-center h-[72px] shrink-0 border-b border-zinc-100 relative
+        <div className={`flex items-center h-[72px] shrink-0 border-b border-zinc-100
           ${isExpanded ? "px-5" : "justify-center px-3"}`}>
           <Link href="/" className="flex items-center gap-3 group min-w-0">
             {/* Logo mark */}
@@ -225,21 +243,6 @@ export default function LeftSidebar() {
               </div>
             )}
           </Link>
-
-          {/* Collapse toggle */}
-          <button
-            onClick={() => { setIsExpanded(!isExpanded); setManualOverride(true); }}
-            className={`absolute -right-3.5 top-1/2 -translate-y-1/2 w-7 h-7 bg-white border border-zinc-200
-              rounded-full flex items-center justify-center text-zinc-400 hover:text-zinc-900
-              hover:border-zinc-400 shadow-sm transition-all duration-200 hover:scale-110 z-50`}
-          >
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round">
-              {isExpanded
-                ? <polyline points="15 18 9 12 15 6"/>
-                : <polyline points="9 18 15 12 9 6"/>
-              }
-            </svg>
-          </button>
         </div>
 
         {/* ── Create Post CTA ────────────────────────────────────────── */}

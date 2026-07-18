@@ -163,7 +163,7 @@ export default function ClipsDiscoveryPage() {
               </div>
 
               {/* Unique Glassmorphism Bottom Panel -> Now Transparent */}
-              <div className="absolute bottom-4 left-4 right-[80px] p-4 z-10 flex flex-col gap-2">
+              <div className="absolute bottom-4 left-4 right-[60px] sm:right-4 p-4 z-10 flex flex-col gap-2">
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-full bg-zinc-800 text-white flex items-center justify-center font-bold text-sm shrink-0 border border-white/30 shadow-md">
                     {clip.author.charAt(0)}
@@ -189,8 +189,8 @@ export default function ClipsDiscoveryPage() {
 
               </div> {/* Close Video Container */}
 
-              {/* Right Side Vertical Action Bar (Outside) */}
-              <div className="py-4 px-2 flex flex-col items-center gap-5 shrink-0">
+              {/* Right Side Vertical Action Bar (Responsive: Overlay on mobile, Outside on desktop) */}
+              <div className="absolute bottom-24 right-2 sm:relative sm:bottom-auto sm:right-auto py-4 px-2 flex flex-col items-center gap-5 shrink-0 z-30">
                 
                 <button className="flex flex-col items-center gap-1 group/btn">
                   <div className="w-12 h-12 bg-white rounded-full shadow-md border border-zinc-200 flex items-center justify-center text-zinc-600 hover:text-black hover:bg-zinc-50 transition-colors">
@@ -222,9 +222,9 @@ export default function ClipsDiscoveryPage() {
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><circle cx="12" cy="12" r="1.5"></circle><circle cx="12" cy="5" r="1.5"></circle><circle cx="12" cy="19" r="1.5"></circle></svg>
                   </button>
 
-                  {/* Popover Menu outside the card to the right */}
+                  {/* Popover Menu outside the card to the right on desktop, left on mobile */}
                   {activeMenuId === clip.id && (
-                    <div className="absolute bottom-0 left-14 w-[240px] bg-white/95 backdrop-blur-2xl rounded-2xl shadow-2xl border border-zinc-200 py-2 z-50 animate-in fade-in zoom-in-95 duration-200">
+                    <div className="absolute bottom-0 right-14 sm:right-auto sm:left-14 w-[240px] bg-white/95 backdrop-blur-2xl rounded-2xl shadow-2xl border border-zinc-200 py-2 z-50 animate-in fade-in zoom-in-95 duration-200">
                       <button className="w-full flex items-center px-4 py-3 hover:bg-red-50 text-sm font-bold text-red-600 transition-colors text-left border-b border-zinc-100">Report</button>
                       <button className="w-full flex items-center px-4 py-3 hover:bg-zinc-50 text-sm font-semibold text-zinc-900 transition-colors text-left">Go to Post</button>
                       <button className="w-full flex items-center px-4 py-3 hover:bg-zinc-50 text-sm font-semibold text-zinc-900 transition-colors text-left">Share to</button>

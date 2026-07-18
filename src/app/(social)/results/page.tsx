@@ -6,7 +6,7 @@ import { api } from "@/lib/api";
 import { motion } from "framer-motion";
 import { 
   GraduationCap, Landmark, Trophy, Vote, TrendingUp, Clapperboard, 
-  Monitor, Scale, Heart, Briefcase, MapPin, ChevronRight, Play, Activity
+  Monitor, Scale, Heart, Briefcase, MapPin, ChevronRight, Play, Activity, Plus
 } from 'lucide-react';
 import CreateResultModal from "@/components/results/CreateResultModal";
 
@@ -126,10 +126,10 @@ export default function ExplorePage() {
             </div>
           </div>
           {/* Action Area: Create Card & Search (Based on Sketch) */}
-          <div className="flex flex-col lg:flex-row gap-4 w-full max-w-5xl items-center">
+          <div className="flex flex-col xl:flex-row gap-4 w-full max-w-5xl items-center">
             
             {/* Left: Create Result Strip */}
-            <div className="bg-white border-2 border-zinc-200 rounded-full h-[64px] p-2 flex items-center shadow-sm w-full lg:flex-[1.2] min-w-0">
+            <div className="bg-white border-2 border-zinc-200 rounded-full h-[64px] p-2 flex items-center shadow-sm w-full xl:flex-[1.2] min-w-0">
               
               <div className="hidden sm:flex items-center gap-2 px-3 border-r border-zinc-200 shrink-0">
                 <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center text-white font-bold text-xs shrink-0 shadow-md">
@@ -138,35 +138,38 @@ export default function ExplorePage() {
                 <h3 className="text-zinc-800 font-black text-[13px] uppercase tracking-wider whitespace-nowrap">Create Result</h3>
               </div>
 
-              <div className="flex gap-2 pl-0 sm:pl-3 w-full">
+              <div className="flex gap-2 pl-0 sm:pl-3 w-full min-w-0">
                 <button 
                   onClick={() => { setCreateAccessType('OPEN'); setIsCreateModalOpen(true); }}
-                  className="flex-1 h-[44px] px-3 lg:px-4 text-[11px] sm:text-xs font-bold rounded-full transition-colors bg-emerald-50 text-emerald-600 border border-emerald-100 hover:bg-emerald-100 shadow-sm whitespace-nowrap"
+                  className="flex-1 h-[44px] px-2 sm:px-3 text-[11px] sm:text-xs font-bold rounded-full transition-colors bg-[#FFC82A] hover:bg-[#E5B426] text-white flex items-center justify-center gap-1 shadow-sm whitespace-nowrap overflow-hidden"
                 >
-                  Open Result
+                  <span className="sm:hidden truncate">Open</span>
+                  <span className="hidden sm:inline truncate">Open Result</span>
                 </button>
                 <button 
                   onClick={() => { setCreateAccessType('CLOSED'); setIsCreateModalOpen(true); }}
-                  className="flex-1 h-[44px] px-3 lg:px-4 text-[11px] sm:text-xs font-bold rounded-full transition-colors bg-red-50 text-red-600 border border-red-100 hover:bg-red-100 shadow-sm whitespace-nowrap"
+                  className="flex-1 h-[44px] px-2 sm:px-3 text-[11px] sm:text-xs font-bold rounded-full transition-colors bg-red-50 text-red-600 border border-red-100 hover:bg-red-100 shadow-sm whitespace-nowrap overflow-hidden"
                 >
-                  Closed Result
+                  <span className="sm:hidden truncate">Closed</span>
+                  <span className="hidden sm:inline truncate">Closed Result</span>
                 </button>
               </div>
             </div>
 
             {/* Right: Search Bar */}
-            <div className="w-full lg:flex-[1.5] flex items-center min-w-0">
+            <div className="w-full xl:flex-[1.5] flex items-center min-w-0 mt-2 xl:mt-0">
               <div className="relative w-full">
                 <input 
                   type="text" 
-                  className="w-full h-[64px] pl-14 pr-[110px] bg-transparent border-2 border-zinc-300 rounded-full text-lg font-semibold text-zinc-800 focus:outline-none focus:border-zinc-400 transition-all shadow-sm"
+                  className="w-full h-[56px] sm:h-[64px] pl-12 sm:pl-14 pr-[90px] sm:pr-[110px] bg-transparent border-2 border-zinc-300 rounded-full text-base sm:text-lg font-semibold text-zinc-800 focus:outline-none focus:border-zinc-400 transition-all shadow-sm"
+                  placeholder="Search results..."
                 />
-                <div className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-400">
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <div className="absolute left-4 sm:left-5 top-1/2 -translate-y-1/2 text-zinc-400">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="sm:w-[22px] sm:h-[22px]"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                 </div>
                 
-                <div className="absolute right-1.5 top-1/2 -translate-y-1/2">
-                  <button className="px-6 h-[50px] bg-[#FFC82A] hover:bg-[#E5B426] text-white font-bold rounded-full transition-colors shadow-sm">
+                <div className="absolute right-1 sm:right-1.5 top-1/2 -translate-y-1/2">
+                  <button className="px-4 sm:px-6 h-[48px] sm:h-[50px] bg-[#FFC82A] hover:bg-[#E5B426] text-white text-sm sm:text-base font-bold rounded-full transition-colors shadow-sm">
                     Search
                   </button>
                 </div>
@@ -227,7 +230,7 @@ export default function ExplorePage() {
               <TrendingUp className="w-6 h-6 text-orange-500" />
               Trending Today
             </h2>
-            <div className="flex items-center gap-2 hidden sm:flex">
+            <div className="flex items-center gap-2">
               <button onClick={() => scrollFeatured('left')} className="w-9 h-9 rounded-full bg-white border border-zinc-200 flex items-center justify-center hover:bg-zinc-50 hover:border-zinc-300 transition-all text-zinc-500 hover:text-zinc-900 shadow-sm">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
               </button>

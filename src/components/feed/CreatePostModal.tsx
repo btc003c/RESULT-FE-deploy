@@ -205,6 +205,7 @@ export default function CreatePostModal({ isOpen, onClose, defaultType = "UPDATE
       setIsSubmitting(false);
     }
   };
+  if (!isOpen) return null;
 
   return (
     <div

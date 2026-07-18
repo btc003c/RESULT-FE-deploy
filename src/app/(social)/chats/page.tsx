@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import EmojiPicker from 'emoji-picker-react';
 
 // Mock Data
@@ -19,17 +19,19 @@ const MOCK_MESSAGES = [
 
 export default function ChatsPage() {
   const [activeContactId, setActiveContactId] = useState(MOCK_CONTACTS[1].id);
+  const [isMobileChatOpen, setIsMobileChatOpen] = useState(false);
   const [messageInput, setMessageInput] = useState("");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [showAttachmentMenu, setShowAttachmentMenu] = useState(false);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   
   const activeContact = MOCK_CONTACTS.find(c => c.id === activeContactId) || MOCK_CONTACTS[0];
 
   return (
-    <div className="flex-1 w-full h-[calc(100vh-80px)] md:h-screen flex bg-zinc-50/50 animate-in fade-in duration-300">
+    <div className="flex-1 w-full h-[calc(100vh-64px)] md:h-[calc(100vh-80px)] md:h-screen flex bg-zinc-50/50 animate-in fade-in duration-300 pb-16 md:pb-0">
       
       {/* Left Sidebar (Contacts list) */}
-      <div className="w-full md:w-[350px] border-r border-zinc-200 bg-white flex flex-col h-full shrink-0">
+      <div className={`w-full md:w-[350px] border-r border-zinc-200 bg-white flex-col h-full shrink-0 ${isMobileChatOpen ? 'hidden md:flex' : 'flex'}`}>
          
          {/* Header & Search */}
          <div className="p-4 border-b border-zinc-100">
@@ -55,7 +57,7 @@ export default function ChatsPage() {
            {MOCK_CONTACTS.map(contact => (
              <div 
                key={contact.id} 
-               onClick={() => setActiveContactId(contact.id)}
+               onClick={() => { setActiveContactId(contact.id); setIsMobileChatOpen(true); }}
                className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all mb-1
                  ${activeContactId === contact.id ? 'bg-primary/5 shadow-sm border border-primary/10' : 'hover:bg-zinc-100 border border-transparent'}`}
              >
@@ -65,7 +67,7 @@ export default function ChatsPage() {
                    {contact.avatar}
                  </div>
                  {contact.unread > 0 && (
-                   <span className="absolute -top-1 -right-1 w-5 h-5 bg-danger text-white text-[10px] font-bold flex items-center justify-center rounded-full border-2 border-white">
+                   <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-[10px] font-bold flex items-center justify-center rounded-full border-2 border-white">
                      {contact.unread}
                    </span>
                  )}
@@ -86,12 +88,17 @@ export default function ChatsPage() {
       </div>
 
       {/* Right Pane (Chat Window) */}
-      {/* Hidden on mobile if not active, but since this is a mockup we'll show it side by side on md+ and stack or hide on mobile (simplified here to always show for structural demo) */}
-      <div className="flex-1 hidden md:flex flex-col h-full bg-[url('/chat-pattern.png')] bg-repeat bg-[length:400px_400px] bg-white">
+      <div className={`flex-1 flex-col h-full bg-[url('/chat-pattern.png')] bg-repeat bg-[length:400px_400px] bg-white ${isMobileChatOpen ? 'flex' : 'hidden md:flex'}`}>
          
          {/* Chat Header */}
          <div className="p-4 border-b border-zinc-100 bg-white/90 backdrop-blur-md flex items-center justify-between shrink-0">
            <div className="flex items-center gap-3">
+             <button 
+               onClick={() => setIsMobileChatOpen(false)}
+               className="md:hidden p-2 -ml-2 text-muted-foreground hover:bg-zinc-100 rounded-full transition-colors"
+             >
+               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+             </button>
              <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-bold">
                {activeContact.avatar}
              </div>
@@ -153,17 +160,25 @@ export default function ChatsPage() {
              </div>
            )}
 
-           <div className="flex items-end gap-2 bg-zinc-50 border border-zinc-200 rounded-2xl p-2 focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary transition-all shadow-sm">
+           <div 
+             onClick={() => textareaRef.current?.focus()}
+             className="flex items-end gap-2 bg-zinc-50 border border-zinc-200 rounded-2xl p-2 focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary transition-all shadow-sm cursor-text"
+           >
              <button 
-               onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+               onClick={(e) => { e.stopPropagation(); setShowEmojiPicker(!showEmojiPicker); setShowAttachmentMenu(false); }}
                className="p-2.5 text-muted-foreground hover:bg-zinc-200 hover:text-zinc-800 rounded-xl transition-colors shrink-0"
              >
                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg>
              </button>
              <textarea 
+               ref={textareaRef}
                rows={1}
                value={messageInput}
                onChange={(e) => setMessageInput(e.target.value)}
+               onFocus={() => {
+                 setShowEmojiPicker(false);
+                 setShowAttachmentMenu(false);
+               }}
                placeholder="Type a message..." 
                className="w-full bg-transparent border-none outline-none resize-none text-foreground text-sm font-medium py-3 max-h-[120px] hide-scrollbar"
              />
@@ -209,7 +224,7 @@ export default function ChatsPage() {
              )}
 
              <button 
-               onClick={() => setShowAttachmentMenu(!showAttachmentMenu)}
+               onClick={(e) => { e.stopPropagation(); setShowAttachmentMenu(!showAttachmentMenu); setShowEmojiPicker(false); }}
                className="p-2.5 text-muted-foreground hover:bg-zinc-200 hover:text-zinc-800 rounded-xl transition-colors shrink-0 mb-0.5"
              >
                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
