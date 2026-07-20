@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, ReactNode } from "react";
+import { useState, useEffect, ReactNode, useRef } from "react";
 import { api, clearAuthToken } from "@/lib/api";
 import { useRouter } from "next/navigation";
 import EditProfileDrawer from "@/components/profile/EditProfileDrawer";
@@ -8,7 +8,7 @@ import FollowersModal from "@/components/profile/FollowersModal";
 import CreatePostModal from "@/components/feed/CreatePostModal";
 import Link from "next/link";
 
-type Tab = "posts" | "followers" | "following" | "about" | "results";
+type Tab = "posts" | "clips" | "saved" | "tagged";
 
 interface UserProfile {
   id: string;
@@ -175,8 +175,59 @@ export default function ProfilePage() {
   const [editOpen, setEditOpen] = useState(false);
   const [followModal, setFollowModal] = useState<{ open: boolean; mode: "followers" | "following" }>({ open: false, mode: "followers" });
   const [createPostOpen, setCreatePostOpen] = useState(false);
+  const coverInputRef = useRef<HTMLInputElement>(null);
+  const profileInputRef = useRef<HTMLInputElement>(null);
+  
+  const handleProfileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = async () => {
+      const base64String = (reader.result as string).split(",")[1];
+      try {
+        const res = await api.put("/api/users/profile", { profilePictureBase64: base64String });
+        if (res.data) setProfile(res.data);
+      } catch (err) {
+        console.error("Failed to upload profile picture", err);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+  
+  const handleCoverUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = async () => {
+      const base64String = (reader.result as string).split(",")[1];
+      try {
+        const res = await api.put("/api/users/profile", { coverPictureBase64: base64String });
+        if (res.data) setProfile(res.data);
+      } catch (err) {
+        console.error("Failed to upload cover", err);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [bioExpanded, setBioExpanded] = useState(false);
+  const [showTabs, setShowTabs] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
   const router = useRouter();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      if (currentScrollY > lastScrollY && currentScrollY > 300) {
+        setShowTabs(false);
+      } else {
+        setShowTabs(true);
+      }
+      setLastScrollY(currentScrollY);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [lastScrollY]);
 
   const handleSignOut = () => {
     clearAuthToken();
@@ -184,6 +235,25 @@ export default function ProfilePage() {
   };
 
   useEffect(() => {
+    const token = localStorage.getItem('rh_token');
+    
+    // If no token, immediately fallback to mock data to prevent global 401 redirect
+    if (!token || token === 'undefined' || token === 'null') {
+      setProfile({
+        id: "mock-1",
+        name: "Alexey Navolokin",
+        email: "alexey@resulthub.com",
+        role: "PRO PREDICTOR",
+        bio: "Tech enthusiast and sports fanatic. Turning predictions into perfection.",
+        city: "San Francisco, CA",
+        followerCount: 14200,
+        followingCount: 340,
+        postCount: 89,
+      });
+      setLoading(false);
+      return;
+    }
+
     api.users.getMe()
       .then(d => setProfile(d))
       .catch(() => {
@@ -217,472 +287,245 @@ export default function ProfilePage() {
   const followingCount = profile.followingCount ?? 0;
   const postCount = profile.postCount ?? 0;
 
-  const TABS: { key: Tab; label: string; count?: number }[] = [
-    { key: "posts", label: "Posts" },
-    { key: "followers", label: "Followers", count: followerCount },
-    { key: "following", label: "Following", count: followingCount },
-    { key: "results", label: "Results" },
-    { key: "about", label: "About" },
+  const TABS: { key: Tab; label: string; icon: ReactNode }[] = [
+    { key: "posts", label: "Posts", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg> },
+    { key: "clips", label: "Clips", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="2" y1="7" x2="7" y2="7"/><line x1="2" y1="17" x2="7" y2="17"/><line x1="17" y1="17" x2="22" y2="17"/><line x1="17" y1="7" x2="22" y2="7"/></svg> },
+    { key: "saved", label: "Saved", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg> },
+    { key: "tagged", label: "Tagged", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg> },
+  ];
+
+  const FLASHBACKS = [
+    { id: "1", title: "Highlights", img: "https://loremflickr.com/150/150/party" },
+    { id: "2", title: "Gym", img: "https://loremflickr.com/150/150/gym" },
+    { id: "3", title: "Travel", img: "https://loremflickr.com/150/150/beach" },
+    { id: "4", title: "Food", img: "https://loremflickr.com/150/150/food" },
+    { id: "5", title: "Vibes", img: "https://loremflickr.com/150/150/smile" },
+    { id: "6", title: "Events", img: "https://loremflickr.com/150/150/concert" },
+    { id: "7", title: "Pets", img: "https://loremflickr.com/150/150/dog" },
+    { id: "8", title: "Art", img: "https://loremflickr.com/150/150/art" },
   ];
 
   return (
-    <div className="w-full min-h-screen -mx-2 sm:-mx-4 lg:-mx-6">
-
-      {/* ══════════════════════════════════════
-          COVER — Rich, Content-filled Banner
-          ══════════════════════════════════════ */}
-      <div className="relative w-full h-56 lg:h-72 overflow-hidden bg-zinc-900 group">
-        {profile.coverPictureBase64 ? (
-          <img
-            src={`data:image/jpeg;base64,${profile.coverPictureBase64}`}
-            alt="Cover"
-            className="absolute inset-0 w-full h-full object-cover opacity-80"
-          />
-        ) : (
-          <>
-            {/* Base gradient fallback */}
-            <div className="absolute inset-0 bg-gradient-to-br from-[#1a1060] via-[#3b2aa0] to-[#FFC82A]" />
-
-            {/* Animated radial glows */}
-            <div className="absolute top-0 left-0 w-80 h-80 bg-violet-500/30 rounded-full blur-3xl -translate-x-1/3 -translate-y-1/3" />
-            <div className="absolute bottom-0 right-0 w-96 h-96 bg-indigo-400/20 rounded-full blur-3xl translate-x-1/4 translate-y-1/4" />
-            <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-purple-600/20 rounded-full blur-2xl -translate-x-1/2 -translate-y-1/2" />
-
-            {/* Dot grid pattern */}
-            <div className="absolute inset-0 opacity-20" style={{
-              backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.4) 1px, transparent 1px)",
-              backgroundSize: "28px 28px"
-            }} />
-
-            {/* Diagonal stripes */}
-            <div className="absolute inset-0 opacity-5" style={{
-              backgroundImage: "repeating-linear-gradient(45deg, white 0px, white 1px, transparent 1px, transparent 20px)"
-            }} />
-          </>
-        )}
-
-        {/* Content — positioned in TOP half so avatar ring never covers it */}
-        <div className="absolute inset-x-0 top-0 h-[60%] flex flex-col justify-center px-6 lg:px-10">
-          <div className="flex items-start justify-between gap-4">
-            {/* Name + meta block */}
-            <div className="min-w-0">
-              <div className="flex items-center gap-2 mb-2 flex-wrap">
-                <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-black uppercase tracking-widest ring-1 ring-white/20 backdrop-blur-sm ${
-                  profile.role === "ORGANIZATION" ? "bg-amber-400/90 text-amber-900" :
-                  profile.role === "ADMIN" ? "bg-red-500/90 text-white" : "bg-white/15 text-white"
-                }`}>
-                  {profile.role || "User"}
-                </span>
-                {profile.city && (
-                  <span className="flex items-center gap-1 text-white/60 text-xs font-medium">
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 22s8-4.5 8-11.8A8 8 0 0 0 4 10.2C4 17.5 12 22 12 22z"/><circle cx="12" cy="10" r="3"/></svg>
-                    {profile.city}
-                  </span>
-                )}
-              </div>
-              <h1 className="text-2xl lg:text-4xl font-black text-white tracking-tight drop-shadow-lg leading-tight truncate">
-                {profile.name}
-              </h1>
-              {profile.bio && (
-                <p className="text-white/60 text-sm mt-1.5 max-w-lg line-clamp-1 font-medium">{profile.bio}</p>
-              )}
-              {/* Fan Badges */}
-              <div className="mt-3 flex gap-2">
-                <span className="flex items-center gap-1.5 px-2.5 py-1 bg-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase tracking-wider rounded-full border border-emerald-500/30 backdrop-blur-sm">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
-                  Sports Fan
-                </span>
-                <span className="flex items-center gap-1.5 px-2.5 py-1 bg-[#FFC82A]/20 text-[#FDE047] text-[10px] font-black uppercase tracking-wider rounded-full border border-[#FFC82A]/30 backdrop-blur-sm">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                  Top Predictor
-                </span>
-              </div>
-            </div>
-
-            {/* Floating mini stats — top-right of cover */}
-            <div className="hidden lg:flex items-center gap-3 shrink-0">
-              {[
-                { val: "0", label: "Posts" },
-                { val: fmtNum(followerCount), label: "Followers" },
-                { val: fmtNum(followingCount), label: "Following" },
-              ].map(s => (
-                <div key={s.label} className="text-center bg-white/10 backdrop-blur-sm border border-white/10 rounded-xl px-4 py-2.5">
-                  <div className="text-xl font-black text-white tabular-nums">{s.val}</div>
-                  <div className="text-[10px] text-white/50 font-semibold uppercase tracking-wider">{s.label}</div>
-                </div>
-              ))}
-            </div>
+    <div className="w-full min-h-screen pb-10 bg-background">
+      <div className="flex flex-col lg:flex-row w-full h-auto lg:h-[300px]">
+        
+        {/* Left 60%: Cover Image */}
+        <div className="relative w-full lg:w-[60%] h-64 lg:h-full overflow-hidden bg-zinc-900 group">
+          {profile.coverPictureBase64 ? (
+            <img src={`data:image/jpeg;base64,${profile.coverPictureBase64}`} alt="Cover" className="absolute inset-0 w-full h-full object-cover opacity-80" />
+          ) : (
+             <img src="https://loremflickr.com/1200/400/sports" alt="Cover Placeholder" className="absolute inset-0 w-full h-full object-cover opacity-80" />
+          )}
+          {/* Edit Cover icon */}
+          <div className="absolute bottom-4 right-4">
+            <input type="file" accept="image/*" className="hidden" ref={coverInputRef} onChange={handleCoverUpload} />
+            <button onClick={() => coverInputRef.current?.click()} className="flex items-center justify-center w-9 h-9 bg-black/40 hover:bg-black/60 backdrop-blur-sm border border-white/10 rounded-full text-white transition-all shadow-lg">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            </button>
           </div>
         </div>
 
-        {/* Subtle bottom fade so avatar blends in */}
-        <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-black/60 to-transparent" />
-
-        {/* Top-right edit cover hint (only visible to owner) */}
-        <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-          <button
-            onClick={() => setEditOpen(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-black/40 hover:bg-black/60 backdrop-blur-sm border border-white/10 rounded-full text-white text-xs font-bold transition-all shadow-lg"
-          >
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-            Edit Cover
-          </button>
+        {/* Right 40%: FlashBacks */}
+        <div className="relative w-full lg:w-[40%] h-64 lg:h-full bg-transparent border-b lg:border-b-0 lg:border-l border-transparent flex flex-col pt-4 overflow-hidden">
+           <div className="px-4 lg:px-8 shrink-0">
+             <h3 className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-4">FlashBacks</h3>
+           </div>
+           
+           {/* Removed hide-scrollbar to show vertical scroll on the right side */}
+           <div className="flex-1 overflow-y-auto px-4 lg:px-8 pb-4">
+             <div className="grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-4 gap-4 gap-y-6 justify-items-center">
+               
+               {/* Add New FlashBack */}
+               <div className="flex flex-col items-center gap-2 cursor-pointer group">
+                 <div className="w-14 h-14 lg:w-16 lg:h-16 rounded-full border-[3px] border-dashed border-zinc-300 flex items-center justify-center bg-transparent group-hover:border-[#00a896] group-hover:bg-[#00a896]/5 transition-colors">
+                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-zinc-400 group-hover:text-[#00a896] transition-colors"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                 </div>
+                 <span className="text-[10px] font-bold text-zinc-500">New</span>
+               </div>
+               
+               {/* Existing FlashBacks */}
+               {FLASHBACKS.map(fb => (
+                 <div key={fb.id} className="flex flex-col items-center gap-2 cursor-pointer group">
+                   <div className="w-14 h-14 lg:w-16 lg:h-16 rounded-full p-[2.5px] bg-gradient-to-tr from-[#00a896] to-[#FFC82A] group-hover:scale-105 transition-transform duration-300 shadow-sm">
+                     <div className="w-full h-full rounded-full border-[2.5px] border-white overflow-hidden bg-white">
+                       <img src={fb.img} alt={fb.title} className="w-full h-full object-cover" />
+                     </div>
+                   </div>
+                   <span className="text-[10px] font-bold text-zinc-700 w-full text-center truncate">{fb.title}</span>
+                 </div>
+               ))}
+             </div>
+           </div>
         </div>
       </div>
 
       {/* ══════════════════════════════════════
-          AVATAR ROW
+          PROFILE INFO ROW & WHO TO FOLLOW GRID
           ══════════════════════════════════════ */}
-      <div className="max-w-[1100px] mx-auto px-4 lg:px-8">
-        <div className="flex flex-col sm:flex-row sm:items-end gap-4 -mt-14 mb-0 relative z-10">
-
-          {/* Avatar */}
-          <div className="relative shrink-0 self-start sm:self-auto">
-            <div className={`w-28 h-28 lg:w-32 lg:h-32 rounded-full overflow-hidden bg-gradient-to-br ${gr} text-white font-black text-4xl flex items-center justify-center ring-[5px] ring-white shadow-2xl`}>
-              {profile.profilePictureBase64
-                ? <img src={`data:image/jpeg;base64,${profile.profilePictureBase64}`} className="w-full h-full object-cover" alt="" />
-                : <span>{initials}</span>}
-            </div>
-            {/* Online indicator */}
-            <div className="absolute bottom-2 right-2 w-4 h-4 bg-emerald-400 rounded-full ring-2 ring-white" />
-          </div>
-
-          {/* Name row desktop (hidden on mobile since it's on cover) */}
-          <div className="flex-1 min-w-0 pb-1 mt-1 sm:mt-0 lg:hidden">
-            <h1 className="text-xl font-black text-zinc-900 tracking-tight">{profile.name}</h1>
-            <p className="text-sm text-zinc-500 font-medium">{profile.email}</p>
-          </div>
-          <div className="hidden lg:block flex-1" />
-
-          {/* Action */}
-          <div className="shrink-0 pb-1 flex gap-2 relative">
-            <button
-              onClick={() => setEditOpen(true)}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-white border-2 border-zinc-200 text-sm font-bold text-zinc-700 hover:border-[#FFC82A] hover:text-[#FFC82A] hover:bg-[#FFC82A]/5 transition-all shadow-sm"
-            >
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-              Edit Profile
-            </button>
-            <button
-              onClick={() => setSettingsOpen(!settingsOpen)}
-              className="w-[42px] h-[42px] flex items-center justify-center rounded-full bg-white border-2 border-zinc-200 text-zinc-700 hover:border-[#FFC82A] hover:text-[#FFC82A] hover:bg-[#FFC82A]/5 transition-all shadow-sm"
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-            </button>
-            {settingsOpen && (
-              <>
-                {/* Invisible overlay to click out of dropdown */}
-                <div className="fixed inset-0 z-40" onClick={() => setSettingsOpen(false)} />
-                <div className="absolute top-[52px] right-0 w-48 bg-white border border-zinc-100 rounded-xl shadow-lg py-1.5 z-50 overflow-hidden">
-                  <button
-                    onClick={handleSignOut}
-                    className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm font-bold text-red-600 hover:bg-red-50 transition-colors text-left"
-                  >
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-                    Sign Out
-                  </button>
-                </div>
-              </>
-            )}
-          </div>
-        </div>
-
-        {/* ══════════════════════════════════════
-            STATS + TABS BAR
-            ══════════════════════════════════════ */}
-        <div className="flex items-center mt-4 border-b border-zinc-100 overflow-x-auto hide-scrollbar">
-          {/* Mobile stats */}
-          <div className="flex items-center gap-5 mr-6 lg:hidden shrink-0">
-            {[
-              { val: fmtNum(postCount), label: "Posts", fn: undefined },
-              { val: fmtNum(followerCount), label: "Followers", fn: () => setFollowModal({ open: true, mode: "followers" }) },
-              { val: fmtNum(followingCount), label: "Following", fn: () => setFollowModal({ open: true, mode: "following" }) },
-            ].map(s => (
-              <button key={s.label} onClick={s.fn} className="flex items-baseline gap-1 py-3.5 group shrink-0">
-                <span className="text-lg font-black text-zinc-900 tabular-nums group-hover:text-[#FFC82A] transition-colors">{s.val}</span>
-                <span className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider">{s.label}</span>
+      <div className="flex flex-col lg:flex-row w-full max-w-[1920px] mx-auto">
+      
+      {/* Content about user (Left 60%) */}
+      <div className="w-full lg:w-[60%] px-4 lg:px-8 pt-4 lg:pt-0 border-r border-zinc-100">
+        <div className="flex flex-col lg:flex-row items-start lg:items-end gap-6 lg:gap-10 pb-10 border-b border-zinc-100 relative z-10">
+          
+          {/* Avatar and Stats */}
+          <div className="flex flex-col items-start shrink-0">
+            {/* Avatar */}
+            <div className="relative -mt-10 lg:-mt-12 z-20 shrink-0">
+              <div className={`w-32 h-32 lg:w-40 lg:h-40 rounded-full overflow-hidden bg-gradient-to-br ${gr} text-white font-black text-5xl flex items-center justify-center ring-[6px] ring-background shadow-xl`}>
+                {profile.profilePictureBase64
+                  ? <img src={`data:image/jpeg;base64,${profile.profilePictureBase64}`} className="w-full h-full object-cover" alt="" />
+                  : <span>{initials}</span>}
+              </div>
+              {/* Edit Avatar */}
+              <input type="file" accept="image/*" className="hidden" ref={profileInputRef} onChange={handleProfileUpload} />
+              <button onClick={() => profileInputRef.current?.click()} className="absolute bottom-1 right-1 w-9 h-9 bg-[#FFC82A] text-zinc-900 rounded-full flex items-center justify-center border-4 border-background shadow-md hover:scale-105 transition-transform">
+                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
               </button>
-            ))}
-          </div>
-
-          {/* Tabs */}
-          <div className="flex items-center gap-0 flex-1">
-            {TABS.map(t => (
-              <button
-                key={t.key}
-                onClick={() => setTab(t.key)}
-                className={`relative px-4 py-3.5 text-sm font-bold transition-colors whitespace-nowrap shrink-0 ${tab === t.key ? "text-[#FFC82A]" : "text-zinc-500 hover:text-zinc-900"}`}
-              >
-                {t.label}
-                {t.count !== undefined && t.count > 0 && (
-                  <span className="ml-1.5 text-[11px] font-black bg-zinc-100 text-zinc-500 px-1.5 py-0.5 rounded-full">{fmtNum(t.count)}</span>
-                )}
-                {tab === t.key && <span className="absolute bottom-0 left-2 right-2 h-[2px] bg-[#FFC82A] rounded-t-full" />}
+            </div>
+            
+            {/* Stats Under Profile Picture */}
+            <div className="flex items-center gap-6 mt-2 w-full -ml-4 lg:-ml-8">
+              <button onClick={() => setFollowModal({ open: true, mode: "following" })} className="flex flex-col group items-start">
+                <span className="text-lg font-black text-zinc-900 group-hover:text-[#FFC82A] transition-colors">{fmtNum(followingCount)}</span>
+                <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Following</span>
               </button>
-            ))}
-          </div>
-        </div>
-
-        {/* ══════════════════════════════════════
-            BODY GRID
-            ══════════════════════════════════════ */}
-        <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-5 py-5 items-stretch">
-
-          {/* ── LEFT PANEL (sticky) ───────────── */}
-          <div className="lg:sticky lg:top-5 flex flex-col gap-4 h-full">
-
-            {/* About card */}
-            <div className="bg-white border border-zinc-100 rounded-2xl overflow-hidden shadow-sm">
-              <div className="px-4 py-3 border-b border-zinc-50 flex items-center justify-between">
-                <p className="text-xs font-black text-zinc-400 uppercase tracking-widest">About</p>
-                <button onClick={() => setEditOpen(true)} className="text-[11px] font-bold text-[#FFC82A] hover:underline">Edit</button>
-              </div>
-              <div className="p-4 space-y-2.5">
-                {profile.bio ? (
-                  <p className="text-sm text-zinc-700 leading-relaxed">{profile.bio}</p>
-                ) : (
-                  <button onClick={() => setEditOpen(true)} className="flex items-center gap-1.5 text-sm text-zinc-400 hover:text-[#FFC82A] transition-colors italic">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                    Add a bio
-                  </button>
-                )}
-                <div className="pt-1 space-y-2">
-                  <InfoRow icon="mail" val={profile.email} />
-                  {profile.website && <InfoRow icon="globe" val={profile.website} isLink />}
-                  {profile.city && <InfoRow icon="pin" val={profile.city} />}
-                  {profile.phoneNumber && <InfoRow icon="phone" val={profile.phoneNumber} />}
-                </div>
-                {!profile.website && (
-                  <button onClick={() => setEditOpen(true)} className="text-[11px] text-zinc-400 hover:text-[#FFC82A] font-semibold transition-colors">
-                    + Add website, city, phone...
-                  </button>
-                )}
-              </div>
-            </div>
-
-            {/* Profile Completion */}
-            <ProfileCompletion profile={profile} onEdit={() => setEditOpen(true)} />
-
-            {/* Followers mini */}
-            <div className="bg-white border border-zinc-100 rounded-2xl overflow-hidden shadow-sm flex flex-col flex-1">
-              <div className="px-4 py-3 border-b border-zinc-50 flex items-center justify-between shrink-0">
-                <p className="text-xs font-black text-zinc-400 uppercase tracking-widest">Followers</p>
-                <button onClick={() => setFollowModal({ open: true, mode: "followers" })} className="text-[11px] font-bold text-[#FFC82A] hover:underline">See all</button>
-              </div>
-              <div className="flex-1">
-                {profile.id && <FollowInline userId={profile.id} mode="followers" />}
+              <button onClick={() => setFollowModal({ open: true, mode: "followers" })} className="flex flex-col group items-start">
+                <span className="text-lg font-black text-zinc-900 group-hover:text-[#FFC82A] transition-colors">{fmtNum(followerCount)}</span>
+                <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Followers</span>
+              </button>
+              <div className="flex flex-col items-start">
+                <span className="text-lg font-black text-zinc-900">{fmtNum(postCount)}</span>
+                <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Posts</span>
               </div>
             </div>
           </div>
 
-          {/* ── RIGHT PANEL ─────────────────────── */}
-          <div className="min-w-0 flex flex-col h-full gap-4">
-
-            {/* POSTS TAB */}
-            {tab === "posts" && (
-              <>
-                {/* Get started hero */}
-                <div className="relative bg-[#2D248A] rounded-2xl overflow-hidden shadow-lg">
-                  <div className="absolute inset-0 opacity-10" style={{ backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.5) 1px, transparent 1px)", backgroundSize: "20px 20px" }} />
-                  <div className="relative z-10 p-6 lg:p-8 flex flex-col sm:flex-row items-center sm:items-start gap-6">
-                    <div className="w-16 h-16 rounded-2xl bg-white/15 backdrop-blur-sm border border-white/20 flex items-center justify-center shrink-0">
-                      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5">
-                        <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
-                      </svg>
-                    </div>
-                    <div className="text-center sm:text-left">
-                      <h3 className="text-xl font-black text-white">Start sharing with the community</h3>
-                      <p className="text-white/70 text-sm mt-1.5 leading-relaxed max-w-sm">
-                        Post complaints, polls, or updates. Your voice reaches thousands of people on ResultHub.
-                      </p>
-                      <div className="flex flex-wrap gap-3 mt-5 justify-center sm:justify-start">
-                        <button onClick={() => setCreatePostOpen(true)} className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-[#2D248A] text-sm font-black rounded-full hover:bg-zinc-100 transition-colors shadow-lg">
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                          Create Post
-                        </button>
-                        <Link href="/" className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/15 text-white text-sm font-bold rounded-full hover:bg-white/25 transition-colors border border-white/20">
-                          Explore Feed
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-white border border-zinc-100 rounded-2xl shadow-sm overflow-hidden flex flex-col flex-1">
-                  <div className="px-5 py-4 border-b border-zinc-50 shrink-0">
-                    <p className="text-sm font-black text-zinc-800">Your Activity Overview</p>
-                    <p className="text-xs text-zinc-400 mt-0.5">Stats update as you engage with the platform</p>
-                  </div>
-                  <div className="grid grid-cols-2 divide-zinc-100 divide-x divide-y flex-1">
-                    {[
-                      {
-                        label: "Posts", val: fmtNum(postCount),
-                        color: "bg-violet-50 text-[#FFC82A]",
-                        icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-                      },
-                      {
-                        label: "Followers", val: fmtNum(followerCount),
-                        color: "bg-blue-50 text-blue-500",
-                        icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                      },
-                      {
-                        label: "Following", val: fmtNum(followingCount),
-                        color: "bg-emerald-50 text-emerald-500",
-                        icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
-                      },
-                      {
-                        label: "Upvotes", val: "0",
-                        color: "bg-amber-50 text-amber-500",
-                        icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
-                      },
-                    ].map(s => (
-                      <div key={s.label} className="flex flex-col items-center justify-center gap-3 py-5 px-4">
-                        <div className={`w-12 h-12 rounded-2xl ${s.color} flex items-center justify-center shadow-sm`}>
-                          {s.icon}
-                        </div>
-                        <div className="text-center">
-                          <div className="text-3xl font-black text-zinc-900 tabular-nums leading-none">{s.val}</div>
-                          <div className="text-[11px] font-bold text-zinc-400 uppercase tracking-widest mt-1.5">{s.label}</div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </>
-            )}
-
-            {/* FOLLOWERS TAB */}
-            {tab === "followers" && profile.id && (
-              <div className="bg-white border border-zinc-100 rounded-2xl shadow-sm overflow-hidden">
-                <div className="px-5 py-4 border-b border-zinc-50 flex items-center justify-between">
-                  <div>
-                    <h3 className="text-sm font-black text-zinc-800">People who follow you</h3>
-                    <p className="text-xs text-zinc-400 mt-0.5">{fmtNum(followerCount)} follower{followerCount !== 1 ? "s" : ""}</p>
-                  </div>
-                </div>
-                <FollowInline userId={profile.id} mode="followers" />
-              </div>
-            )}
-
-            {/* FOLLOWING TAB */}
-            {tab === "following" && profile.id && (
-              <div className="bg-white border border-zinc-100 rounded-2xl shadow-sm overflow-hidden">
-                <div className="px-5 py-4 border-b border-zinc-50">
-                  <h3 className="text-sm font-black text-zinc-800">People you follow</h3>
-                  <p className="text-xs text-zinc-400 mt-0.5">{fmtNum(followingCount)} account{followingCount !== 1 ? "s" : ""}</p>
-                </div>
-                <FollowInline userId={profile.id} mode="following" />
-              </div>
-            )}
-
-            {/* ABOUT TAB */}
-            {tab === "about" && (
-              <div className="space-y-4">
-                <div className="bg-white border border-zinc-100 rounded-2xl shadow-sm overflow-hidden">
-                  <div className="px-5 py-4 border-b border-zinc-50 flex items-center justify-between">
-                    <h3 className="text-sm font-black text-zinc-800">About Me</h3>
-                    <button onClick={() => setEditOpen(true)} className="text-xs font-bold text-[#FFC82A] hover:underline">Edit</button>
-                  </div>
-                  {profile.bio && (
-                    <div className="px-5 py-4 border-b border-zinc-50">
-                      <p className="text-sm text-zinc-700 leading-relaxed">{profile.bio}</p>
-                    </div>
+          {/* User Bio (To the right of Avatar) */}
+          <div className="flex-1 min-w-0 pb-2 pt-2 sm:pt-0 lg:ml-4">
+             <div className="flex items-start justify-between">
+              <div>
+                <h1 className="text-2xl lg:text-3xl font-black text-zinc-900 tracking-tight">{profile.name}</h1>
+                <p className="text-sm text-zinc-500 font-semibold mb-3">{profile.email}</p>
+                <div className="flex items-center gap-2 flex-wrap mb-4">
+                  <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-widest ${
+                    profile.role === "ORGANIZATION" ? "bg-amber-100 text-amber-700" :
+                    profile.role === "ADMIN" ? "bg-red-100 text-red-700" : "bg-zinc-100 text-zinc-600"
+                  }`}>
+                    {profile.role || "User"}
+                  </span>
+                  {profile.city && (
+                    <span className="text-xs font-semibold text-zinc-500 flex items-center gap-1">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 22s8-4.5 8-11.8A8 8 0 0 0 4 10.2C4 17.5 12 22 12 22z"/><circle cx="12" cy="10" r="3"/></svg>
+                      {profile.city}
+                    </span>
                   )}
-                  <div className="p-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {[
-                      { icon: "mail", label: "Email", val: profile.email },
-                      { icon: "role", label: "Account Type", val: profile.role },
-                      { icon: "phone", label: "Phone", val: profile.phoneNumber },
-                      { icon: "globe", label: "Website", val: profile.website, isLink: true },
-                      { icon: "pin", label: "City", val: profile.city },
-                    ].filter(r => r.val).map(row => (
-                      <div key={row.label} className="flex items-center gap-3 p-3.5 bg-zinc-50 rounded-xl border border-zinc-100">
-                        <div className="w-9 h-9 rounded-xl bg-white border border-zinc-200 flex items-center justify-center shrink-0 shadow-sm">
-                          <AboutIcon type={row.icon} />
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider">{row.label}</p>
-                          {row.isLink ? (
-                            <a href={row.val} target="_blank" rel="noopener noreferrer" className="text-sm font-semibold text-[#FFC82A] hover:underline truncate block mt-0.5">
-                              {row.val!.replace(/^https?:\/\//, "")}
-                            </a>
-                          ) : (
-                            <p className="text-sm font-semibold text-zinc-800 mt-0.5 truncate">{row.val}</p>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
                 </div>
+                {profile.bio && (
+                  <div className="mb-6 relative group">
+                    <p className={`text-sm text-zinc-700 font-medium leading-relaxed ${bioExpanded ? "" : "line-clamp-2"}`}>
+                      {profile.bio}
+                    </p>
+                    {!bioExpanded && profile.bio.length > 50 && (
+                      <button 
+                        onClick={() => setBioExpanded(true)}
+                        className="text-[11px] font-bold text-[#FFC82A] mt-1 hover:underline"
+                      >
+                        ... more
+                      </button>
+                    )}
+                  </div>
+                )}
               </div>
-            )}
-
-            {/* RESULTS TAB */}
-            {tab === "results" && (
-              <div className="space-y-4">
-                
-                {/* Gamification Stats */}
-                <div className="bg-white border border-zinc-100 rounded-2xl shadow-sm overflow-hidden">
-                  <div className="px-5 py-4 border-b border-zinc-50 flex items-center justify-between">
-                    <h3 className="text-sm font-black text-zinc-800">Prediction Accuracy</h3>
-                    <span className="px-2.5 py-1 bg-emerald-100 text-emerald-700 text-[10px] font-black uppercase tracking-wider rounded-full flex items-center gap-1"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="20 6 9 17 4 12"></polyline></svg>Top 5%</span>
-                  </div>
-                  <div className="p-6 flex flex-col sm:flex-row items-center gap-8">
-                    <div className="w-28 h-28 shrink-0 relative flex items-center justify-center">
-                       <svg className="absolute inset-0 w-full h-full text-zinc-100" viewBox="0 0 36 36"><path className="stroke-current" strokeWidth="3" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" /></svg>
-                       <svg className="absolute inset-0 w-full h-full text-[#FFC82A]" strokeDasharray="75, 100" viewBox="0 0 36 36"><path className="stroke-current" strokeWidth="3" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" /></svg>
-                       <span className="text-3xl font-black text-zinc-800 tracking-tighter">75<span className="text-lg">%</span></span>
-                    </div>
-                    <div className="flex-1 grid grid-cols-2 gap-4 w-full">
-                       <div className="bg-zinc-50 rounded-xl p-4 border border-zinc-100 text-center">
-                         <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1">Correct Picks</p>
-                         <p className="text-2xl font-black text-zinc-900 tabular-nums">142</p>
-                       </div>
-                       <div className="bg-zinc-50 rounded-xl p-4 border border-zinc-100 text-center">
-                         <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1">Polls Won</p>
-                         <p className="text-2xl font-black text-zinc-900 tabular-nums">38</p>
-                       </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Tracked Teams / Result Settings */}
-                <div className="bg-white border border-zinc-100 rounded-2xl shadow-sm overflow-hidden">
-                  <div className="px-5 py-4 border-b border-zinc-50">
-                    <h3 className="text-sm font-black text-zinc-800">Tracked Teams & Topics</h3>
-                    <p className="text-xs text-zinc-400 mt-0.5">Customize your live feed alerts and result preferences.</p>
-                  </div>
-                  <div className="p-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {[
-                      { name: "Real Madrid", type: "Football", color: "bg-blue-600", active: true },
-                      { name: "India Cricket", type: "Cricket", color: "bg-blue-800", active: true },
-                      { name: "E-Sports Majors", type: "Gaming", color: "bg-purple-600", active: false }
-                    ].map(t => (
-                      <div key={t.name} className="flex items-center gap-3 p-3 bg-zinc-50 border border-zinc-100 rounded-xl hover:border-zinc-200 transition-colors">
-                         <div className={`w-10 h-10 rounded-xl ${t.color} flex items-center justify-center shadow-inner shrink-0`}>
-                            <span className="text-white font-black text-xs tracking-wider">{t.name.substring(0,2).toUpperCase()}</span>
-                         </div>
-                         <div className="flex-1 min-w-0">
-                           <p className="text-sm font-bold text-zinc-800 truncate leading-tight">{t.name}</p>
-                           <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mt-0.5">{t.type}</p>
-                         </div>
-                         <button className={`w-10 h-6 rounded-full relative transition-colors shrink-0 ${t.active ? 'bg-[#FFC82A]' : 'bg-zinc-200'}`}>
-                           <div className={`absolute top-1 left-1 w-4 h-4 rounded-full bg-white shadow-sm transition-transform ${t.active ? 'translate-x-4' : ''}`}></div>
-                         </button>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="p-4 bg-zinc-50/50 border-t border-zinc-100">
-                    <button className="w-full py-2.5 bg-white border-2 border-zinc-200 border-dashed rounded-xl text-sm font-bold text-zinc-500 hover:text-[#FFC82A] hover:border-[#FFC82A] hover:bg-[#FFC82A]/5 transition-all">
-                      + Add New Tracker
-                    </button>
-                  </div>
-                </div>
-
-              </div>
-            )}
+            </div>
           </div>
         </div>
+      </div>
+      
+      {/* Who to Follow (Right 40%) */}
+      <div className="w-full lg:w-[40%] flex flex-col px-4 lg:px-6 pt-6 lg:pt-6 lg:min-h-full border-l border-zinc-100">
+         {/* Card 2: Who to Follow */}
+         <div className="bg-white border border-zinc-100 rounded-2xl shadow-[0_2px_10px_-3px_rgba(0,0,0,0.05)] overflow-hidden shrink-0">
+            <div className="p-3 border-b border-zinc-50 flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-amber-300 flex items-center justify-center text-white shadow-inner shrink-0">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              </div>
+              <div>
+                <h4 className="text-sm font-black text-zinc-900 leading-tight">Who to Follow</h4>
+                <p className="text-[11px] text-zinc-400 font-semibold">Suggested publishers</p>
+              </div>
+            </div>
+
+            <div className="flex flex-col">
+              {[
+                { name: "ABC College", handle: "abc-college", init: "AC", bg: "bg-[#8A2BE2]", border: "border-[#FFC82A]" },
+                { name: "ResultHub Workspace", handle: "resulthub-workspace", init: "RW", bg: "bg-[#00A896]", border: "border-[#FF7F50]" },
+              ].map((s, i) => (
+                <div key={i} className="flex items-center justify-between p-2.5 border-b border-zinc-50 hover:bg-zinc-50 transition-colors">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className={`w-11 h-11 rounded-[14px] flex items-center justify-center text-white font-black text-sm ring-2 ring-white border-[2px] ${s.border} ${s.bg} shrink-0`}>
+                      {s.init}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <h5 className="text-sm font-bold text-zinc-900 truncate">{s.name}</h5>
+                      <p className="text-xs text-zinc-400 truncate">@{s.handle}</p>
+                    </div>
+                  </div>
+                  <button className="px-4 py-1.5 bg-zinc-900 text-white text-xs font-bold rounded-full hover:bg-zinc-800 transition-colors shrink-0 ml-3">
+                    Follow
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            <button className="w-full p-2 flex items-center justify-center gap-1 text-xs font-black text-[#FFC82A] hover:bg-zinc-50 transition-colors">
+              More Follow... 
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </button>
+         </div>
+      </div>
+      
+      </div>
+
+      {/* ══════════════════════════════════════
+          BODY GRID (Vertical Tabs + Content)
+          ══════════════════════════════════════ */}
+      <div className="flex flex-col lg:flex-row gap-8 py-8 items-start">
+
+        {/* ── TABS PANEL ───────────── */}
+        <div className={`w-full lg:w-20 shrink-0 sticky z-40 flex flex-row lg:flex-col justify-around lg:justify-start gap-2 overflow-x-auto hide-scrollbar py-2 lg:py-0 bg-background/80 backdrop-blur-md transition-all duration-300 ${showTabs ? 'top-[70px] translate-y-0 opacity-100' : 'top-0 -translate-y-[150%] opacity-0'}`}>
+          {TABS.map(t => (
+            <button
+              key={t.key}
+              onClick={() => setTab(t.key)}
+              title={t.label}
+              className={`flex items-center justify-center p-3 lg:p-4 rounded-xl transition-all shrink-0 ${tab === t.key ? 'bg-transparent text-black' : 'text-zinc-400 hover:text-black hover:bg-zinc-100'}`}
+            >
+              {t.icon}
+            </button>
+          ))}
+        </div>
+
+        {/* ── RIGHT PANEL (Content Grid) ───────────── */}
+        <div className="flex-1 w-full min-w-0">
+          <div className="columns-1 sm:columns-2 lg:columns-3 gap-4 space-y-4">
+            {/* Masonry Mock Content */}
+            {[1, 2, 3, 4, 5, 6].map(i => (
+              <div key={i} className="break-inside-avoid bg-zinc-100 rounded-2xl overflow-hidden border border-zinc-200/50 group cursor-pointer" style={{ height: `${Math.max(200, Math.floor(Math.random() * 300 + 150))}px` }}>
+                <div className="w-full h-full bg-zinc-200 relative">
+                  <img src={`https://loremflickr.com/400/${Math.floor(Math.random() * 300 + 300)}/abstract?random=${i}`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4">
+                    <div className="flex items-center gap-3 text-white">
+                      <span className="flex items-center gap-1 font-bold text-sm"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg> {Math.floor(Math.random() * 500)}</span>
+                      <span className="flex items-center gap-1 font-bold text-sm"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> {Math.floor(Math.random() * 50)}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
       </div>
 
       {/* Edit Drawer */}
@@ -714,36 +557,4 @@ export default function ProfilePage() {
     </div>
   );
 }
-
-/* ─── Info Row helper ───────────────────────────────── */
-function InfoRow({ icon, val, isLink = false }: { icon: string; val: string; isLink?: boolean }) {
-  const icons: Record<string, ReactNode> = {
-    mail: <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-zinc-400"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>,
-    globe: <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-zinc-400"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>,
-    pin: <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-zinc-400"><path d="M12 22s8-4.5 8-11.8A8 8 0 0 0 4 10.2C4 17.5 12 22 12 22z"/><circle cx="12" cy="10" r="3"/></svg>,
-    phone: <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-zinc-400"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.1 19.79 19.79 0 0 1 1.61 4.5 2 2 0 0 1 3.58 2.4h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 10a16 16 0 0 0 6.1 6.1l1.96-1.96a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>,
-  };
-  return (
-    <div className="flex items-center gap-2">
-      <span className="shrink-0">{icons[icon]}</span>
-      {isLink ? (
-        <a href={val} target="_blank" rel="noopener noreferrer" className="text-xs font-semibold text-[#FFC82A] hover:underline truncate">{val.replace(/^https?:\/\//, "")}</a>
-      ) : (
-        <span className="text-xs font-medium text-zinc-500 truncate">{val}</span>
-      )}
-    </div>
-  );
-}
-
-/* ─── About Icon helper ─────────────────────────────── */
-function AboutIcon({ type }: { type: string }) {
-  const cls = "text-zinc-500";
-  const icons: Record<string, ReactNode> = {
-    mail: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className={cls}><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>,
-    phone: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className={cls}><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.1 19.79 19.79 0 0 1 1.61 4.5 2 2 0 0 1 3.58 2.4h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 10a16 16 0 0 0 6.1 6.1l1.96-1.96a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>,
-    globe: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className={cls}><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>,
-    pin: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className={cls}><path d="M12 22s8-4.5 8-11.8A8 8 0 0 0 4 10.2C4 17.5 12 22 12 22z"/><circle cx="12" cy="10" r="3"/></svg>,
-    role: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className={cls}><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>,
-  };
-  return icons[type] || icons.mail;
-}
+
