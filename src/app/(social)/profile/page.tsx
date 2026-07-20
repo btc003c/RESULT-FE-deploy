@@ -185,7 +185,7 @@ export default function ProfilePage() {
     reader.onload = async () => {
       const base64String = (reader.result as string).split(",")[1];
       try {
-        const res = await api.put("/api/users/profile", { profilePictureBase64: base64String });
+        const res = await api.users.updateMe({ name: profile?.name || "", profilePictureBase64: base64String });
         if (res.data) setProfile(res.data);
       } catch (err) {
         console.error("Failed to upload profile picture", err);
@@ -201,7 +201,7 @@ export default function ProfilePage() {
     reader.onload = async () => {
       const base64String = (reader.result as string).split(",")[1];
       try {
-        const res = await api.put("/api/users/profile", { coverPictureBase64: base64String });
+        const res = await api.users.updateMe({ name: profile?.name || "", coverPictureBase64: base64String });
         if (res.data) setProfile(res.data);
       } catch (err) {
         console.error("Failed to upload cover", err);
