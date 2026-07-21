@@ -9,16 +9,18 @@ export default function SocialLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="flex flex-col md:flex-row min-h-screen pb-16 md:pb-0 w-full">
-      <SocialAuthGuard />
-      <MobileTopNav />
-      <LeftSidebar />
-      <div className="flex-1 flex flex-col min-w-0 w-full overflow-x-hidden">
-        <div className="mx-auto w-full max-w-[1352px] px-2 sm:px-4 lg:px-6 pb-4">
-          {children}
+    <div className="flex justify-center min-h-screen bg-background w-full">
+      <div className="flex flex-col md:flex-row min-h-screen pb-16 md:pb-0 w-full max-w-[1536px]">
+        <SocialAuthGuard />
+        <MobileTopNav />
+        <LeftSidebar />
+        <div className="flex-1 flex flex-col min-w-0 w-full overflow-x-hidden">
+          <div className="w-full px-2 sm:px-4 lg:px-6 pb-4">
+            {children}
+          </div>
         </div>
+        <BottomNav />
       </div>
-      <BottomNav />
     </div>
   );
 }

@@ -222,10 +222,12 @@ export default function LeftSidebar() {
   return (
     <>
       <aside
-        className={`sticky top-0 hidden md:flex flex-col h-screen z-40 transition-all duration-300 shrink-0
+        className={`relative sticky top-0 hidden md:flex flex-col h-screen z-40 transition-all duration-300 shrink-0
           ${isExpanded ? "w-[268px]" : "w-[76px]"}
           bg-[#FFC82A]/10 border-r border-[#FFC82A]/20 shadow-[1px_0_0_0_#f4f4f5]`}
       >
+        {/* Extended background for ultra-wide monitors */}
+        <div className="absolute top-0 right-full w-[50vw] h-full bg-[#FFC82A]/10 -z-10 hidden xl:block border-r border-transparent" />
         {/* Collapse toggle (Vertically Centered on Sidebar) */}
         <button
           onClick={() => { setIsExpanded(!isExpanded); setManualOverride(true); }}

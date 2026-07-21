@@ -6,9 +6,11 @@ import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Bell } from "lucide-react";
 import { AtomLogo } from "@/components/ui/Logos";
+import CreatePostModal from "@/components/feed/CreatePostModal";
 
 export default function MobileTopNav() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isPostModalOpen, setIsPostModalOpen] = useState(false);
   const pathname = usePathname();
 
   const navLinks: any[] = [
@@ -24,13 +26,11 @@ export default function MobileTopNav() {
 
   return (
     <>
-      <header className="md:hidden sticky top-0 z-40 bg-background/80 backdrop-blur-md border-b border-muted h-14 flex items-center justify-between px-4 w-full relative">
-        <button onClick={() => setIsOpen(true)} className="p-1 -ml-1 text-foreground/70 hover:text-foreground z-10 relative">
-          <Menu size={24} />
-        </button>
+      <header className="md:hidden sticky top-0 z-40 bg-background/80 backdrop-blur-md border-b border-muted h-14 flex items-center justify-between pl-2 pr-4 w-full relative">
         
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <Link href="/" className="flex items-center gap-0.5 pointer-events-auto">
+        {/* Left Side: Logo and Create Post */}
+        <div className="flex items-center gap-3">
+          <Link href="/" className="flex items-center gap-0.5">
             <div className="w-8 h-8 shrink-0">
               <img src="/icon.svg" alt="BindTime Logo" className="w-full h-full" />
             </div>
@@ -38,14 +38,32 @@ export default function MobileTopNav() {
               BindTime
             </span>
           </Link>
+
+          <button 
+            onClick={() => setIsPostModalOpen(true)}
+            className="w-8 h-8 text-foreground/80 hover:text-foreground flex items-center justify-center active:scale-95 transition-transform"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          </button>
         </div>
 
-        <Link href="/notifications" className="relative p-1 text-foreground/70 hover:text-foreground z-10">
-          <Bell size={22} />
-          <span className="absolute -top-1 -right-1 w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-black rounded-full flex items-center justify-center border-2 border-background">
-            3
-          </span>
-        </Link>
+        {/* Right Side: Search, Notification, Result Hub */}
+        <div className="flex items-center gap-4">
+          <Link href="/search" className="text-foreground/70 hover:text-foreground">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          </Link>
+
+          <Link href="/notifications" className="relative text-foreground/70 hover:text-foreground">
+            <Bell size={22} />
+            <span className="absolute -top-1 -right-1 w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-black rounded-full flex items-center justify-center border-2 border-background">
+              3
+            </span>
+          </Link>
+
+          <Link href="/results" className="text-foreground/70 hover:text-foreground">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 22h14a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v4"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M3 15h6"/><path d="M3 18h6"/></svg>
+          </Link>
+        </div>
       </header>
 
       {/* Mobile Drawer */}
@@ -111,6 +129,11 @@ export default function MobileTopNav() {
           </>
         )}
       </AnimatePresence>
+
+      <CreatePostModal 
+        isOpen={isPostModalOpen} 
+        onClose={() => setIsPostModalOpen(false)} 
+      />
     </>
   );
 }
