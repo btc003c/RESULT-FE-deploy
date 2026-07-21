@@ -32,7 +32,7 @@ export default function BottomNav() {
         {navItems.slice(0, 2).map((item) => {
           const isActive = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
           return (
-            <Link key={item.label} href={item.href} className={`flex flex-col items-center justify-center w-full space-y-1 transition-colors ${isActive ? "text-primary" : "text-muted-foreground hover:text-foreground"}`}>
+            <Link key={item.label} href={item.href} className={`flex flex-col items-center justify-center w-full space-y-1 transition-colors ${isActive ? "text-black" : "text-zinc-400 hover:text-zinc-600"}`}>
               {item.icon}
             </Link>
           );
@@ -51,7 +51,7 @@ export default function BottomNav() {
         {navItems.slice(2, 4).map((item) => {
           const isActive = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
           return (
-            <Link key={item.label} href={item.href} className={`flex flex-col items-center justify-center w-full space-y-1 transition-colors ${isActive ? "text-primary" : "text-muted-foreground hover:text-foreground"}`}>
+            <Link key={item.label} href={item.href} className={`flex flex-col items-center justify-center w-full space-y-1 transition-colors ${isActive ? "text-black" : "text-zinc-400 hover:text-zinc-600"}`}>
               {item.icon}
             </Link>
           );

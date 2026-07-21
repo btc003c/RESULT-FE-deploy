@@ -217,17 +217,16 @@ export default function ProfilePage() {
   const [showTabs, setShowTabs] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const router = useRouter();
-
   useEffect(() => {
     let lastScrollY = window.scrollY;
     let ticking = false;
 
     const updateTabsVisibility = () => {
       const currentScrollY = window.scrollY;
-      if (currentScrollY > lastScrollY) {
-        setShowTabs(false); // Scroll down -> hide
+      if (currentScrollY > lastScrollY && currentScrollY > 350) {
+        setShowTabs(false); // Scroll down deep -> hide
       } else {
-        setShowTabs(true); // Scroll up -> show
+        setShowTabs(true); // Scroll up or near top -> show
       }
       lastScrollY = currentScrollY;
       ticking = false;
@@ -324,13 +323,16 @@ export default function ProfilePage() {
 
   return (
     <div className="w-full min-h-screen pb-10 bg-background">
-      <div className="pt-4 pb-3 flex items-center">
+      <div className="px-4 lg:px-0 pt-4 pb-3 flex items-center">
         <h2 className="text-xl font-black text-zinc-500">{profile.name}</h2>
       </div>
-      <div className="flex flex-col lg:flex-row w-full h-auto lg:h-[300px]">
+      {/* ══════════════════════════════════════
+          TOP SECTION GRID (Cover, Flashbacks, Info, Follow)
+          ══════════════════════════════════════ */}
+      <div className="grid grid-cols-1 lg:grid-cols-5 w-full max-w-[1920px] mx-auto">
         
-        {/* Left 60%: Cover Image */}
-        <div className="relative w-full lg:w-[60%] h-64 lg:h-full overflow-hidden bg-zinc-900 group">
+        {/* Cover Image */}
+        <div className="order-1 lg:order-1 lg:col-span-3 relative w-full h-64 lg:h-[300px] overflow-hidden bg-zinc-900 group">
           {profile.coverPictureBase64 ? (
             <img src={`data:image/jpeg;base64,${profile.coverPictureBase64}`} alt="Cover" className="absolute inset-0 w-full h-full object-cover opacity-80" />
           ) : (
@@ -345,189 +347,167 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        {/* Right 40%: FlashBacks */}
-        <div className="relative w-full lg:w-[40%] h-64 lg:h-full bg-white rounded-2xl border-b lg:border-b-0 lg:border-l border-transparent flex flex-col pt-4 overflow-hidden">
-           <div className="px-4 lg:px-8 shrink-0">
-             <h3 className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-4">FlashBacks</h3>
-           </div>
-           
-           {/* Removed hide-scrollbar to show vertical scroll on the right side */}
-           <div className="flex-1 overflow-y-auto px-4 lg:px-8 pb-4">
-             <div className="grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-4 gap-4 gap-y-6 justify-items-center">
-               
-               {/* Add New FlashBack */}
-               <div className="flex flex-col items-center gap-2 cursor-pointer group">
-                 <div className="w-14 h-14 lg:w-16 lg:h-16 rounded-full border-[3px] border-dashed border-zinc-300 flex items-center justify-center bg-transparent group-hover:border-[#00a896] group-hover:bg-[#00a896]/5 transition-colors">
-                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-zinc-400 group-hover:text-[#00a896] transition-colors"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                 </div>
-                 <span className="text-[10px] font-bold text-zinc-500">New</span>
-               </div>
-               
-               {/* Existing FlashBacks */}
-               {FLASHBACKS.map(fb => (
-                 <div key={fb.id} className="flex flex-col items-center gap-2 cursor-pointer group">
-                   <div className="w-14 h-14 lg:w-16 lg:h-16 rounded-full p-[2.5px] bg-gradient-to-tr from-[#00a896] to-[#FFC82A] group-hover:scale-105 transition-transform duration-300 shadow-sm">
-                     <div className="w-full h-full rounded-full border-[2.5px] border-white overflow-hidden bg-white">
-                       <img src={fb.img} alt={fb.title} className="w-full h-full object-cover" />
-                     </div>
-                   </div>
-                   <span className="text-[10px] font-bold text-zinc-700 w-full text-center truncate">{fb.title}</span>
-                 </div>
-               ))}
-             </div>
-           </div>
-        </div>
-      </div>
-
-      {/* ══════════════════════════════════════
-          PROFILE INFO ROW & WHO TO FOLLOW GRID
-          ══════════════════════════════════════ */}
-      <div className="flex flex-col lg:flex-row w-full max-w-[1920px] mx-auto">
-      
-      {/* Content about user (Left 60%) */}
-      <div className="w-full lg:w-[60%] px-4 lg:px-8 pt-4 lg:pt-0 border-r border-zinc-100">
-        <div className="flex flex-col lg:flex-row items-start lg:items-start gap-6 lg:gap-10 pb-10 border-b border-zinc-100 relative z-10">
+        {/* FlashBacks */}
+        <div className="order-3 lg:order-2 lg:col-span-2 relative w-full h-auto lg:h-[300px] bg-white rounded-none lg:rounded-2xl border-b lg:border-b-0 lg:border-l lg:border-zinc-100 flex flex-col pt-4 overflow-hidden">
+          <div className="px-4 lg:px-8 shrink-0">
+            <h3 className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-4">FlashBacks</h3>
+          </div>
           
-          {/* Avatar and Stats */}
-          <div className="flex flex-col items-start shrink-0">
-            {/* Avatar */}
-            <div className="relative -mt-12 lg:-mt-16 z-20 shrink-0 cursor-pointer group" onClick={() => setEditOpen(true)}>
-              <div className={`w-32 h-32 lg:w-40 lg:h-40 rounded-full overflow-hidden bg-gradient-to-br ${gr} text-white font-black text-5xl flex items-center justify-center ring-[6px] ring-background shadow-xl group-hover:opacity-90 transition-opacity`}>
-                {profile.profilePictureBase64
-                  ? <img src={`data:image/jpeg;base64,${profile.profilePictureBase64}`} className="w-full h-full object-cover" alt="" />
-                  : <span>{initials}</span>}
-              </div>
-              {/* Edit Profile */}
-              <button onClick={(e) => { e.stopPropagation(); setEditOpen(true); }} className="absolute bottom-1 right-1 w-9 h-9 bg-[#FFC82A] text-zinc-900 rounded-full flex items-center justify-center border-4 border-background shadow-md hover:scale-105 transition-transform">
-                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-              </button>
-            </div>
-            
-            {/* Stats Under Profile Picture */}
-            <div className="flex items-center gap-6 mt-2 w-full -ml-4 lg:-ml-8">
-              <button onClick={() => setFollowModal({ open: true, mode: "following" })} className="flex flex-col group items-start">
-                <span className="text-lg font-black text-zinc-900 group-hover:text-[#FFC82A] transition-colors">{fmtNum(followingCount)}</span>
-                <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Following</span>
-              </button>
-              <button onClick={() => setFollowModal({ open: true, mode: "followers" })} className="flex flex-col group items-start">
-                <span className="text-lg font-black text-zinc-900 group-hover:text-[#FFC82A] transition-colors">{fmtNum(followerCount)}</span>
-                <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Followers</span>
-              </button>
-              <div className="flex flex-col items-start">
-                <span className="text-lg font-black text-zinc-900">{fmtNum(postCount)}</span>
-                <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Posts</span>
-              </div>
-            </div>
-          </div>
-
-          {/* User Bio (To the right of Avatar) */}
-          <div className="flex-1 min-w-0 pb-2 pt-2 sm:pt-0 lg:ml-4">
-             <div className="flex items-start justify-between">
-              <div>
-                <h1 className="text-2xl lg:text-3xl font-black text-zinc-900 tracking-tight mt-2">{profile.name}</h1>
-                <p className="text-sm text-zinc-500 font-semibold mb-3">{profile.email}</p>
-                <div className="flex items-center gap-2 flex-wrap mb-4">
-                  <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-widest ${
-                    profile.role === "ORGANIZATION" ? "bg-amber-100 text-amber-700" :
-                    profile.role === "ADMIN" ? "bg-red-100 text-red-700" : "bg-zinc-100 text-zinc-600"
-                  }`}>
-                    {profile.role || "User"}
-                  </span>
-                  {profile.city && (
-                    <span className="text-xs font-semibold text-zinc-500 flex items-center gap-1">
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 22s8-4.5 8-11.8A8 8 0 0 0 4 10.2C4 17.5 12 22 12 22z"/><circle cx="12" cy="10" r="3"/></svg>
-                      {profile.city}
-                    </span>
-                  )}
+          <div className="flex-1 overflow-y-auto px-4 lg:px-8 pb-4">
+            <div className="grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-4 gap-4 gap-y-6 justify-items-center">
+              {/* Add New FlashBack */}
+              <div className="flex flex-col items-center gap-2 cursor-pointer group">
+                <div className="w-14 h-14 lg:w-16 lg:h-16 rounded-full border-[3px] border-dashed border-zinc-300 flex items-center justify-center bg-transparent group-hover:border-[#00a896] group-hover:bg-[#00a896]/5 transition-colors">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-zinc-400 group-hover:text-[#00a896] transition-colors"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                 </div>
-                {profile.bio && (
-                  <div className="mb-6 relative group z-30">
-                    <div className={bioExpanded ? "absolute -top-3 -left-3 -right-3 bg-white p-3 shadow-xl rounded-xl border border-zinc-100" : ""}>
-                      <p className={`text-sm text-zinc-700 font-medium leading-relaxed ${bioExpanded ? "" : "line-clamp-2"}`}>
-                        {profile.bio}
-                      </p>
-                      {!bioExpanded && profile.bio.length > 50 && (
-                        <button 
-                          onClick={() => setBioExpanded(true)}
-                          className="text-[11px] font-bold text-[#FFC82A] mt-1 hover:underline"
-                        >
-                          ... more
-                        </button>
-                      )}
-                      {bioExpanded && (
-                        <button 
-                          onClick={() => setBioExpanded(false)}
-                          className="text-[11px] font-bold text-zinc-400 mt-2 hover:underline block"
-                        >
-                          Show less
-                        </button>
-                      )}
-                    </div>
-                    {/* Placeholder to keep layout stable when absolute */}
-                    {bioExpanded && (
-                      <div className="opacity-0 pointer-events-none">
-                        <p className="text-sm font-medium leading-relaxed line-clamp-2">
-                          {profile.bio}
-                        </p>
-                        <div className="text-[11px] mt-1">... more</div>
-                      </div>
-                    )}
-                  </div>
-                )}
+                <span className="text-[10px] font-bold text-zinc-500">New</span>
               </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      {/* Who to Follow (Right 40%) */}
-      <div className="w-full lg:w-[40%] flex flex-col pt-6 lg:pt-6 lg:min-h-full border-l border-zinc-100">
-         {/* Card 2: Who to Follow */}
-         <div className="bg-white overflow-hidden shrink-0 rounded-2xl shadow-sm border border-zinc-100">
-            <div className="p-3 border-b border-zinc-100 flex items-center gap-3 shrink-0">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-amber-300 flex items-center justify-center text-white shadow-inner shrink-0">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-              </div>
-              <div>
-                <h4 className="text-sm font-black text-zinc-900 leading-tight">Who to Follow</h4>
-                <p className="text-[11px] text-zinc-400 font-semibold">Suggested publishers</p>
-              </div>
-            </div>
-
-            <div ref={followScrollRef} className="flex flex-col max-h-[140px] overflow-y-auto">
-              {[
-                { name: "ABC College", handle: "abc-college", init: "AC", bg: "bg-[#8A2BE2]", border: "border-[#FFC82A]" },
-                { name: "ResultHub Workspace", handle: "resulthub-workspace", init: "RW", bg: "bg-[#00A896]", border: "border-[#FF7F50]" },
-                { name: "ESPN Sports", handle: "espn-sports", init: "ES", bg: "bg-red-500", border: "border-white" },
-                { name: "Tech Daily", handle: "tech-daily", init: "TD", bg: "bg-blue-600", border: "border-white" },
-                { name: "Finance Updates", handle: "finance-news", init: "FU", bg: "bg-emerald-600", border: "border-white" },
-                { name: "World Politics", handle: "politics-now", init: "WP", bg: "bg-slate-700", border: "border-white" },
-                { name: "Global Weather", handle: "weather-central", init: "GW", bg: "bg-cyan-500", border: "border-white" },
-              ].map((s, i) => (
-                <div key={i} className="flex items-center justify-between p-2.5 border-b border-zinc-50 hover:bg-zinc-50 transition-colors shrink-0">
-                  <div className="flex items-center gap-3 min-w-0">
-                    <div className={`w-11 h-11 rounded-[14px] flex items-center justify-center text-white font-black text-sm ring-2 ring-white border-[2px] ${s.border} ${s.bg} shrink-0`}>
-                      {s.init}
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <h5 className="text-sm font-bold text-zinc-900 truncate">{s.name}</h5>
-                      <p className="text-xs text-zinc-400 truncate">@{s.handle}</p>
+              
+              {/* Existing FlashBacks */}
+              {FLASHBACKS.map(fb => (
+                <div key={fb.id} className="flex flex-col items-center gap-2 cursor-pointer group">
+                  <div className="w-14 h-14 lg:w-16 lg:h-16 rounded-full p-[2.5px] bg-gradient-to-tr from-[#00a896] to-[#FFC82A] group-hover:scale-105 transition-transform duration-300 shadow-sm">
+                    <div className="w-full h-full rounded-full border-[2.5px] border-white overflow-hidden bg-white">
+                      <img src={fb.img} alt={fb.title} className="w-full h-full object-cover" />
                     </div>
                   </div>
-                  <button className="px-4 py-1.5 bg-zinc-900 text-white text-xs font-bold rounded-full hover:bg-zinc-800 transition-colors shrink-0 ml-3">
-                    Follow
-                  </button>
+                  <span className="text-[10px] font-bold text-zinc-700 w-full text-center truncate">{fb.title}</span>
                 </div>
               ))}
             </div>
+          </div>
+        </div>
 
-            <button onClick={() => followScrollRef.current?.scrollBy({ top: 140, behavior: 'smooth' })} className="w-full p-2 flex items-center justify-center gap-1 text-xs font-black text-[#FFC82A] hover:bg-zinc-50 transition-colors shrink-0">
-              More Follow... 
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-            </button>
-         </div>
-      </div>
-      
+        {/* Profile Info */}
+        <div className="order-2 lg:order-3 lg:col-span-3 w-full px-4 lg:px-8 pt-4 lg:pt-0 border-r border-transparent lg:border-zinc-100">
+          <div className="flex flex-col lg:flex-row items-start lg:items-start gap-6 lg:gap-10 pb-10 border-b border-zinc-100 relative z-10">
+            {/* Avatar and Stats */}
+            <div className="flex flex-col items-start shrink-0">
+              {/* Avatar */}
+              <div className="relative -mt-12 lg:-mt-16 z-20 shrink-0 cursor-pointer group" onClick={() => setEditOpen(true)}>
+                <div className={`w-32 h-32 lg:w-40 lg:h-40 rounded-full overflow-hidden bg-gradient-to-br ${gr} text-white font-black text-5xl flex items-center justify-center ring-[6px] ring-background shadow-xl group-hover:opacity-90 transition-opacity`}>
+                  {profile.profilePictureBase64
+                    ? <img src={`data:image/jpeg;base64,${profile.profilePictureBase64}`} className="w-full h-full object-cover" alt="" />
+                    : <span>{initials}</span>}
+                </div>
+                {/* Edit Profile */}
+                <button onClick={(e) => { e.stopPropagation(); setEditOpen(true); }} className="absolute bottom-1 right-1 w-9 h-9 bg-[#FFC82A] text-zinc-900 rounded-full flex items-center justify-center border-4 border-background shadow-md hover:scale-105 transition-transform">
+                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                </button>
+              </div>
+              
+              {/* Stats Under Profile Picture */}
+              <div className="flex items-center gap-6 mt-2 w-full -ml-4 lg:-ml-8">
+                <button onClick={() => setFollowModal({ open: true, mode: "following" })} className="flex flex-col group items-start">
+                  <span className="text-lg font-black text-zinc-900 group-hover:text-[#FFC82A] transition-colors">{fmtNum(followingCount)}</span>
+                  <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Following</span>
+                </button>
+                <button onClick={() => setFollowModal({ open: true, mode: "followers" })} className="flex flex-col group items-start">
+                  <span className="text-lg font-black text-zinc-900 group-hover:text-[#FFC82A] transition-colors">{fmtNum(followerCount)}</span>
+                  <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Followers</span>
+                </button>
+                <div className="flex flex-col items-start">
+                  <span className="text-lg font-black text-zinc-900">{fmtNum(postCount)}</span>
+                  <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Posts</span>
+                </div>
+              </div>
+            </div>
+
+            {/* User Bio */}
+            <div className="flex-1 min-w-0 pb-2 pt-2 sm:pt-0 lg:ml-4">
+               <div className="flex items-start justify-between">
+                <div>
+                  <h1 className="text-2xl lg:text-3xl font-black text-zinc-900 tracking-tight mt-2">{profile.name}</h1>
+                  <p className="text-sm text-zinc-500 font-semibold mb-3">{profile.email}</p>
+                  <div className="flex items-center gap-2 flex-wrap mb-4">
+                    <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-widest ${
+                      profile.role === "ORGANIZATION" ? "bg-amber-100 text-amber-700" :
+                      profile.role === "ADMIN" ? "bg-red-100 text-red-700" : "bg-zinc-100 text-zinc-600"
+                    }`}>
+                      {profile.role || "User"}
+                    </span>
+                    {profile.city && (
+                      <span className="text-xs font-semibold text-zinc-500 flex items-center gap-1">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 22s8-4.5 8-11.8A8 8 0 0 0 4 10.2C4 17.5 12 22 12 22z"/><circle cx="12" cy="10" r="3"/></svg>
+                        {profile.city}
+                      </span>
+                    )}
+                  </div>
+                  {profile.bio && (
+                    <div className="mb-6 relative group z-30">
+                      <div className={bioExpanded ? "absolute -top-3 -left-3 -right-3 bg-white p-3 shadow-xl rounded-xl border border-zinc-100" : ""}>
+                        <p className={`text-sm text-zinc-700 font-medium leading-relaxed ${bioExpanded ? "" : "line-clamp-2"}`}>
+                          {profile.bio}
+                        </p>
+                        {!bioExpanded && profile.bio.length > 50 && (
+                          <button onClick={() => setBioExpanded(true)} className="text-[11px] font-bold text-[#FFC82A] mt-1 hover:underline">... more</button>
+                        )}
+                        {bioExpanded && (
+                          <button onClick={() => setBioExpanded(false)} className="text-[11px] font-bold text-zinc-400 mt-2 hover:underline block">Show less</button>
+                        )}
+                      </div>
+                      {/* Placeholder to keep layout stable when absolute */}
+                      {bioExpanded && (
+                        <div className="opacity-0 pointer-events-none">
+                          <p className="text-sm font-medium leading-relaxed line-clamp-2">{profile.bio}</p>
+                          <div className="text-[11px] mt-1">... more</div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Who to Follow */}
+        <div className="order-4 lg:order-4 lg:col-span-2 flex flex-col px-4 lg:px-0 pt-6 lg:pt-6 lg:min-h-full border-l border-transparent lg:border-zinc-100">
+          <div className="bg-white overflow-hidden shrink-0 rounded-2xl shadow-sm border border-zinc-100">
+             <div className="p-3 border-b border-zinc-100 flex items-center gap-3 shrink-0">
+               <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-amber-300 flex items-center justify-center text-white shadow-inner shrink-0">
+                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+               </div>
+               <div>
+                 <h4 className="text-sm font-black text-zinc-900 leading-tight">Who to Follow</h4>
+                 <p className="text-[11px] text-zinc-400 font-semibold">Suggested publishers</p>
+               </div>
+             </div>
+
+             <div ref={followScrollRef} className="flex flex-col max-h-[140px] overflow-y-auto">
+               {[
+                 { name: "ABC College", handle: "abc-college", init: "AC", bg: "bg-[#8A2BE2]", border: "border-[#FFC82A]" },
+                 { name: "ResultHub Workspace", handle: "resulthub-workspace", init: "RW", bg: "bg-[#00A896]", border: "border-[#FF7F50]" },
+                 { name: "ESPN Sports", handle: "espn-sports", init: "ES", bg: "bg-red-500", border: "border-white" },
+                 { name: "Tech Daily", handle: "tech-daily", init: "TD", bg: "bg-blue-600", border: "border-white" },
+                 { name: "Finance Updates", handle: "finance-news", init: "FU", bg: "bg-emerald-600", border: "border-white" },
+                 { name: "World Politics", handle: "politics-now", init: "WP", bg: "bg-slate-700", border: "border-white" },
+                 { name: "Global Weather", handle: "weather-central", init: "GW", bg: "bg-cyan-500", border: "border-white" },
+               ].map((s, i) => (
+                 <div key={i} className="flex items-center justify-between p-2.5 border-b border-zinc-50 hover:bg-zinc-50 transition-colors shrink-0">
+                   <div className="flex items-center gap-3 min-w-0">
+                     <div className={`w-11 h-11 rounded-[14px] flex items-center justify-center text-white font-black text-sm ring-2 ring-white border-[2px] ${s.border} ${s.bg} shrink-0`}>
+                       {s.init}
+                     </div>
+                     <div className="min-w-0 flex-1">
+                       <h5 className="text-sm font-bold text-zinc-900 truncate">{s.name}</h5>
+                       <p className="text-xs text-zinc-400 truncate">@{s.handle}</p>
+                     </div>
+                   </div>
+                   <button className="px-4 py-1.5 bg-zinc-900 text-white text-xs font-bold rounded-full hover:bg-zinc-800 transition-colors shrink-0 ml-3">
+                     Follow
+                   </button>
+                 </div>
+               ))}
+             </div>
+
+             <button onClick={() => followScrollRef.current?.scrollBy({ top: 140, behavior: 'smooth' })} className="w-full p-2 flex items-center justify-center gap-1 text-xs font-black text-[#FFC82A] hover:bg-zinc-50 transition-colors shrink-0">
+               More Follow... 
+               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+             </button>
+          </div>
+        </div>
+
       </div>
 
       {/* ══════════════════════════════════════
