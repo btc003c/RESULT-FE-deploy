@@ -8,7 +8,7 @@ import FollowersModal from "@/components/profile/FollowersModal";
 import CreatePostModal from "@/components/feed/CreatePostModal";
 import Link from "next/link";
 
-type Tab = "posts" | "clips" | "saved" | "tagged";
+type Tab = "posts" | "clips" | "saved" | "tagged" | "result" | "complaint";
 
 interface UserProfile {
   id: string;
@@ -177,6 +177,7 @@ export default function ProfilePage() {
   const [createPostOpen, setCreatePostOpen] = useState(false);
   const coverInputRef = useRef<HTMLInputElement>(null);
   const profileInputRef = useRef<HTMLInputElement>(null);
+  const followScrollRef = useRef<HTMLDivElement>(null);
   
   const handleProfileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -188,7 +189,8 @@ export default function ProfilePage() {
         const res = await api.users.updateMe({ name: profile?.name || "", profilePictureBase64: base64String });
         if (res.data) setProfile(res.data);
       } catch (err) {
-        console.error("Failed to upload profile picture", err);
+        console.error("Failed to upload profile picture, updating locally", err);
+        if (profile) setProfile({ ...profile, profilePictureBase64: base64String });
       }
     };
     reader.readAsDataURL(file);
@@ -204,7 +206,8 @@ export default function ProfilePage() {
         const res = await api.users.updateMe({ name: profile?.name || "", coverPictureBase64: base64String });
         if (res.data) setProfile(res.data);
       } catch (err) {
-        console.error("Failed to upload cover", err);
+        console.error("Failed to upload cover, updating locally", err);
+        if (profile) setProfile({ ...profile, coverPictureBase64: base64String });
       }
     };
     reader.readAsDataURL(file);
@@ -216,18 +219,30 @@ export default function ProfilePage() {
   const router = useRouter();
 
   useEffect(() => {
-    const handleScroll = () => {
+    let lastScrollY = window.scrollY;
+    let ticking = false;
+
+    const updateTabsVisibility = () => {
       const currentScrollY = window.scrollY;
-      if (currentScrollY > lastScrollY && currentScrollY > 300) {
-        setShowTabs(false);
+      if (currentScrollY > lastScrollY) {
+        setShowTabs(false); // Scroll down -> hide
       } else {
-        setShowTabs(true);
+        setShowTabs(true); // Scroll up -> show
       }
-      setLastScrollY(currentScrollY);
+      lastScrollY = currentScrollY;
+      ticking = false;
     };
+
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(updateTabsVisibility);
+        ticking = true;
+      }
+    };
+
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastScrollY]);
+  }, []);
 
   const handleSignOut = () => {
     clearAuthToken();
@@ -244,7 +259,7 @@ export default function ProfilePage() {
         name: "Alexey Navolokin",
         email: "alexey@resulthub.com",
         role: "PRO PREDICTOR",
-        bio: "Tech enthusiast and sports fanatic. Turning predictions into perfection.",
+        bio: "Tech enthusiast and sports fanatic. Turning predictions into perfection. I spend my days analyzing data to find the best possible outcomes in both technology trends and major sporting events. Join me on my journey as I share insights, daily tips, and deep dives into the mechanics of success.",
         city: "San Francisco, CA",
         followerCount: 14200,
         followingCount: 340,
@@ -263,7 +278,7 @@ export default function ProfilePage() {
           name: "Alexey Navolokin",
           email: "alexey@resulthub.com",
           role: "PRO PREDICTOR",
-          bio: "Tech enthusiast and sports fanatic. Turning predictions into perfection.",
+          bio: "Tech enthusiast and sports fanatic. Turning predictions into perfection. I spend my days analyzing data to find the best possible outcomes in both technology trends and major sporting events. Join me on my journey as I share insights, daily tips, and deep dives into the mechanics of success.",
           city: "San Francisco, CA",
           followerCount: 14200,
           followingCount: 340,
@@ -292,6 +307,8 @@ export default function ProfilePage() {
     { key: "clips", label: "Clips", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="2" y1="7" x2="7" y2="7"/><line x1="2" y1="17" x2="7" y2="17"/><line x1="17" y1="17" x2="22" y2="17"/><line x1="17" y1="7" x2="22" y2="7"/></svg> },
     { key: "saved", label: "Saved", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg> },
     { key: "tagged", label: "Tagged", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg> },
+    { key: "result", label: "Result", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> },
+    { key: "complaint", label: "Complaint", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> },
   ];
 
   const FLASHBACKS = [
@@ -307,6 +324,9 @@ export default function ProfilePage() {
 
   return (
     <div className="w-full min-h-screen pb-10 bg-background">
+      <div className="pt-4 pb-3 flex items-center">
+        <h2 className="text-xl font-black text-zinc-500">{profile.name}</h2>
+      </div>
       <div className="flex flex-col lg:flex-row w-full h-auto lg:h-[300px]">
         
         {/* Left 60%: Cover Image */}
@@ -326,7 +346,7 @@ export default function ProfilePage() {
         </div>
 
         {/* Right 40%: FlashBacks */}
-        <div className="relative w-full lg:w-[40%] h-64 lg:h-full bg-transparent border-b lg:border-b-0 lg:border-l border-transparent flex flex-col pt-4 overflow-hidden">
+        <div className="relative w-full lg:w-[40%] h-64 lg:h-full bg-white rounded-2xl border-b lg:border-b-0 lg:border-l border-transparent flex flex-col pt-4 overflow-hidden">
            <div className="px-4 lg:px-8 shrink-0">
              <h3 className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-4">FlashBacks</h3>
            </div>
@@ -366,20 +386,19 @@ export default function ProfilePage() {
       
       {/* Content about user (Left 60%) */}
       <div className="w-full lg:w-[60%] px-4 lg:px-8 pt-4 lg:pt-0 border-r border-zinc-100">
-        <div className="flex flex-col lg:flex-row items-start lg:items-end gap-6 lg:gap-10 pb-10 border-b border-zinc-100 relative z-10">
+        <div className="flex flex-col lg:flex-row items-start lg:items-start gap-6 lg:gap-10 pb-10 border-b border-zinc-100 relative z-10">
           
           {/* Avatar and Stats */}
           <div className="flex flex-col items-start shrink-0">
             {/* Avatar */}
-            <div className="relative -mt-10 lg:-mt-12 z-20 shrink-0">
-              <div className={`w-32 h-32 lg:w-40 lg:h-40 rounded-full overflow-hidden bg-gradient-to-br ${gr} text-white font-black text-5xl flex items-center justify-center ring-[6px] ring-background shadow-xl`}>
+            <div className="relative -mt-12 lg:-mt-16 z-20 shrink-0 cursor-pointer group" onClick={() => setEditOpen(true)}>
+              <div className={`w-32 h-32 lg:w-40 lg:h-40 rounded-full overflow-hidden bg-gradient-to-br ${gr} text-white font-black text-5xl flex items-center justify-center ring-[6px] ring-background shadow-xl group-hover:opacity-90 transition-opacity`}>
                 {profile.profilePictureBase64
                   ? <img src={`data:image/jpeg;base64,${profile.profilePictureBase64}`} className="w-full h-full object-cover" alt="" />
                   : <span>{initials}</span>}
               </div>
-              {/* Edit Avatar */}
-              <input type="file" accept="image/*" className="hidden" ref={profileInputRef} onChange={handleProfileUpload} />
-              <button onClick={() => profileInputRef.current?.click()} className="absolute bottom-1 right-1 w-9 h-9 bg-[#FFC82A] text-zinc-900 rounded-full flex items-center justify-center border-4 border-background shadow-md hover:scale-105 transition-transform">
+              {/* Edit Profile */}
+              <button onClick={(e) => { e.stopPropagation(); setEditOpen(true); }} className="absolute bottom-1 right-1 w-9 h-9 bg-[#FFC82A] text-zinc-900 rounded-full flex items-center justify-center border-4 border-background shadow-md hover:scale-105 transition-transform">
                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
               </button>
             </div>
@@ -405,7 +424,7 @@ export default function ProfilePage() {
           <div className="flex-1 min-w-0 pb-2 pt-2 sm:pt-0 lg:ml-4">
              <div className="flex items-start justify-between">
               <div>
-                <h1 className="text-2xl lg:text-3xl font-black text-zinc-900 tracking-tight">{profile.name}</h1>
+                <h1 className="text-2xl lg:text-3xl font-black text-zinc-900 tracking-tight mt-2">{profile.name}</h1>
                 <p className="text-sm text-zinc-500 font-semibold mb-3">{profile.email}</p>
                 <div className="flex items-center gap-2 flex-wrap mb-4">
                   <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-widest ${
@@ -422,17 +441,36 @@ export default function ProfilePage() {
                   )}
                 </div>
                 {profile.bio && (
-                  <div className="mb-6 relative group">
-                    <p className={`text-sm text-zinc-700 font-medium leading-relaxed ${bioExpanded ? "" : "line-clamp-2"}`}>
-                      {profile.bio}
-                    </p>
-                    {!bioExpanded && profile.bio.length > 50 && (
-                      <button 
-                        onClick={() => setBioExpanded(true)}
-                        className="text-[11px] font-bold text-[#FFC82A] mt-1 hover:underline"
-                      >
-                        ... more
-                      </button>
+                  <div className="mb-6 relative group z-30">
+                    <div className={bioExpanded ? "absolute -top-3 -left-3 -right-3 bg-white p-3 shadow-xl rounded-xl border border-zinc-100" : ""}>
+                      <p className={`text-sm text-zinc-700 font-medium leading-relaxed ${bioExpanded ? "" : "line-clamp-2"}`}>
+                        {profile.bio}
+                      </p>
+                      {!bioExpanded && profile.bio.length > 50 && (
+                        <button 
+                          onClick={() => setBioExpanded(true)}
+                          className="text-[11px] font-bold text-[#FFC82A] mt-1 hover:underline"
+                        >
+                          ... more
+                        </button>
+                      )}
+                      {bioExpanded && (
+                        <button 
+                          onClick={() => setBioExpanded(false)}
+                          className="text-[11px] font-bold text-zinc-400 mt-2 hover:underline block"
+                        >
+                          Show less
+                        </button>
+                      )}
+                    </div>
+                    {/* Placeholder to keep layout stable when absolute */}
+                    {bioExpanded && (
+                      <div className="opacity-0 pointer-events-none">
+                        <p className="text-sm font-medium leading-relaxed line-clamp-2">
+                          {profile.bio}
+                        </p>
+                        <div className="text-[11px] mt-1">... more</div>
+                      </div>
                     )}
                   </div>
                 )}
@@ -443,10 +481,10 @@ export default function ProfilePage() {
       </div>
       
       {/* Who to Follow (Right 40%) */}
-      <div className="w-full lg:w-[40%] flex flex-col px-4 lg:px-6 pt-6 lg:pt-6 lg:min-h-full border-l border-zinc-100">
+      <div className="w-full lg:w-[40%] flex flex-col pt-6 lg:pt-6 lg:min-h-full border-l border-zinc-100">
          {/* Card 2: Who to Follow */}
-         <div className="bg-white border border-zinc-100 rounded-2xl shadow-[0_2px_10px_-3px_rgba(0,0,0,0.05)] overflow-hidden shrink-0">
-            <div className="p-3 border-b border-zinc-50 flex items-center gap-3">
+         <div className="bg-white overflow-hidden shrink-0 rounded-2xl shadow-sm border border-zinc-100">
+            <div className="p-3 border-b border-zinc-100 flex items-center gap-3 shrink-0">
               <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-amber-300 flex items-center justify-center text-white shadow-inner shrink-0">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
               </div>
@@ -456,12 +494,17 @@ export default function ProfilePage() {
               </div>
             </div>
 
-            <div className="flex flex-col">
+            <div ref={followScrollRef} className="flex flex-col max-h-[140px] overflow-y-auto">
               {[
                 { name: "ABC College", handle: "abc-college", init: "AC", bg: "bg-[#8A2BE2]", border: "border-[#FFC82A]" },
                 { name: "ResultHub Workspace", handle: "resulthub-workspace", init: "RW", bg: "bg-[#00A896]", border: "border-[#FF7F50]" },
+                { name: "ESPN Sports", handle: "espn-sports", init: "ES", bg: "bg-red-500", border: "border-white" },
+                { name: "Tech Daily", handle: "tech-daily", init: "TD", bg: "bg-blue-600", border: "border-white" },
+                { name: "Finance Updates", handle: "finance-news", init: "FU", bg: "bg-emerald-600", border: "border-white" },
+                { name: "World Politics", handle: "politics-now", init: "WP", bg: "bg-slate-700", border: "border-white" },
+                { name: "Global Weather", handle: "weather-central", init: "GW", bg: "bg-cyan-500", border: "border-white" },
               ].map((s, i) => (
-                <div key={i} className="flex items-center justify-between p-2.5 border-b border-zinc-50 hover:bg-zinc-50 transition-colors">
+                <div key={i} className="flex items-center justify-between p-2.5 border-b border-zinc-50 hover:bg-zinc-50 transition-colors shrink-0">
                   <div className="flex items-center gap-3 min-w-0">
                     <div className={`w-11 h-11 rounded-[14px] flex items-center justify-center text-white font-black text-sm ring-2 ring-white border-[2px] ${s.border} ${s.bg} shrink-0`}>
                       {s.init}
@@ -478,7 +521,7 @@ export default function ProfilePage() {
               ))}
             </div>
 
-            <button className="w-full p-2 flex items-center justify-center gap-1 text-xs font-black text-[#FFC82A] hover:bg-zinc-50 transition-colors">
+            <button onClick={() => followScrollRef.current?.scrollBy({ top: 140, behavior: 'smooth' })} className="w-full p-2 flex items-center justify-center gap-1 text-xs font-black text-[#FFC82A] hover:bg-zinc-50 transition-colors shrink-0">
               More Follow... 
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
             </button>
@@ -508,21 +551,107 @@ export default function ProfilePage() {
 
         {/* ── RIGHT PANEL (Content Grid) ───────────── */}
         <div className="flex-1 w-full min-w-0">
-          <div className="columns-1 sm:columns-2 lg:columns-3 gap-4 space-y-4">
-            {/* Masonry Mock Content */}
-            {[1, 2, 3, 4, 5, 6].map(i => (
-              <div key={i} className="break-inside-avoid bg-zinc-100 rounded-2xl overflow-hidden border border-zinc-200/50 group cursor-pointer" style={{ height: `${Math.max(200, Math.floor(Math.random() * 300 + 150))}px` }}>
-                <div className="w-full h-full bg-zinc-200 relative">
-                  <img src={`https://loremflickr.com/400/${Math.floor(Math.random() * 300 + 300)}/abstract?random=${i}`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4">
-                    <div className="flex items-center gap-3 text-white">
-                      <span className="flex items-center gap-1 font-bold text-sm"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg> {Math.floor(Math.random() * 500)}</span>
-                      <span className="flex items-center gap-1 font-bold text-sm"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> {Math.floor(Math.random() * 50)}</span>
-                    </div>
-                  </div>
-                </div>
+          <div key={tab} className="animate-in fade-in slide-in-from-bottom-2 duration-500">
+            
+            {tab === "posts" && (
+              <div className="space-y-4">
+                 {[1, 2, 3].map(i => (
+                   <div key={i} className="bg-white rounded-2xl p-5 border border-zinc-100 shadow-sm">
+                      <div className="flex items-center gap-3 mb-4">
+                         <div className="w-10 h-10 bg-zinc-200 rounded-full shrink-0"></div>
+                         <div>
+                           <p className="font-bold text-sm text-zinc-900">Alexey Navolokin</p>
+                           <p className="text-[11px] text-zinc-400 font-semibold">{i * 2} hours ago</p>
+                         </div>
+                      </div>
+                      <p className="text-sm text-zinc-700 mb-4 font-medium leading-relaxed">Just shared a new prediction for the upcoming season! The data points strongly towards a massive upset. What do you guys think? 🏀📈</p>
+                      <div className="h-48 bg-zinc-100 rounded-xl w-full border border-zinc-200/50"></div>
+                   </div>
+                 ))}
               </div>
-            ))}
+            )}
+            
+            {tab === "clips" && (
+              <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
+                 {[1, 2, 3, 4, 5, 6].map(i => (
+                    <div key={i} className="aspect-[9/16] bg-zinc-900 rounded-2xl relative overflow-hidden group cursor-pointer shadow-sm">
+                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10"></div>
+                       <div className="absolute bottom-4 left-4 z-20">
+                         <div className="text-white font-black text-sm mb-1">{1.2 + i * 0.3}M Views</div>
+                         <div className="text-white/80 text-[10px] font-bold uppercase tracking-wider">Highlight</div>
+                       </div>
+                       <div className="absolute inset-0 flex items-center justify-center z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                          <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                          </div>
+                       </div>
+                    </div>
+                 ))}
+              </div>
+            )}
+
+            {tab === "saved" && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                 {[1, 2, 3, 4, 5, 6].map(i => (
+                    <div key={i} className="flex gap-4 bg-white p-3 rounded-2xl border border-zinc-100 shadow-sm cursor-pointer hover:border-zinc-300 transition-colors">
+                       <div className="w-20 h-20 bg-zinc-100 rounded-xl shrink-0 border border-zinc-200/50"></div>
+                       <div className="flex flex-col justify-center">
+                          <h4 className="font-bold text-sm text-zinc-900 mb-1 leading-tight">Top 10 Trading Strategies</h4>
+                          <p className="text-[11px] text-zinc-500 font-semibold line-clamp-2">A deep dive into how top performers maximize their returns consistently without risking their core capital.</p>
+                       </div>
+                    </div>
+                 ))}
+              </div>
+            )}
+
+            {tab === "tagged" && (
+               <div className="grid grid-cols-3 gap-2 lg:gap-4">
+                 {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(i => (
+                    <div key={i} className="aspect-square bg-zinc-100 rounded-xl overflow-hidden hover:opacity-80 transition-opacity cursor-pointer border border-zinc-200/50 relative group">
+                      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/40">
+                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                      </div>
+                    </div>
+                 ))}
+               </div>
+            )}
+
+            {tab === "result" && (
+              <div className="space-y-4">
+                 {[1, 2, 3, 4].map(i => (
+                    <div key={i} className="bg-white rounded-2xl p-5 border border-zinc-100 shadow-sm flex items-center justify-between group hover:border-emerald-200 transition-colors">
+                       <div className="flex items-center gap-4">
+                          <div className="w-12 h-12 bg-emerald-50 text-emerald-500 rounded-xl flex items-center justify-center font-black text-xl border border-emerald-100 shrink-0">W</div>
+                          <div>
+                             <h4 className="font-bold text-zinc-900 text-sm mb-1">Prediction Won</h4>
+                             <p className="text-[11px] text-zinc-500 font-semibold">Lakers vs Warriors (Over 220.5) • {i} days ago</p>
+                          </div>
+                       </div>
+                       <span className="font-black text-emerald-500 text-lg bg-emerald-50 px-3 py-1 rounded-lg border border-emerald-100">+{450 * i}</span>
+                    </div>
+                 ))}
+              </div>
+            )}
+
+            {tab === "complaint" && (
+              <div className="space-y-4">
+                 {[1, 2].map(i => (
+                    <div key={i} className="bg-white rounded-2xl p-5 border border-red-100 shadow-sm flex items-start gap-4 hover:border-red-300 transition-colors">
+                       <div className="w-10 h-10 bg-red-50 rounded-xl flex items-center justify-center shrink-0 border border-red-100">
+                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-red-500"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                       </div>
+                       <div>
+                          <div className="flex items-center gap-2 mb-1">
+                            <h4 className="font-bold text-zinc-900 text-sm">Feedback Ticket #{1024 + i}</h4>
+                            <span className="px-2 py-0.5 bg-amber-100 text-amber-700 text-[9px] font-black uppercase rounded-full tracking-wider">Pending</span>
+                          </div>
+                          <p className="text-xs text-zinc-500 font-medium leading-relaxed">User reported a minor discrepancy in the final odds calculation on the recent match view. We are investigating.</p>
+                       </div>
+                    </div>
+                 ))}
+              </div>
+            )}
+
           </div>
         </div>
 

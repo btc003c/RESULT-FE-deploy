@@ -126,7 +126,7 @@ export default function HomeFeedPage() {
         },
         timeAgo: getTimeAgo(p.createdAt),
         location: p.payload?.locationName || null,
-        title: p.payload?.title || p.payload?.question || (p.postType === 'COMPLAINT' ? 'Complaint' : 'Update'),
+        title: p.payload?.title || p.payload?.question || (p.postType === 'COMPLAINT' ? 'ComplaintBox' : 'Update'),
         description: p.payload?.description || p.payload?.content || p.payload?.text,
         pollOptions: p.payload?.options,
         mediaUrls: p.payload?.mediaUrls || [],
