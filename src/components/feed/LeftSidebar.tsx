@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 import CreatePostModal from "./CreatePostModal";
+import { AtomLogo } from "@/components/ui/Logos";
 import { api, clearAuthToken } from "@/lib/api";
 
 // ─── Nav data ────────────────────────────────────────────────────────────────
@@ -23,7 +24,7 @@ const NAV_SECTIONS = [
         ),
       },
       {
-        label: "ResultHub",
+        label: "Result Hub",
         href: "/results",
         icon: (
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
@@ -34,7 +35,7 @@ const NAV_SECTIONS = [
         ),
       },
       {
-        label: "ComplaintBox",
+        label: "Complaint Box",
         href: "/complaints",
         icon: (
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
@@ -98,6 +99,21 @@ const NAV_SECTIONS = [
         icon: (
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
             <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/>
+          </svg>
+        ),
+      },
+      {
+        label: "Sign In",
+        href: "/login",
+        isSignIn: true,
+      },
+      {
+        label: "Settings",
+        href: "/settings",
+        icon: (
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
+            <circle cx="12" cy="12" r="3"/>
           </svg>
         ),
       },
@@ -228,17 +244,15 @@ export default function LeftSidebar() {
         {/* ── Brand ─────────────────────────────────────────────────── */}
         <div className={`flex items-center h-[72px] shrink-0 border-b border-zinc-100
           ${isExpanded ? "px-5" : "justify-center px-3"}`}>
-          <Link href="/" className="flex items-center gap-3 group min-w-0">
+          <Link href="/" className="flex items-center gap-0.5 group min-w-0">
             {/* Logo mark */}
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#00a896] to-[#FFC82A] flex items-center justify-center shadow-lg shadow-[#00a896]/25 shrink-0 group-hover:scale-105 transition-transform duration-200">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round">
-                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
-              </svg>
+            <div className="w-10 h-10 shrink-0 group-hover:scale-105 transition-transform duration-200">
+              <img src="/icon.svg" alt="BindTime Logo" className="w-full h-full" />
             </div>
             {isExpanded && (
               <div className="overflow-hidden">
                 <span className="text-[17px] font-black tracking-tight text-zinc-900 whitespace-nowrap block leading-tight">
-                  BillionWord
+                  BindTime
                 </span>
               </div>
             )}
@@ -284,6 +298,29 @@ export default function LeftSidebar() {
               {!isExpanded && <div className="my-2 mx-auto w-6 border-t border-zinc-100" />}
 
               {section.links.map((link) => {
+                if ((link as any).isSignIn) {
+                  if (userProfile) return null;
+                  return (
+                    <div key="sign-in" className="mt-1 mb-1">
+                      <Link
+                        href="/login"
+                        className={`flex items-center gap-3.5 rounded-xl font-bold text-[#FAFAF7]
+                          bg-black shadow-md shadow-black/10
+                          hover:shadow-black/40 transition-all active:scale-95 py-2.5
+                          ${isExpanded ? "px-3" : "justify-center px-0"}`}
+                      >
+                        <div className="flex items-center justify-center w-8 h-8 shrink-0">
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+                            <polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/>
+                          </svg>
+                        </div>
+                        {isExpanded && <span className="text-[14.5px] font-bold flex-1">Sign In</span>}
+                      </Link>
+                    </div>
+                  );
+                }
+
                 const active = isActive(link.href, (link as any).exact);
                 const badgeNum = (link as any).badge === "live" ? notifCount : null;
 
@@ -420,26 +457,7 @@ export default function LeftSidebar() {
                 </div>
               )}
             </div>
-          ) : (
-            /* Not logged in */
-            <div className={`flex flex-col gap-2 ${!isExpanded && "items-center"}`}>
-
-
-              <Link
-                href="/login"
-                className={`flex items-center gap-3 rounded-xl font-bold text-[#FAFAF7]
-                  bg-black shadow-md shadow-black/10
-                  hover:shadow-black/40 transition-all active:scale-95 p-2.5
-                  ${isExpanded ? "justify-start px-4" : "justify-center w-12 h-12"}`}
-              >
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
-                  <polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/>
-                </svg>
-                {isExpanded && <span className="text-[13.5px]">Sign In</span>}
-              </Link>
-            </div>
-          )}
+          ) : null}
         </div>
       </aside>
 

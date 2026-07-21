@@ -28,12 +28,19 @@ interface PostCardProps {
 
 import { useState } from "react";
 import { api, API_BASE_URL } from "@/lib/api";
+import { AtomLogo } from "@/components/ui/Logos";
 
 export default function PostCard({ post }: { post: PostCardProps }) {
   const [isUpvoted, setIsUpvoted] = useState(post.isUpvoted || false);
   const [upvotes, setUpvotes] = useState(post.stats.upvotes || 0);
   const [isBookmarked, setIsBookmarked] = useState(post.isBookmarked || false);
   const [isLoading, setIsLoading] = useState(false);
+  const [showActions, setShowActions] = useState(false);
+  const [isDisagreed, setIsDisagreed] = useState(false);
+  const [downvotes, setDownvotes] = useState(0);
+  const [isFavourite, setIsFavourite] = useState(false);
+  const [replyType, setReplyType] = useState<"COMMENT" | "SOLUTION" | null>(null);
+  const [replyText, setReplyText] = useState("");
 
   const handleUpvote = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -114,7 +121,11 @@ export default function PostCard({ post }: { post: PostCardProps }) {
       <div className="relative z-10 flex items-center justify-between mb-4">
          <div className="flex items-center gap-3">
            <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${post.author.color}`}>
-             {post.author.initials}
+             {post.author.name === "BindTime Official" ? (
+               <img src="/icon.svg" alt="BindTime Logo" className="w-full h-full" />
+             ) : (
+               post.author.initials
+             )}
            </div>
            <div>
              <div className="flex items-center gap-1">
@@ -162,30 +173,81 @@ export default function PostCard({ post }: { post: PostCardProps }) {
         )}
       </div>
 
-      <div className="relative z-20 flex items-center gap-6 border-t border-muted/50 pt-3 mt-2">
-         <button 
-           onClick={handleUpvote}
-           disabled={isLoading}
-           className={`flex items-center gap-1.5 transition-colors group ${isUpvoted ? 'text-success' : 'text-muted-foreground hover:text-success'}`}
-         >
-           <div className={`p-1.5 rounded-full ${isUpvoted ? 'bg-success/10' : 'group-hover:bg-success/10'}`}>
-             <svg width="18" height="18" viewBox="0 0 24 24" fill={isUpvoted ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 19V5"></path><path d="M5 12l7-7 7 7"></path></svg>
-           </div>
-           <span className="font-bold text-sm">{upvotes}</span>
-         </button>
-         
-         <button className="flex items-center gap-1.5 text-muted-foreground hover:text-primary transition-colors group">
-           <div className="p-1.5 rounded-full group-hover:bg-primary/10">
-             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-           </div>
-           <span className="font-bold text-sm">{post.stats.comments}</span>
-         </button>
+      <div className="relative z-20 flex items-center justify-between border-t border-muted/50 pt-3 mt-2">
+         <div className="flex items-center gap-1 sm:gap-4">
+           {/* Agree */}
+           <button 
+             onClick={(e) => {
+               if (isDisagreed) setIsDisagreed(false);
+               handleUpvote(e);
+             }}
+             disabled={isLoading}
+             className={`flex items-center gap-0.5 transition-colors group ${isUpvoted ? 'text-emerald-500' : 'text-muted-foreground hover:text-emerald-500'}`}
+           >
+             <div className={`p-1.5 rounded-full ${isUpvoted ? 'bg-emerald-500/10' : 'group-hover:bg-emerald-500/10'}`}>
+               <svg width="18" height="18" viewBox="0 0 24 24" fill={isUpvoted ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>
+             </div>
+             <span className="font-bold text-sm">{upvotes}</span>
+           </button>
 
-         <button className="flex items-center gap-1.5 text-muted-foreground hover:text-blue-500 transition-colors group">
-           <div className="p-1.5 rounded-full group-hover:bg-blue-500/10">
-             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
-           </div>
-         </button>
+           {/* Disagree */}
+           <button 
+             onClick={(e) => { 
+               e.preventDefault(); e.stopPropagation(); 
+               if (isUpvoted) { handleUpvote(e); } 
+               setDownvotes(prev => isDisagreed ? prev - 1 : prev + 1);
+               setIsDisagreed(!isDisagreed); 
+             }}
+             className={`flex items-center gap-0.5 transition-colors group ${isDisagreed ? 'text-red-500' : 'text-muted-foreground hover:text-red-500'}`}
+           >
+             <div className={`p-1.5 rounded-full ${isDisagreed ? 'bg-red-500/10' : 'group-hover:bg-red-500/10'}`}>
+               <svg width="18" height="18" viewBox="0 0 24 24" fill={isDisagreed ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"></path></svg>
+             </div>
+             <span className="font-bold text-sm">{downvotes}</span>
+           </button>
+         
+         <div className="relative">
+           <button 
+             onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowActions(!showActions); }}
+             className={`flex items-center gap-0.5 transition-colors group ${showActions ? 'text-primary' : 'text-muted-foreground hover:text-primary'}`}
+           >
+             <div className={`p-1.5 rounded-full ${showActions ? 'bg-primary/10' : 'group-hover:bg-primary/10'}`}>
+               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+             </div>
+             <span className="font-bold text-sm">{post.stats.comments}</span>
+           </button>
+
+           {post.type === "COMPLAINT" && (
+             <div className={`absolute bottom-full left-1/2 -translate-x-1/2 mb-1 bg-white border border-zinc-100 shadow-xl rounded-[14px] p-1.5 flex flex-col gap-0.5 transition-all z-50 ${showActions ? 'opacity-100 pointer-events-auto translate-y-0' : 'opacity-0 pointer-events-none translate-y-2'}`}>
+               <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); setReplyType("COMMENT"); setShowActions(false); }} className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-zinc-50 text-zinc-700 hover:text-zinc-950 font-bold text-xs transition-colors whitespace-nowrap">
+                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-zinc-400"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                 Comment
+               </button>
+               <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); setReplyType("SOLUTION"); setShowActions(false); }} className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-emerald-50 text-zinc-700 hover:text-emerald-600 font-bold text-xs transition-colors whitespace-nowrap">
+                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-emerald-500"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                 Solve
+               </button>
+             </div>
+           )}
+         </div>
+
+           {/* Favourite */}
+           <button 
+             onClick={(e) => { e.preventDefault(); e.stopPropagation(); setIsFavourite(!isFavourite); }}
+             className={`flex items-center gap-1.5 transition-colors group ${isFavourite ? 'text-pink-500' : 'text-muted-foreground hover:text-pink-500'}`}
+           >
+             <div className={`p-1.5 rounded-full ${isFavourite ? 'bg-pink-500/10' : 'group-hover:bg-pink-500/10'}`}>
+               <svg width="18" height="18" viewBox="0 0 24 24" fill={isFavourite ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+             </div>
+           </button>
+
+           {/* Share */}
+           <button className="flex items-center gap-1.5 text-muted-foreground hover:text-blue-500 transition-colors group">
+             <div className="p-1.5 rounded-full group-hover:bg-blue-500/10">
+               <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+             </div>
+           </button>
+         </div>
 
          <button 
            onClick={handleBookmark}
@@ -197,6 +259,38 @@ export default function PostCard({ post }: { post: PostCardProps }) {
            </div>
          </button>
       </div>
+
+      {replyType && (
+        <div className="relative z-20 mt-4 pt-4 border-t border-zinc-100 flex gap-3 animate-in fade-in slide-in-from-top-2" onClick={(e) => e.stopPropagation()}>
+          <div className="w-8 h-8 rounded-full bg-zinc-200 shrink-0 overflow-hidden flex items-center justify-center font-bold text-xs text-zinc-500">
+            Me
+          </div>
+          <div className="flex-1 flex flex-col gap-2">
+            <textarea
+              autoFocus
+              value={replyText}
+              onChange={(e) => setReplyText(e.target.value)}
+              placeholder={replyType === "SOLUTION" ? "Propose a solution to this issue..." : "Write a comment..."}
+              className={`w-full bg-zinc-50 border border-zinc-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:bg-white resize-none min-h-[80px] transition-all ${replyType === "SOLUTION" ? "focus:ring-emerald-500/20 focus:border-emerald-500" : "focus:ring-primary/20 focus:border-primary"}`}
+            />
+            <div className="flex justify-end gap-2">
+              <button 
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); setReplyType(null); setReplyText(""); }}
+                className="px-4 py-1.5 text-xs font-bold text-zinc-500 hover:bg-zinc-100 rounded-lg transition-colors"
+              >
+                Cancel
+              </button>
+              <button 
+                disabled={!replyText.trim()}
+                className={`px-4 py-1.5 text-xs font-bold text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${replyType === "SOLUTION" ? "bg-emerald-500 hover:bg-emerald-600" : "bg-primary hover:bg-primary/90"}`}
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); setReplyType(null); setReplyText(""); }}
+              >
+                {replyType === "SOLUTION" ? "Post Solution" : "Post Comment"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </article>
   );
 }

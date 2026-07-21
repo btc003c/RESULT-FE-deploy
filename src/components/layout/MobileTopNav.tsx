@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Bell } from "lucide-react";
+import { AtomLogo } from "@/components/ui/Logos";
 
 export default function MobileTopNav() {
   const [isOpen, setIsOpen] = useState(false);
@@ -29,14 +30,12 @@ export default function MobileTopNav() {
         </button>
         
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <Link href="/" className="flex items-center gap-2 pointer-events-auto">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#00a896] to-[#FFC82A] flex items-center justify-center shadow-lg shadow-[#00a896]/25 shrink-0">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round">
-                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
-              </svg>
+          <Link href="/" className="flex items-center gap-0.5 pointer-events-auto">
+            <div className="w-8 h-8 shrink-0">
+              <img src="/icon.svg" alt="BindTime Logo" className="w-full h-full" />
             </div>
             <span className="text-lg font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/70">
-              BillionWord
+              BindTime
             </span>
           </Link>
         </div>

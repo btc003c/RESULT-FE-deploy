@@ -133,10 +133,10 @@ export default function ExplorePage() {
             </div>
           </div>
           {/* Action Area: Create Card & Search (Based on Sketch) */}
-          <div className="flex flex-col xl:flex-row gap-4 w-full max-w-5xl items-center">
+          <div className="flex flex-col lg:flex-row gap-4 w-full max-w-5xl items-center">
 
             {/* Left: Create Result Strip */}
-            <div className="bg-white border-2 border-zinc-200 rounded-full h-[64px] p-2 flex items-center shadow-sm w-full xl:flex-[1.2] min-w-0">
+            <div className="bg-white border-2 border-zinc-200 rounded-full h-[64px] p-2 flex items-center shadow-sm w-full lg:w-auto lg:shrink-0 min-w-0">
 
               <div className="hidden sm:flex items-center gap-2 px-3 border-r border-zinc-200 shrink-0">
                 <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center text-white font-bold text-xs shrink-0 shadow-md">
@@ -148,23 +148,29 @@ export default function ExplorePage() {
               <div className="flex gap-2 pl-0 sm:pl-3 w-full min-w-0">
                 <button
                   onClick={() => { setCreateAccessType('OPEN'); setIsCreateModalOpen(true); }}
-                  className="flex-1 h-[44px] px-2 sm:px-3 text-[11px] sm:text-xs font-bold rounded-full transition-colors bg-[#FFC82A] hover:bg-[#E5B426] text-white flex items-center justify-center gap-1 shadow-sm whitespace-nowrap overflow-hidden"
+                  className="flex-1 h-[44px] pl-2 pr-3 sm:px-5 text-[11px] sm:text-xs font-bold rounded-full transition-colors bg-[#FFC82A] hover:bg-[#E5B426] text-white flex items-center justify-center gap-2 shadow-sm whitespace-nowrap"
                 >
-                  <span className="sm:hidden truncate">Open</span>
-                  <span className="hidden sm:inline truncate">Open Result</span>
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/30 flex items-center justify-center shrink-0">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg>
+                  </div>
+                  <span className="sm:hidden">Open</span>
+                  <span className="hidden sm:inline">Open Result</span>
                 </button>
                 <button
                   onClick={() => { setCreateAccessType('CLOSED'); setIsCreateModalOpen(true); }}
-                  className="flex-1 h-[44px] px-2 sm:px-3 text-[11px] sm:text-xs font-bold rounded-full transition-colors bg-red-50 text-red-600 border border-red-100 hover:bg-red-100 shadow-sm whitespace-nowrap overflow-hidden"
+                  className="flex-1 h-[44px] pl-2 pr-3 sm:px-5 text-[11px] sm:text-xs font-bold rounded-full transition-colors bg-red-50 text-red-600 border border-red-100 hover:bg-red-100 shadow-sm flex items-center justify-center gap-2 whitespace-nowrap"
                 >
-                  <span className="sm:hidden truncate">Closed</span>
-                  <span className="hidden sm:inline truncate">Closed Result</span>
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-red-600/10 flex items-center justify-center shrink-0">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                  </div>
+                  <span className="sm:hidden">Closed</span>
+                  <span className="hidden sm:inline">Closed Result</span>
                 </button>
               </div>
             </div>
 
             {/* Right: Search Bar */}
-            <div className="w-full xl:flex-[1.5] flex items-center min-w-0 mt-2 xl:mt-0">
+            <div className="w-full lg:flex-1 flex items-center min-w-0 mt-2 lg:mt-0">
               <div className="relative w-full">
                 <input
                   type="text"

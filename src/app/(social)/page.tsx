@@ -291,10 +291,10 @@ export default function HomeFeedPage() {
                   {
                     id: "mock0",
                     type: "UPDATE",
-                    author: { name: "BillionWord Official", handle: "@billionword", initials: "BW", color: "bg-zinc-900 text-[#00a896]", isVerified: true },
-                    timeAgo: "1h",
-                    title: "Welcome to the future of interaction. 🌍",
-                    description: "BillionWord is officially live. Connect with millions of users, engage with top publishers, and experience the world's most powerful social ecosystem. We are so excited to have you here. Drop a comment below and say hello! 👇",
+                    author: { name: "BindTime Official", handle: "@bindtime", initials: "BT", color: "bg-zinc-900 text-[#00a896]", isVerified: true },
+                    timeAgo: "2h",
+                    title: "Welcome to the new era of public engagement",
+                    description: "BindTime is officially live. Connect with millions of users, engage with top publishers, and experience the world's most powerful social ecosystem. We are so excited to have you here. Drop a comment below and say hello! 👇",
                     stats: { upvotes: 9999, comments: 1420 },
                     mediaUrls: ["https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=1000"]
                   },

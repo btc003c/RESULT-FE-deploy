@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { api } from "@/lib/api";
+import { AtomLogo } from "@/components/ui/Logos";
 import { Loader2, ArrowLeft } from "lucide-react";
 
 type Step = "DETAILS" | "OTP";
@@ -95,7 +96,7 @@ export default function SignupPage() {
         <div className="absolute inset-0 z-0">
           <img 
             src="/billionword-bg.png" 
-            alt="Billionword Network" 
+            alt="BindTime Network" 
             className="w-full h-full object-cover opacity-60 mix-blend-luminosity hover:mix-blend-normal transition-all duration-[2000ms] hover:scale-105"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent z-10" />
@@ -103,11 +104,11 @@ export default function SignupPage() {
         </div>
 
         {/* Brand Header */}
-        <div className="relative z-20 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#00a896] to-[#FFC82A] flex items-center justify-center shadow-lg">
-             <span className="text-zinc-950 font-black text-xl">B</span>
+        <div className="relative z-20 flex items-center gap-0.5">
+          <div className="w-10 h-10 shrink-0">
+             <img src="/icon.svg" alt="BindTime Logo" className="w-full h-full" />
           </div>
-          <span className="text-xl font-black text-white tracking-widest">BillionWord</span>
+          <span className="text-xl font-black text-white tracking-widest">BindTime</span>
         </div>
 
         {/* Brand Hero Text */}
@@ -140,11 +141,11 @@ export default function SignupPage() {
         <div className="w-full max-w-sm">
           
           {/* Mobile Logo */}
-          <div className="lg:hidden flex items-center gap-3 mb-10 justify-center">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#00a896] to-[#FFC82A] flex items-center justify-center shadow-lg">
-               <span className="text-zinc-950 font-black text-xl">B</span>
+          <div className="lg:hidden flex items-center gap-0.5 mb-10 justify-center">
+            <div className="w-10 h-10 shrink-0">
+               <img src="/icon.svg" alt="BindTime Logo" className="w-full h-full" />
             </div>
-            <span className="text-xl font-black text-zinc-900 tracking-widest">BillionWord</span>
+            <span className="text-xl font-black text-zinc-900 tracking-widest">BindTime</span>
           </div>
 
           {step === "OTP" && (

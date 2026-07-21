@@ -329,10 +329,10 @@ export default function ProfilePage() {
       {/* ══════════════════════════════════════
           TOP SECTION GRID (Cover, Flashbacks, Info, Follow)
           ══════════════════════════════════════ */}
-      <div className="grid grid-cols-1 lg:grid-cols-5 w-full max-w-[1920px] mx-auto">
+      <div className="grid grid-cols-1 lg:grid-cols-5 w-full max-w-[1920px] mx-auto gap-y-4 lg:gap-y-0 lg:gap-x-4">
         
         {/* Cover Image */}
-        <div className="order-1 lg:order-1 lg:col-span-3 relative w-full h-64 lg:h-[300px] overflow-hidden bg-zinc-900 group">
+        <div className="order-1 lg:order-1 lg:col-span-3 relative w-full h-64 lg:h-[300px] overflow-hidden bg-zinc-900 group lg:rounded-2xl">
           {profile.coverPictureBase64 ? (
             <img src={`data:image/jpeg;base64,${profile.coverPictureBase64}`} alt="Cover" className="absolute inset-0 w-full h-full object-cover opacity-80" />
           ) : (
@@ -348,13 +348,13 @@ export default function ProfilePage() {
         </div>
 
         {/* FlashBacks */}
-        <div className="order-3 lg:order-2 lg:col-span-2 relative w-full h-auto lg:h-[300px] bg-white rounded-none lg:rounded-2xl border-b lg:border-b-0 lg:border-l lg:border-zinc-100 flex flex-col pt-4 overflow-hidden">
+        <div className="order-3 lg:order-2 lg:col-span-2 relative w-full h-auto lg:h-[260px] bg-white rounded-none lg:rounded-2xl border-b lg:border-b-0 lg:border-l lg:border-zinc-100 flex flex-col pt-4 overflow-hidden">
           <div className="px-4 lg:px-8 shrink-0">
             <h3 className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-4">FlashBacks</h3>
           </div>
           
           <div className="flex-1 overflow-y-auto px-4 lg:px-8 pb-4">
-            <div className="grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-4 gap-4 gap-y-6 justify-items-center">
+            <div className="grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-5 gap-4 gap-y-6 justify-items-center">
               {/* Add New FlashBack */}
               <div className="flex flex-col items-center gap-2 cursor-pointer group">
                 <div className="w-14 h-14 lg:w-16 lg:h-16 rounded-full border-[3px] border-dashed border-zinc-300 flex items-center justify-center bg-transparent group-hover:border-[#00a896] group-hover:bg-[#00a896]/5 transition-colors">
@@ -380,7 +380,7 @@ export default function ProfilePage() {
 
         {/* Profile Info */}
         <div className="order-2 lg:order-3 lg:col-span-3 w-full px-4 lg:px-8 pt-4 lg:pt-0 border-r border-transparent lg:border-zinc-100">
-          <div className="flex flex-col lg:flex-row items-start lg:items-start gap-6 lg:gap-10 pb-10 border-b border-zinc-100 relative z-10">
+          <div className="flex flex-col lg:flex-row items-start lg:items-start gap-6 lg:gap-10 pb-6 border-b border-zinc-100 relative z-10">
             {/* Avatar and Stats */}
             <div className="flex flex-col items-start shrink-0">
               {/* Avatar */}
@@ -397,7 +397,7 @@ export default function ProfilePage() {
               </div>
               
               {/* Stats Under Profile Picture */}
-              <div className="flex items-center gap-6 mt-2 w-full -ml-4 lg:-ml-8">
+              <div className="flex items-center gap-3 mt-2 w-full -ml-4 lg:-ml-8">
                 <button onClick={() => setFollowModal({ open: true, mode: "following" })} className="flex flex-col group items-start">
                   <span className="text-lg font-black text-zinc-900 group-hover:text-[#FFC82A] transition-colors">{fmtNum(followingCount)}</span>
                   <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Following</span>
@@ -434,13 +434,13 @@ export default function ProfilePage() {
                     )}
                   </div>
                   {profile.bio && (
-                    <div className="mb-6 relative group z-30">
+                    <div className="mb-0 relative group z-30">
                       <div className={bioExpanded ? "absolute -top-3 -left-3 -right-3 bg-white p-3 shadow-xl rounded-xl border border-zinc-100" : ""}>
-                        <p className={`text-sm text-zinc-700 font-medium leading-relaxed ${bioExpanded ? "" : "line-clamp-2"}`}>
+                        <p className={`text-sm text-zinc-700 font-medium leading-relaxed ${bioExpanded ? "line-clamp-4" : "line-clamp-2"}`}>
                           {profile.bio}
                         </p>
                         {!bioExpanded && profile.bio.length > 50 && (
-                          <button onClick={() => setBioExpanded(true)} className="text-[11px] font-bold text-[#FFC82A] mt-1 hover:underline">... more</button>
+                          <button onClick={() => setBioExpanded(true)} className="text-[11px] font-bold text-[#FFC82A] -mt-1 hover:underline">... more</button>
                         )}
                         {bioExpanded && (
                           <button onClick={() => setBioExpanded(false)} className="text-[11px] font-bold text-zinc-400 mt-2 hover:underline block">Show less</button>
@@ -449,7 +449,7 @@ export default function ProfilePage() {
                       {/* Placeholder to keep layout stable when absolute */}
                       {bioExpanded && (
                         <div className="opacity-0 pointer-events-none">
-                          <p className="text-sm font-medium leading-relaxed line-clamp-2">{profile.bio}</p>
+                          <p className={`text-sm font-medium leading-relaxed ${bioExpanded ? "line-clamp-4" : "line-clamp-2"}`}>{profile.bio}</p>
                           <div className="text-[11px] mt-1">... more</div>
                         </div>
                       )}
@@ -462,7 +462,7 @@ export default function ProfilePage() {
         </div>
 
         {/* Who to Follow */}
-        <div className="order-4 lg:order-4 lg:col-span-2 flex flex-col px-4 lg:px-0 pt-6 lg:pt-6 lg:min-h-full border-l border-transparent lg:border-zinc-100">
+        <div className="order-4 lg:order-4 lg:col-span-2 flex flex-col px-4 lg:px-0 pt-0 lg:pt-0 lg:-mt-8 lg:min-h-full border-l border-transparent lg:border-zinc-100">
           <div className="bg-white overflow-hidden shrink-0 rounded-2xl shadow-sm border border-zinc-100">
              <div className="p-3 border-b border-zinc-100 flex items-center gap-3 shrink-0">
                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-amber-300 flex items-center justify-center text-white shadow-inner shrink-0">
@@ -513,7 +513,7 @@ export default function ProfilePage() {
       {/* ══════════════════════════════════════
           BODY GRID (Vertical Tabs + Content)
           ══════════════════════════════════════ */}
-      <div className="flex flex-col lg:flex-row gap-8 py-8 items-start">
+      <div className="flex flex-col lg:flex-row gap-8 pt-0 pb-8 items-start">
 
         {/* ── TABS PANEL ───────────── */}
         <div className={`w-full lg:w-20 shrink-0 sticky z-40 flex flex-row lg:flex-col justify-around lg:justify-start gap-2 overflow-x-auto hide-scrollbar py-2 lg:py-0 bg-background/80 backdrop-blur-md transition-all duration-300 ${showTabs ? 'top-[70px] translate-y-0 opacity-100' : 'top-0 -translate-y-[150%] opacity-0'}`}>
