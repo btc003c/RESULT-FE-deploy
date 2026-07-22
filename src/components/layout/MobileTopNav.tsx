@@ -30,14 +30,14 @@ export default function MobileTopNav() {
         
         {/* Left Side: Logo and Create Post */}
         <div className="flex items-center gap-3">
-          <Link href="/" className="flex items-center gap-0.5">
-            <div className="w-8 h-8 shrink-0">
-              <img src="/logo.png" alt="BindTime Logo" className="w-full h-full" />
+          <div className="flex items-center gap-0.5">
+            <div className="w-8 h-8 shrink-0 bg-[#ffc82a1a] rounded-lg flex items-center justify-center p-0.5">
+              <img src="/logo.png" alt="BindTime Logo" className="w-full h-full object-contain" />
             </div>
             <span className="text-lg font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/70">
               BindTime
             </span>
-          </Link>
+          </div>
 
           <button 
             onClick={() => setIsPostModalOpen(true)}

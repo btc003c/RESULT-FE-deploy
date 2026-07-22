@@ -246,10 +246,10 @@ export default function LeftSidebar() {
         {/* ── Brand ─────────────────────────────────────────────────── */}
         <div className={`flex items-center h-[72px] shrink-0 border-b border-zinc-100
           ${isExpanded ? "px-5" : "justify-center px-3"}`}>
-          <Link href="/" className="flex items-center gap-0.5 group min-w-0">
+          <div className="flex items-center gap-0.5 group min-w-0">
             {/* Logo mark */}
-            <div className="w-10 h-10 shrink-0 group-hover:scale-105 transition-transform duration-200">
-              <img src="/logo.png" alt="BindTime Logo" className="w-full h-full" />
+            <div className="w-10 h-10 shrink-0 bg-[#ffc82a1a] rounded-xl flex items-center justify-center p-0.5">
+              <img src="/logo.png" alt="BindTime Logo" className="w-full h-full object-contain" />
             </div>
             {isExpanded && (
               <div className="overflow-hidden">
@@ -258,24 +258,22 @@ export default function LeftSidebar() {
                 </span>
               </div>
             )}
-          </Link>
+          </div>
         </div>
 
         {/* ── Create Post CTA ────────────────────────────────────────── */}
         <div className={`px-3 pt-4 pb-2 ${!isExpanded && "flex justify-center"}`}>
           <button
             onClick={() => setIsPostModalOpen(true)}
-            className={`group relative overflow-hidden font-bold text-[#FAFAF7] rounded-xl
+            className={`relative overflow-hidden font-bold text-[#FAFAF7] rounded-xl
               bg-black
-              shadow-lg shadow-black/20 hover:shadow-black/40
-              transition-all duration-200 active:scale-95 hover:scale-[1.02]
+              shadow-lg shadow-black/20
+              transition-all duration-200 active:scale-95
               ${isExpanded
                 ? "w-full flex items-center gap-3 px-4 py-3"
                 : "w-12 h-12 flex items-center justify-center"}`}
             title="Create Post"
           >
-            {/* Shimmer effect */}
-            <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-700 ease-out" />
 
             <div className="w-5 h-5 rounded-full border-2 border-white/60 flex items-center justify-center shrink-0">
               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round">
