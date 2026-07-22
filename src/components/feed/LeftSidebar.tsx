@@ -249,7 +249,7 @@ export default function LeftSidebar() {
           <Link href="/" className="flex items-center gap-0.5 group min-w-0">
             {/* Logo mark */}
             <div className="w-10 h-10 shrink-0 group-hover:scale-105 transition-transform duration-200">
-              <img src="/icon.svg" alt="BindTime Logo" className="w-full h-full" />
+              <img src="/logo.png" alt="BindTime Logo" className="w-full h-full" />
             </div>
             {isExpanded && (
               <div className="overflow-hidden">
@@ -471,3 +471,5 @@ export default function LeftSidebar() {
     </>
   );
 }
+
+// Force recompile

@@ -32,7 +32,7 @@ export default function MobileTopNav() {
         <div className="flex items-center gap-3">
           <Link href="/" className="flex items-center gap-0.5">
             <div className="w-8 h-8 shrink-0">
-              <img src="/icon.svg" alt="BindTime Logo" className="w-full h-full" />
+              <img src="/logo.png" alt="BindTime Logo" className="w-full h-full" />
             </div>
             <span className="text-lg font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/70">
               BindTime
@@ -137,3 +137,5 @@ export default function MobileTopNav() {
     </>
   );
 }
+
+// Force recompile
