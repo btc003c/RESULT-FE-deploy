@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 
-type PostType = "UPDATE" | "CLIPS" | "POLL" | "LIVE" | "FLASH";
+type PostType = "UPDATE" | "CLIPS" | "POLL" | "LIVE" | "FLASH" | "COMPLAINT";
 
 interface CreatePostModalProps {
   isOpen: boolean;
@@ -282,10 +282,21 @@ export default function CreatePostModal({ isOpen, onClose, defaultType = "UPDATE
                 activeTab === "CLIPS" ? "Share a quick moment..." :
                   activeTab === "POLL" ? "Ask a question..." :
                     activeTab === "LIVE" ? "What's this stream about?" :
+                      activeTab === "COMPLAINT" ? "Describe the issue or complaint in detail..." :
                       "Share a flash update..."
             }
             className={`w-full resize-none bg-transparent border-none outline-none text-xl placeholder:text-muted-foreground min-h-[140px] transition-colors ${isOverLimit ? 'text-danger' : 'text-foreground'}`}
             aria-label="Post Body"
+          />
+
+          {/* Hidden Global File Input */}
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            accept="image/*,video/*"
+            multiple
+            className="hidden"
           />
 
           {/* Global Media Preview - Multiple Grid Layout */}
@@ -318,14 +329,6 @@ export default function CreatePostModal({ isOpen, onClose, defaultType = "UPDATE
           {activeTab === "UPDATE" && (
             <div className="flex gap-4 mb-4 animate-in fade-in slide-in-from-top-2">
               <div className="flex-1 flex flex-col items-center justify-center p-6 border-2 border-dashed border-muted hover:border-primary hover:bg-primary/5 rounded-2xl transition-colors cursor-pointer" onClick={() => fileInputRef.current?.click()}>
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  onChange={handleFileChange}
-                  accept="image/*,video/*"
-                  multiple
-                  className="hidden"
-                />
                 <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-primary mb-2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                 <span className="font-bold text-foreground">Media</span>
               </div>
@@ -382,6 +385,16 @@ export default function CreatePostModal({ isOpen, onClose, defaultType = "UPDATE
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-purple-500 mb-2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
                 <span className="font-bold text-foreground text-sm">Promo</span>
               </button>
+            </div>
+          )}
+
+          {/* Complaint (CV) Specific Fields */}
+          {activeTab === "COMPLAINT" && (
+            <div className="flex gap-4 mb-4 animate-in fade-in slide-in-from-top-2">
+              <div className="flex-1 flex flex-col items-center justify-center p-6 border-2 border-dashed border-red-200 hover:border-red-500 hover:bg-red-500/5 rounded-2xl transition-colors cursor-pointer group" onClick={() => fileInputRef.current?.click()}>
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-red-400 group-hover:text-red-500 mb-2 transition-colors"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                <span className="font-bold text-foreground">Attach Evidence (Photo/Video)</span>
+              </div>
             </div>
           )}
 
@@ -490,6 +503,17 @@ export default function CreatePostModal({ isOpen, onClose, defaultType = "UPDATE
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
               <span className="hidden sm:inline">Flash</span>
+            </button>
+            <button
+              onClick={() => setActiveTab("COMPLAINT")}
+              aria-pressed={activeTab === "COMPLAINT"}
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-full transition-colors font-semibold text-sm ${activeTab === "COMPLAINT" ? "bg-orange-500/10 text-orange-600" : "text-muted-foreground hover:bg-muted"}`}
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"></path>
+                <path d="M13 5v2"></path><path d="M13 17v2"></path><path d="M13 11v2"></path>
+              </svg>
+              <span className="hidden sm:inline">CV</span>
             </button>
           </div>
 

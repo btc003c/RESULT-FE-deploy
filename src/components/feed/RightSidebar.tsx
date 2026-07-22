@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState, useCallback } from "react";
 import { api } from "@/lib/api";
+import ChatWidget from "@/components/chat/ChatWidget";
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 function formatNumber(num: number) {
@@ -87,6 +88,7 @@ export default function RightSidebar() {
   const [isLoading, setIsLoading]         = useState(true);
   const [followed, setFollowed]           = useState<Set<string>>(new Set());
   const [showAllTrending, setShowAllTrending] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
 
   const fetchData = useCallback(async () => {
     try {
@@ -299,13 +301,31 @@ export default function RightSidebar() {
 
 
       {/* ── Footer ──────────────────────────────────────────────────── */}
-      <div className="shrink-0 flex flex-wrap gap-x-3 gap-y-1 px-1 text-[10.5px] font-medium text-zinc-400">
-        {["Terms", "Privacy", "Guidelines", "Contact"].map(l => (
-          <Link key={l} href={`/${l.toLowerCase()}`} className="hover:text-zinc-700 transition-colors">{l}</Link>
-        ))}
-        <span className="w-full text-[10px] mt-0.5">© 2026 ResultHub Corp.</span>
+      <div className="shrink-0 flex flex-col gap-4 px-1 pb-4">
+        <div className="flex flex-wrap gap-x-3 gap-y-1 text-[10.5px] font-medium text-zinc-400">
+          {["Terms", "Privacy", "Guidelines", "Contact"].map(l => (
+            <Link key={l} href={`/${l.toLowerCase()}`} className="hover:text-zinc-700 transition-colors">{l}</Link>
+          ))}
+          <span className="w-full text-[10px] mt-0.5">© 2026 ResultHub Corp.</span>
+        </div>
+        
+        <div className="flex items-center gap-3">
+          <button onClick={() => setIsChatOpen(!isChatOpen)} className="w-8 h-8 rounded-xl bg-white border border-zinc-200 flex items-center justify-center text-zinc-500 hover:bg-zinc-200 hover:text-zinc-900 transition-colors shadow-sm">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+          </button>
+          <Link href="/results" className="w-8 h-8 rounded-xl bg-white border border-zinc-200 flex items-center justify-center text-zinc-500 hover:bg-zinc-200 hover:text-zinc-900 transition-colors shadow-sm">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M4 22h14a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v4"/>
+              <path d="M14 2v4a2 2 0 0 0 2 2h4"/>
+              <path d="M3 15h6"/><path d="M3 18h6"/>
+            </svg>
+          </Link>
+        </div>
       </div>
 
+      <ChatWidget isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
     </aside>
   );
 }

@@ -288,20 +288,26 @@ export default function LeftSidebar() {
 
         {/* ── Navigation ────────────────────────────────────────────── */}
         <nav className="flex-1 overflow-y-auto overflow-x-hidden px-3 pb-2">
-          {NAV_SECTIONS.map((section) => (
+          {NAV_SECTIONS.map((section, index) => (
             <div key={section.label} className="mb-1">
               {isExpanded && (
                 <p className="text-[10px] font-black uppercase tracking-[0.12em] text-zinc-400 px-3 pt-4 pb-1.5">
                   {section.label}
                 </p>
               )}
-              {!isExpanded && <div className="my-2 mx-auto w-6 border-t border-zinc-100" />}
+              
+              {/* Divider between sections (only show if not the first section and ONLY in collapsed mode) */}
+              {index > 0 && !isExpanded && (
+                <div className="flex justify-center my-3">
+                  <div className="h-[2px] bg-zinc-200 rounded-full w-8" />
+                </div>
+              )}
 
               {section.links.map((link) => {
                 if ((link as any).isSignIn) {
                   if (userProfile) return null;
                   return (
-                    <div key="sign-in" className="mt-1 mb-1">
+                    <div key="sign-in" className="mt-6 mb-5">
                       <Link
                         href="/login"
                         className={`flex items-center gap-3.5 rounded-xl font-bold text-[#FAFAF7]
