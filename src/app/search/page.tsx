@@ -16,12 +16,15 @@ import {
   ArrowRight,
   CheckCircle2,
   SlidersHorizontal,
-  X
+  X,
+  Users,
+  MessageSquare
 } from 'lucide-react';
 import Link from 'next/link';
+import { SearchResultCard, SearchResult } from '@/components/search/SearchResultCard';
 
 // --- TRENDING SEARCHES ---
-const TRENDING_SEARCHES = ['Fall 2026 Admissions', 'Stanford CS Department', 'Q1 Financial Reports', 'IT Support Tickets', 'Elections 2024'];
+const TRENDING_SEARCHES = ['Jane Doe', 'Fall 2026 Admissions', '#TechConference', 'Stanford CS Department', 'Q1 Financial Reports'];
 
 export default function UniversalSearchPage() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -56,16 +59,30 @@ export default function UniversalSearchPage() {
           
           if (active) {
             // Map the generic PaginatedSearchResponse to UI format
-            const mappedResults = (response.results || []).map((r: any) => ({
-              type: r.type ? r.type.toLowerCase() : 'unknown',
-              id: r.id,
-              title: r.title,
-              subtitle: r.domainType || 'General',
-              verified: true,
-              description: r.description || 'No description available',
-              metrics: { datasets: 0, records: 0, updated: 'recently' },
-              workspaceId: r.workspaceId
-            }));
+            // Here we just mock mapping them to our new rich types for the demo
+            const mappedResults: SearchResult[] = (response.results || []).map((r: any, idx: number) => {
+              // Simulate different types for demo purposes based on index if backend doesn't provide
+              let type: SearchResult['type'] = r.type ? r.type.toLowerCase() : 'record';
+              if (!r.type) {
+                if (idx % 5 === 0) type = 'user';
+                else if (idx % 5 === 1) type = 'post';
+                else if (idx % 5 === 2) type = 'workspace';
+                else if (idx % 5 === 3) type = 'dataset';
+              }
+              
+              return {
+                type,
+                id: r.id || idx.toString(),
+                title: r.title || 'Result',
+                subtitle: r.domainType || (type === 'user' ? 'username' : 'General'),
+                verified: idx % 2 === 0,
+                description: r.description || 'No description available for this result.',
+                followers: type === 'user' ? Math.floor(Math.random() * 5000) : undefined,
+                datasetCount: type === 'workspace' ? Math.floor(Math.random() * 50) : undefined,
+                recordCount: type === 'dataset' ? Math.floor(Math.random() * 1000000) : undefined,
+                workspaceId: r.workspaceId
+              };
+            });
             
             setResults(mappedResults);
           }
@@ -187,18 +204,21 @@ export default function UniversalSearchPage() {
                     className="border-t border-zinc-100 bg-zinc-50/50 px-6 py-3 flex items-center justify-between overflow-x-auto scrollbar-hide"
                   >
                     <div className="flex items-center gap-6 whitespace-nowrap text-sm font-medium text-zinc-600">
-                      <label className="flex items-center gap-2 cursor-pointer group">
-                        <input type="radio" name="searchScope" defaultChecked className="w-4 h-4 text-[#FFC82A] focus:ring-[#FFC82A] border-zinc-300" />
-                        <span className="group-hover:text-zinc-900 transition-colors">Everything</span>
-                      </label>
-                      <label className="flex items-center gap-2 cursor-pointer group">
-                        <input type="radio" name="searchScope" className="w-4 h-4 text-[#FFC82A] focus:ring-[#FFC82A] border-zinc-300" />
-                        <span className="group-hover:text-zinc-900 transition-colors">Organizations Only</span>
-                      </label>
-                      <label className="flex items-center gap-2 cursor-pointer group">
-                        <input type="radio" name="searchScope" className="w-4 h-4 text-[#FFC82A] focus:ring-[#FFC82A] border-zinc-300" />
-                        <span className="group-hover:text-zinc-900 transition-colors">Datasets Only</span>
-                      </label>
+                      {['All', 'People', 'Posts', 'Organizations', 'Datasets'].map((scope) => (
+                        <label key={scope} className="flex items-center gap-2 cursor-pointer group">
+                          <input 
+                            type="radio" 
+                            name="searchScope" 
+                            value={scope}
+                            checked={activeFilters.includes(scope)}
+                            onChange={() => setActiveFilters([scope])}
+                            className="w-4 h-4 text-[#FFC82A] focus:ring-[#FFC82A] border-zinc-300" 
+                          />
+                          <span className={`transition-colors ${activeFilters.includes(scope) ? 'text-zinc-900 font-bold' : 'group-hover:text-zinc-900'}`}>
+                            {scope}
+                          </span>
+                        </label>
+                      ))}
                     </div>
                   </motion.div>
                 )}
@@ -252,7 +272,7 @@ export default function UniversalSearchPage() {
               <div className="space-y-4">
                 <h4 className="text-xs font-bold text-zinc-400 uppercase tracking-wider">Entity Type</h4>
                 <div className="space-y-2">
-                  {['All', 'Organizations', 'Datasets', 'Records', 'Polls'].map(filter => (
+                  {['All', 'People', 'Posts', 'Organizations', 'Datasets'].map(filter => (
                     <button
                       key={filter}
                       onClick={() => toggleFilter(filter)}
@@ -323,55 +343,7 @@ export default function UniversalSearchPage() {
                     </div>
                   ) : (
                     results.map((result, idx) => (
-                      <Link href={`/organization/${result.workspaceId || 'stanford'}`} key={idx} className="block group">
-                        <div className="bg-white border border-zinc-200 rounded-2xl p-6 hover:border-zinc-300 hover:shadow-md transition-all flex flex-col sm:flex-row gap-5">
-                          
-                          {/* Icon based on type */}
-                          <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${
-                            result.type === 'workspace' ? 'bg-indigo-50 text-indigo-600' :
-                            result.type === 'dataset' ? 'bg-emerald-50 text-emerald-600' :
-                            'bg-amber-50 text-amber-600'
-                          }`}>
-                            {result.type === 'workspace' && <Building2 className="w-6 h-6" />}
-                            {result.type === 'dataset' && <Database className="w-6 h-6" />}
-                            {result.type === 'record' && <FileText className="w-6 h-6" />}
-                          </div>
-
-                          {/* Content */}
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-start justify-between gap-4 mb-1">
-                              <h3 className="text-lg font-bold text-zinc-900 truncate group-hover:text-[#FFC82A] transition-colors flex items-center gap-2">
-                                {result.title}
-                                {result.verified && <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />}
-                              </h3>
-                              <span className="px-2.5 py-1 rounded-md text-[10px] font-bold bg-zinc-100 text-zinc-600 uppercase tracking-wider shrink-0 hidden sm:block">
-                                {result.type}
-                              </span>
-                            </div>
-                            
-                            <p className="text-sm font-semibold text-zinc-500 mb-3 truncate">{result.subtitle}</p>
-                            <p className="text-sm text-zinc-600 mb-4">{result.description}</p>
-                            
-                            {/* Dynamic Metrics based on type */}
-                            <div className="flex flex-wrap items-center gap-4 text-xs font-bold text-zinc-400">
-                              {result.type === 'workspace' && (
-                                <>
-                                  <span className="flex items-center gap-1.5"><Database className="w-3.5 h-3.5" /> Workspace</span>
-                                </>
-                              )}
-                              {result.type === 'dataset' && (
-                                <>
-                                  <span className="flex items-center gap-1.5"><FileText className="w-3.5 h-3.5" /> Dataset</span>
-                                </>
-                              )}
-                              {result.type === 'record' && (
-                                <span className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" /> Record</span>
-                              )}
-                            </div>
-                          </div>
-
-                        </div>
-                      </Link>
+                      <SearchResultCard key={idx} result={result} />
                     ))
                   )}
                 </div>

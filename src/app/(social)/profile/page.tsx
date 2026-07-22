@@ -323,24 +323,36 @@ export default function ProfilePage() {
 
   return (
     <div className="w-full min-h-screen pb-10 bg-background">
-      <div className="px-4 lg:px-0 pt-4 pb-3 flex items-center justify-between">
-        <h2 className="text-xl font-black text-zinc-500">{profile.name}</h2>
-        <div className="flex md:hidden items-center gap-4">
-          <Link href="/bookmarks" className="text-zinc-400 hover:text-zinc-800 transition-colors">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>
-          </Link>
-          <button onClick={() => setSettingsOpen(true)} className="text-zinc-400 hover:text-zinc-800 transition-colors">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-          </button>
+      <div className="grid grid-cols-1 lg:grid-cols-4 w-full max-w-[1920px] mx-auto gap-x-4 px-4 lg:px-0 pt-4 pb-3">
+        <div className="lg:col-span-3 flex items-center justify-between">
+          <h2 className="text-xl font-black text-zinc-500">{profile.name}</h2>
+          
+          <div className="hidden md:flex items-center bg-white border border-zinc-200 rounded-full px-4 py-2 shadow-sm focus-within:ring-2 focus-within:ring-[#FFC82A] focus-within:border-transparent transition-all">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-zinc-400 mr-2 shrink-0">
+              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+            </svg>
+            <input type="text" placeholder="Search profile..." className="bg-transparent border-none outline-none text-sm font-semibold text-zinc-700 w-48 placeholder:text-zinc-400" />
+          </div>
+        </div>
+
+        <div className="lg:col-span-1 flex items-center justify-end">
+          <div className="flex md:hidden items-center gap-4">
+            <Link href="/bookmarks" className="text-zinc-400 hover:text-zinc-800 transition-colors">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>
+            </Link>
+            <button onClick={() => setSettingsOpen(true)} className="text-zinc-400 hover:text-zinc-800 transition-colors">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            </button>
+          </div>
         </div>
       </div>
       {/* ══════════════════════════════════════
           TOP SECTION GRID (Cover, Flashbacks, Info, Follow)
           ══════════════════════════════════════ */}
-      <div className="grid grid-cols-1 lg:grid-cols-5 w-full max-w-[1920px] mx-auto gap-y-4 lg:gap-y-0 lg:gap-x-4">
+      <div className="grid grid-cols-1 lg:grid-cols-4 w-full max-w-[1920px] mx-auto gap-y-4 lg:gap-y-0 lg:gap-x-4">
         
         {/* Cover Image */}
-        <div className="order-1 lg:order-1 lg:col-span-3 relative w-full h-64 lg:h-[300px] overflow-hidden bg-zinc-900 group lg:rounded-2xl">
+        <div className="order-1 lg:order-1 lg:col-span-3 relative w-full h-64 lg:h-[240px] overflow-hidden bg-zinc-900 group lg:rounded-2xl">
           {profile.coverPictureBase64 ? (
             <img src={`data:image/jpeg;base64,${profile.coverPictureBase64}`} alt="Cover" className="absolute inset-0 w-full h-full object-cover opacity-80" />
           ) : (
@@ -356,13 +368,13 @@ export default function ProfilePage() {
         </div>
 
         {/* FlashBacks */}
-        <div className="order-3 lg:order-2 lg:col-span-2 relative w-full h-auto lg:h-[260px] bg-white rounded-none lg:rounded-2xl border-b lg:border-b-0 lg:border-l lg:border-zinc-100 flex flex-col pt-4 overflow-hidden">
+        <div className="order-3 lg:order-2 lg:col-span-1 relative w-full h-auto lg:h-[240px] lg:-mt-14 bg-white rounded-none lg:rounded-2xl border-b lg:border-b-0 lg:border-l lg:border-zinc-100 flex flex-col pt-4 overflow-hidden">
           <div className="px-4 lg:px-8 shrink-0">
             <h3 className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-4">FlashBacks</h3>
           </div>
           
           <div className="flex-1 overflow-y-auto px-4 lg:px-8 pb-4">
-            <div className="grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-5 gap-4 gap-y-3 justify-items-center">
+            <div className="grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-3 gap-2 gap-y-3 justify-items-center">
               {/* Add New FlashBack */}
               <div className="flex flex-col items-center gap-2 cursor-pointer group">
                 <div className="w-14 h-14 lg:w-16 lg:h-16 rounded-full border-[3px] border-dashed border-zinc-300 flex items-center justify-center bg-transparent group-hover:border-[#00a896] group-hover:bg-[#00a896]/5 transition-colors">
@@ -470,7 +482,7 @@ export default function ProfilePage() {
         </div>
 
         {/* Who to Follow */}
-        <div className="order-4 lg:order-4 lg:col-span-2 flex flex-col pt-0 lg:pt-0 lg:-mt-8 lg:min-h-full border-l border-transparent lg:border-zinc-100">
+        <div className="order-4 lg:order-4 lg:col-span-1 flex flex-col pt-0 lg:pt-0 lg:-mt-12 lg:min-h-full border-l border-transparent lg:border-zinc-100">
           <div className="bg-white overflow-hidden shrink-0 rounded-none lg:rounded-2xl shadow-none lg:shadow-sm border-b lg:border border-zinc-100">
              <div className="px-4 lg:px-3 py-3 border-b border-zinc-100 flex items-center gap-3 shrink-0">
                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-amber-300 flex items-center justify-center text-white shadow-inner shrink-0">
