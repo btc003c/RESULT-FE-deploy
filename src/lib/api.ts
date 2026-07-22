@@ -199,9 +199,7 @@ export const api = {
       }),
   },
 
-  // Search
-  search: (query: string, type?: string) => 
-    fetchWithAuth(`/search?q=${encodeURIComponent(query)}${type ? `&type=${type}` : ''}`),
+
   
   // Workspaces
   workspaces: {
