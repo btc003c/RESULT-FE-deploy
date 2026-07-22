@@ -414,5 +414,16 @@ export const api = {
     deletePost: (postId: string) =>
       fetchWithAuth(`/admin/posts/${postId}`, { method: 'DELETE' }),
   },
+  
+  // Search
+  search: {
+    global: (query: string, type?: string) => {
+      let url = `/search?q=${encodeURIComponent(query)}`;
+      if (type) {
+        url += `&type=${encodeURIComponent(type)}`;
+      }
+      return fetchWithAuth(url);
+    }
+  }
 };
 

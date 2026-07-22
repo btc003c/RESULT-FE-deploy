@@ -307,7 +307,7 @@ export default function LeftSidebar() {
                 if ((link as any).isSignIn) {
                   if (userProfile) return null;
                   return (
-                    <div key="sign-in" className="mt-6 mb-5">
+                    <div key="sign-in" className="mt-8 mb-4">
                       <Link
                         href="/login"
                         className={`flex items-center gap-3.5 rounded-xl font-bold text-[#FAFAF7]
