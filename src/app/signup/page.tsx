@@ -106,7 +106,7 @@ export default function SignupPage() {
         {/* Brand Header */}
         <div className="relative z-20 flex items-center gap-0.5">
           <div className="w-10 h-10 shrink-0">
-             <img src="/logo.png" alt="BindTime Logo" className="w-full h-full" />
+             <img src="/brand-logo-clear.png" alt="BindTime Logo" className="w-full h-full" />
           </div>
           <span className="text-xl font-black text-white tracking-widest">BindTime</span>
         </div>
@@ -143,7 +143,7 @@ export default function SignupPage() {
           {/* Mobile Logo */}
           <div className="lg:hidden flex items-center gap-0.5 mb-10 justify-center">
             <div className="w-10 h-10 shrink-0">
-               <img src="/logo.png" alt="BindTime Logo" className="w-full h-full" />
+               <img src="/brand-logo-clear.png" alt="BindTime Logo" className="w-full h-full" />
             </div>
             <span className="text-xl font-black text-zinc-900 tracking-widest">BindTime</span>
           </div>

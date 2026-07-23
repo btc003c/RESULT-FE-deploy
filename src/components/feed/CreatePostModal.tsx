@@ -42,6 +42,8 @@ export default function CreatePostModal({ isOpen, onClose, defaultType = "UPDATE
   const audienceRef = useRef<HTMLDivElement>(null);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [scheduledDate, setScheduledDate] = useState<string | null>(null);
+  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -58,6 +60,8 @@ export default function CreatePostModal({ isOpen, onClose, defaultType = "UPDATE
       // Clear media when closed
       mediaPreviews.forEach(url => URL.revokeObjectURL(url));
       setMediaPreviews([]);
+      setScheduledDate(null);
+      setIsDatePickerOpen(false);
     }
     return () => {
       document.body.style.overflow = "unset";
@@ -144,7 +148,8 @@ export default function CreatePostModal({ isOpen, onClose, defaultType = "UPDATE
           postType: postType,
           text: postText,
           category: null,
-          locationName: null
+          locationName: null,
+          scheduledFor: scheduledDate || null
         };
         formData.append("data", JSON.stringify(requestData));
 
@@ -193,6 +198,8 @@ export default function CreatePostModal({ isOpen, onClose, defaultType = "UPDATE
       setMediaPreviews([]);
       setLocationName("");
       setTargetDepartment("");
+      setScheduledDate(null);
+      setIsDatePickerOpen(false);
       if (fileInputRef.current) fileInputRef.current.value = '';
 
       onClose();
@@ -461,6 +468,34 @@ export default function CreatePostModal({ isOpen, onClose, defaultType = "UPDATE
 
         </div>
 
+        {/* Date Picker Overlay */}
+        {isDatePickerOpen && (
+          <div className="px-6 pb-4 border-t border-muted bg-muted/5 animate-in fade-in slide-in-from-bottom-2">
+            <div className="flex items-center justify-between py-3">
+              <h4 className="font-bold text-foreground flex items-center gap-2">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                Schedule Post
+              </h4>
+              <button onClick={() => setIsDatePickerOpen(false)} className="p-1 text-muted-foreground hover:bg-muted rounded-full transition-colors">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+              </button>
+            </div>
+            <div className="flex gap-4">
+              <input 
+                type="datetime-local" 
+                className="bg-background border border-muted px-4 py-2 rounded-xl text-sm font-semibold text-foreground outline-none focus:border-primary flex-1 transition-colors"
+                onChange={(e) => setScheduledDate(e.target.value)}
+                value={scheduledDate || ""}
+              />
+              {scheduledDate && (
+                <button onClick={() => setScheduledDate(null)} className="px-4 py-2 bg-danger/10 text-danger font-bold rounded-xl text-sm hover:bg-danger hover:text-white transition-colors">
+                  Clear
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* Footer Actions */}
         <div className="p-4 px-6 border-t border-muted bg-background/50 flex flex-col sm:flex-row gap-4 items-center justify-between">
           <div className="flex gap-2 flex-wrap">
@@ -518,6 +553,17 @@ export default function CreatePostModal({ isOpen, onClose, defaultType = "UPDATE
           </div>
 
           <div className="flex items-center gap-4">
+            {/* Schedule Button (Hidden for Complaints) */}
+            {activeTab !== "COMPLAINT" && (
+              <button 
+                onClick={() => setIsDatePickerOpen(!isDatePickerOpen)}
+                className={`p-2 rounded-full transition-colors ${scheduledDate ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}
+                title="Schedule Post"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              </button>
+            )}
+
             {/* Character Counter */}
             <div className={`text-sm font-medium ${isOverLimit ? 'text-danger' : 'text-muted-foreground'}`}>
               {postText.length} / {maxChars}
@@ -540,9 +586,9 @@ export default function CreatePostModal({ isOpen, onClose, defaultType = "UPDATE
               onClick={handleSubmit}
               disabled={postText.trim().length === 0 || isOverLimit || isSubmitting}
               aria-disabled={postText.trim().length === 0 || isOverLimit || isSubmitting}
-              className="px-6 py-2.5 rounded-full font-bold text-white bg-foreground hover:bg-foreground/90 transition-all active:scale-95 shadow-sm disabled:opacity-50 disabled:active:scale-100 disabled:hover:bg-foreground"
+              className={`px-6 py-2.5 rounded-full font-bold text-white transition-all active:scale-95 shadow-sm disabled:opacity-50 disabled:active:scale-100 ${scheduledDate ? 'bg-primary hover:bg-primary/90' : 'bg-foreground hover:bg-foreground/90 disabled:hover:bg-foreground'}`}
             >
-              {isSubmitting ? "Posting..." : "Post"}
+              {isSubmitting ? "Processing..." : scheduledDate ? "Schedule" : "Post"}
             </button>
           </div>
         </div>

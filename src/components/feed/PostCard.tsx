@@ -122,7 +122,7 @@ export default function PostCard({ post }: { post: PostCardProps }) {
          <div className="flex items-center gap-3">
            <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${post.author.color}`}>
              {post.author.name === "BindTime Official" ? (
-               <img src="/logo.png" alt="BindTime Logo" className="w-full h-full" />
+               <img src="/brand-logo-clear.png" alt="BindTime Logo" className="w-full h-full" />
              ) : (
                post.author.initials
              )}
