@@ -134,11 +134,11 @@ export default function ClipsDiscoveryPage() {
           </div>
         ) : (
           filteredClips.map((clip) => (
-            <div key={clip.id} className="w-full h-full shrink-0 snap-center flex items-center justify-center p-2 md:p-4">
-              <div className="flex items-end gap-2 md:gap-4 h-[90vh] max-h-[850px]">
+            <div key={clip.id} className="w-full h-full shrink-0 snap-center flex items-center justify-center p-2 sm:p-4">
+              <div className="flex items-end gap-2 sm:gap-4 h-[90vh] max-h-[850px] relative w-full sm:w-auto max-w-full">
                 
                 {/* Video Container */}
-                <div className="w-[calc(100vw-80px)] sm:w-[400px] h-full relative rounded-[2rem] shadow-2xl border border-zinc-200 bg-black group">
+                <div className="w-full sm:w-[400px] h-full relative rounded-[2rem] shadow-2xl border border-zinc-200 bg-black group">
               
               {/* Auto-playing Video with Poster Fallback */}
               <video 
@@ -196,21 +196,21 @@ export default function ClipsDiscoveryPage() {
                   <div className="w-12 h-12 bg-white rounded-full shadow-md border border-zinc-200 flex items-center justify-center text-zinc-600 hover:text-black hover:bg-zinc-50 transition-colors">
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="group-hover/btn:fill-red-500 group-hover/btn:stroke-red-500 transition-all"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
                   </div>
-                  <span className="text-[11px] font-bold text-zinc-700">{clip.likes}</span>
+                  <span className="text-[11px] font-bold text-white [text-shadow:0_1px_4px_rgba(0,0,0,0.9)] sm:[text-shadow:none] sm:text-zinc-700">{clip.likes}</span>
                 </button>
 
                 <button className="flex flex-col items-center gap-1 group/btn">
                   <div className="w-12 h-12 bg-white rounded-full shadow-md border border-zinc-200 flex items-center justify-center text-zinc-600 hover:text-black hover:bg-zinc-50 transition-colors">
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="group-hover/btn:fill-[#00a896] group-hover/btn:stroke-[#00a896] transition-all"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
                   </div>
-                  <span className="text-[11px] font-bold text-zinc-700">{clip.comments}</span>
+                  <span className="text-[11px] font-bold text-white [text-shadow:0_1px_4px_rgba(0,0,0,0.9)] sm:[text-shadow:none] sm:text-zinc-700">{clip.comments}</span>
                 </button>
 
                 <button className="flex flex-col items-center gap-1 group/btn">
                   <div className="w-12 h-12 bg-white rounded-full shadow-md border border-zinc-200 flex items-center justify-center text-zinc-600 hover:text-black hover:bg-zinc-50 transition-colors">
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="group-hover/btn:stroke-[#FFC82A] transition-all"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
                   </div>
-                  <span className="text-[11px] font-bold text-zinc-700">{clip.shares}</span>
+                  <span className="text-[11px] font-bold text-white [text-shadow:0_1px_4px_rgba(0,0,0,0.9)] sm:[text-shadow:none] sm:text-zinc-700">{clip.shares}</span>
                 </button>
 
                 {/* More Options */}
