@@ -281,7 +281,7 @@ export default function NotificationsPage() {
                   </div>
                   
                   <AnimatePresence>
-                    {groupItems.map((notif) => (
+                    {groupItems.map((notif: any) => (
                       <motion.div 
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
