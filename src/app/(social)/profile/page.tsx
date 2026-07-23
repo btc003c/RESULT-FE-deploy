@@ -323,8 +323,8 @@ export default function ProfilePage() {
 
   return (
     <div className="w-full min-h-screen pb-10 bg-background">
-      <div className="grid grid-cols-1 lg:grid-cols-4 w-full max-w-[1920px] mx-auto gap-x-4 px-4 lg:px-0 pt-4 pb-3">
-        <div className="lg:col-span-3 flex items-center justify-between">
+      <div className="grid grid-cols-1 lg:grid-cols-3 w-full max-w-[1920px] mx-auto gap-x-4 px-4 lg:px-0 pt-4 pb-3">
+        <div className="lg:col-span-2 flex items-center justify-between">
           <h2 className="text-xl font-black text-zinc-500">{profile.name}</h2>
           
           <div className="hidden md:flex items-center bg-white border border-zinc-200 rounded-full px-4 py-2 shadow-sm focus-within:ring-2 focus-within:ring-[#FFC82A] focus-within:border-transparent transition-all">
@@ -349,10 +349,10 @@ export default function ProfilePage() {
       {/* ══════════════════════════════════════
           TOP SECTION GRID (Cover, Flashbacks, Info, Follow)
           ══════════════════════════════════════ */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 w-full max-w-[1920px] mx-auto gap-y-4 lg:gap-y-0 lg:gap-x-4">
+      <div className="grid grid-cols-1 lg:grid-cols-3 w-full max-w-[1920px] mx-auto gap-y-4 lg:gap-y-0 lg:gap-x-4">
         
         {/* Cover Image */}
-        <div className="order-1 lg:order-1 lg:col-span-3 relative w-full h-64 lg:h-[240px] overflow-hidden bg-zinc-900 group lg:rounded-2xl">
+        <div className="order-1 lg:order-1 lg:col-span-2 relative w-full h-64 lg:h-[240px] overflow-hidden bg-zinc-900 group lg:rounded-2xl">
           {profile.coverPictureBase64 ? (
             <img src={`data:image/jpeg;base64,${profile.coverPictureBase64}`} alt="Cover" className="absolute inset-0 w-full h-full object-cover opacity-80" />
           ) : (
@@ -374,7 +374,7 @@ export default function ProfilePage() {
           </div>
           
           <div className="flex-1 overflow-y-auto px-4 lg:px-8 pb-4">
-            <div className="grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-3 gap-2 gap-y-3 justify-items-center">
+            <div className="grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-4 gap-2 gap-y-3 justify-items-center">
               {/* Add New FlashBack */}
               <div className="flex flex-col items-center gap-2 cursor-pointer group">
                 <div className="w-14 h-14 lg:w-16 lg:h-16 rounded-full border-[3px] border-dashed border-zinc-300 flex items-center justify-center bg-transparent group-hover:border-[#00a896] group-hover:bg-[#00a896]/5 transition-colors">
@@ -399,7 +399,7 @@ export default function ProfilePage() {
         </div>
 
         {/* Profile Info */}
-        <div className="order-2 lg:order-3 lg:col-span-3 w-full px-4 lg:px-8 pt-4 lg:pt-0 border-r border-transparent lg:border-zinc-100">
+        <div className="order-2 lg:order-3 lg:col-span-2 w-full px-4 lg:px-8 pt-4 lg:pt-0 border-r border-transparent lg:border-zinc-100">
           <div className="flex flex-col lg:flex-row items-start lg:items-start gap-6 lg:gap-10 pb-6 border-b border-zinc-100 relative z-10">
             {/* Avatar and Stats */}
             <div className="flex flex-col items-start shrink-0">
