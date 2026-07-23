@@ -36,7 +36,8 @@ function SearchContent() {
       setIsSearching(true);
       try {
         const response = await api.search.global(debouncedQuery);
-        setResults(response.content || []);
+        // The backend returns { results: [...] } not content.
+        setResults(response.results || response.content || []);
       } catch (error) {
         console.error("Search failed:", error);
         setResults([]);
@@ -53,7 +54,7 @@ function SearchContent() {
   if (activeFilter !== "all") {
     const mapFilterToType: Record<string, string> = {
       users: "USER",
-      posts: "POST",
+      posts: "FEED_POST", // Match the backend type 'FEED_POST' instead of 'POST'
       workspaces: "WORKSPACE",
       datasets: "DATASET",
       complaints: "COMPLAINT"
@@ -88,14 +89,14 @@ function SearchContent() {
           </div>
 
           {/* Filters & Sorting */}
-          <div className="flex items-center justify-between mt-4">
-            {/* Scrollable Filters */}
-            <div className="flex items-center gap-2 overflow-x-auto hide-scrollbar pb-2 pr-4">
-              {FILTERS.map((f) => (
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mt-4 w-full">
+            {/* Filters (with More Dropdown) */}
+            <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+              {FILTERS.slice(0, 4).map((f) => (
                 <button
                   key={f.id}
                   onClick={() => setActiveFilter(f.id)}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold whitespace-nowrap transition-all ${
+                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all flex-shrink-0 ${
                     activeFilter === f.id
                       ? "bg-zinc-900 text-white shadow-md"
                       : "bg-zinc-50 text-zinc-600 hover:bg-zinc-100 border border-zinc-200"
@@ -105,20 +106,51 @@ function SearchContent() {
                   {f.label}
                 </button>
               ))}
+              
+              {/* More Dropdown */}
+              <div className="relative group">
+                <button className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all flex-shrink-0 ${
+                    FILTERS.slice(4).some(f => f.id === activeFilter)
+                      ? "bg-zinc-900 text-white shadow-md"
+                      : "bg-zinc-50 text-zinc-600 hover:bg-zinc-100 border border-zinc-200"
+                  }`}>
+                  <LayoutGrid className="w-4 h-4" />
+                  More
+                  <ChevronDown className="w-3 h-3 ml-1 opacity-50" />
+                </button>
+                
+                {/* Dropdown Menu (Hover to open) */}
+                <div className="absolute top-full left-0 mt-2 w-48 bg-white border border-zinc-200 rounded-2xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 py-2 transform origin-top scale-95 group-hover:scale-100">
+                  {FILTERS.slice(4).map((f) => (
+                    <button
+                      key={f.id}
+                      onClick={() => setActiveFilter(f.id)}
+                      className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm font-bold transition-colors text-left ${
+                        activeFilter === f.id
+                          ? "bg-zinc-50 text-zinc-900"
+                          : "text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900"
+                      }`}
+                    >
+                      {f.icon}
+                      {f.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
 
             {/* Sort Dropdown */}
-            <div className="relative hidden sm:block shrink-0">
+            <div className="relative w-full sm:w-auto shrink-0 pb-2">
               <select 
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="appearance-none bg-zinc-50 border border-zinc-200 text-zinc-600 text-sm font-bold rounded-xl px-4 py-2 pr-8 outline-none hover:bg-zinc-100 transition-colors focus:border-zinc-300"
+                className="appearance-none w-full sm:w-auto bg-zinc-50 border border-zinc-200 text-zinc-600 text-sm font-bold rounded-xl px-4 py-2 pr-8 outline-none hover:bg-zinc-100 transition-colors focus:border-zinc-300"
               >
                 <option value="relevant">Most Relevant</option>
                 <option value="newest">Newest First</option>
                 <option value="oldest">Oldest First</option>
               </select>
-              <ChevronDown className="w-4 h-4 text-zinc-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <ChevronDown className="w-4 h-4 text-zinc-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none mt-[-4px]" />
             </div>
           </div>
         </div>
