@@ -10,7 +10,7 @@ export default function SocialLayout({
 }>) {
   return (
     <div className="flex justify-center min-h-screen bg-background w-full">
-      <div className="flex flex-col md:flex-row min-h-screen pb-16 md:pb-0 w-full max-w-[1536px]">
+      <div className="flex flex-col md:flex-row min-h-screen pb-12 md:pb-0 w-full max-w-[1536px]">
         <SocialAuthGuard />
         <MobileTopNav />
         <LeftSidebar />

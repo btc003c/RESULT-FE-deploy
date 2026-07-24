@@ -54,15 +54,8 @@ export default function NotificationsPage() {
     }
   };
 
-  const tabs = ["All", "Mentions", "Result Hub"];
-
-  // Filtering Logic
-  const filteredNotifs = notifications.filter(n => {
-    if (activeTab === "All") return true;
-    if (activeTab === "Mentions" && n.type === "MENTION") return true;
-    if (activeTab === "Result Hub" && n.domain === "Hub") return true;
-    return false;
-  });
+  // Show all notifications together
+  const filteredNotifs = notifications;
 
   const getIconForType = (type: string, domain: string) => {
     switch (type) {
@@ -223,32 +216,10 @@ export default function NotificationsPage() {
       <div className="w-full max-w-[600px] border-x border-muted min-h-screen pb-20">
         
         {/* STICKY HEADER */}
-        <div className="sticky top-0 z-30 bg-background/80 backdrop-blur-md border-b border-muted">
+        <div className="sticky top-12 md:top-0 z-30 bg-background/80 backdrop-blur-md border-b border-muted">
           <div className="px-4 py-3 flex items-center justify-between">
             <h1 className="text-xl font-bold text-foreground">Notifications</h1>
-            <div className="flex items-center gap-2">
-              <button onClick={() => setIsSettingsOpen(true)} className="p-2 hover:bg-muted rounded-full transition-colors group" title="Settings">
-                <Settings size={20} className="text-foreground group-hover:rotate-45 transition-transform" />
-              </button>
-            </div>
-          </div>
-
-          {/* TABS */}
-          <div className="flex w-full">
-            {tabs.map(tab => (
-              <button 
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className="flex-1 relative py-4 text-[15px] font-bold transition-colors hover:bg-muted/30"
-              >
-                <span className={activeTab === tab ? "text-foreground" : "text-muted-foreground"}>
-                  {tab}
-                </span>
-                {activeTab === tab && (
-                  <motion.div layoutId="activeNotifTab" className="absolute bottom-0 left-1/2 -translate-x-1/2 w-14 h-1 bg-primary rounded-t-full" />
-                )}
-              </button>
-            ))}
+            {/* Settings Icon Removed */}
           </div>
         </div>
 
@@ -276,7 +247,7 @@ export default function NotificationsPage() {
               return (
                 <div key={timeGroup}>
                   {/* Time Group Header */}
-                  <div className="px-4 py-2 bg-muted/30 border-y border-muted text-xs font-black text-muted-foreground uppercase tracking-widest sticky top-[114px] z-20 backdrop-blur-md">
+                  <div className="px-4 py-2 bg-muted/30 border-y border-muted text-xs font-black text-muted-foreground uppercase tracking-widest sticky top-[100px] md:top-[52px] z-20 backdrop-blur-md">
                     {timeGroup}
                   </div>
                   
@@ -304,28 +275,40 @@ export default function NotificationsPage() {
                         <div className="flex-1 min-w-0 relative z-10">
                           
                           {/* Avatar Display Logic */}
-                          <div className="mb-2">
+                          <div className="mb-2 flex items-center justify-between w-full pr-2">
                             {notif.domain === 'Social' ? (
-                              // Social: Circle Avatar
-                              notif.avatar && notif.avatar.startsWith('http') ? (
-                                <img src={notif.avatar} alt={notif.user} className="w-9 h-9 rounded-full object-cover border border-muted shadow-sm" />
-                              ) : (
-                                <div className="w-9 h-9 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold text-sm shadow-sm">
-                                  {notif.avatar || notif.user[0]}
-                                </div>
-                              )
+                              <div className="flex items-center gap-2">
+                                {/* Social: Circle Avatar */}
+                                {notif.avatar && notif.avatar.startsWith('http') ? (
+                                  <img src={notif.avatar} alt={notif.user} className="w-9 h-9 rounded-full object-cover border border-muted shadow-sm" />
+                                ) : (
+                                  <div className="w-9 h-9 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold text-sm shadow-sm">
+                                    {notif.avatar || notif.user[0]}
+                                  </div>
+                                )}
+                                <span className="text-[10px] font-bold uppercase tracking-wider text-primary bg-primary/10 px-2 py-0.5 rounded-full border border-primary/20">
+                                  Social Media
+                                </span>
+                              </div>
                             ) : (
                               // Hub: Square Official Logo
-                              <div className="flex items-center gap-2">
-                                <div className="w-10 h-10 rounded-lg bg-background border border-muted flex items-center justify-center text-blue-600 font-black text-xs shadow-sm overflow-hidden relative">
-                                  <div className="absolute inset-x-0 top-0 h-1 bg-blue-500/20"></div>
-                                  {notif.avatar || notif.user.substring(0,2)}
+                              <div className="flex flex-col gap-1">
+                                <div className="flex items-center gap-2">
+                                  <div className="w-10 h-10 rounded-lg bg-background border border-muted flex items-center justify-center text-blue-600 font-black text-xs shadow-sm overflow-hidden relative">
+                                    <div className="absolute inset-x-0 top-0 h-1 bg-blue-500/20"></div>
+                                    {notif.avatar || notif.user.substring(0,2)}
+                                  </div>
+                                  <div className="flex flex-col gap-1">
+                                    <span className="text-[10px] w-fit font-bold uppercase tracking-wider text-white bg-blue-600 px-2 py-0.5 rounded-full shadow-sm">
+                                      Result Hub
+                                    </span>
+                                    {notif.official && (
+                                      <span className="text-[10px] w-fit font-black uppercase tracking-wider text-blue-600 bg-blue-500/10 px-1.5 py-0.5 rounded border border-blue-500/20 flex items-center gap-1">
+                                        <CheckCircle2 size={10} /> Official Update
+                                      </span>
+                                    )}
+                                  </div>
                                 </div>
-                                {notif.official && (
-                                  <span className="text-[10px] font-black uppercase tracking-wider text-blue-600 bg-blue-500/10 px-1.5 py-0.5 rounded border border-blue-500/20 flex items-center gap-1">
-                                    <CheckCircle2 size={10} /> Official Update
-                                  </span>
-                                )}
                               </div>
                             )}
                           </div>

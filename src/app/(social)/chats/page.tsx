@@ -314,14 +314,14 @@ export default function ChatsPage() {
              <div key={msg.id} className={`flex ${msg.isMe ? 'justify-end' : 'justify-start'} group`}>
                <div className={`max-w-[70%] rounded-2xl px-5 py-3 shadow-sm relative ${
                  msg.isMe 
-                  ? 'bg-primary text-white rounded-tr-sm' 
+                  ? 'bg-zinc-200 text-foreground rounded-tr-sm' 
                   : 'bg-white border border-zinc-100 text-foreground rounded-tl-sm'
                }`}>
                  <p className="text-sm md:text-base font-medium leading-relaxed">{msg.text}</p>
-                 <div className={`text-[10px] font-bold mt-1.5 flex items-center justify-end gap-1 ${msg.isMe ? 'text-primary-foreground/70' : 'text-muted-foreground'}`}>
+                 <div className={`text-[10px] font-bold mt-1.5 flex items-center justify-end gap-1 text-muted-foreground`}>
                    {msg.time}
                    {msg.isMe && (
-                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-blue-500"><polyline points="20 6 9 17 4 12"></polyline><polyline points="15 6 9 12"></polyline></svg>
                    )}
                  </div>
                </div>

@@ -9,8 +9,6 @@ import {
   BarChart3, Sparkles, PlaySquare, MoreHorizontal, Settings, CheckCheck
 } from "lucide-react";
 
-const CATEGORIES = ["All", "Social Media", "Result Hub"];
-
 type CardType = "result" | "document" | "poll" | "discussion" | "organization" | "video";
 
 interface SavedItem {
@@ -87,7 +85,6 @@ const PREMIUM_MOCK_DATA = [
 ];
 
 export default function BookmarksPage() {
-  const [activeCategory, setActiveCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [bookmarkedItems, setBookmarkedItems] = useState<SavedItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -154,13 +151,7 @@ export default function BookmarksPage() {
   };
 
   const filteredItems = bookmarkedItems.filter(item => {
-    const matchesSearch = item.title.toLowerCase().includes(searchQuery.toLowerCase()) || item.organization.toLowerCase().includes(searchQuery.toLowerCase());
-    if (!matchesSearch) return false;
-
-    if (activeCategory === "All") return true;
-    if (activeCategory === "Social Media" && item.domain === "Social") return true;
-    if (activeCategory === "Result Hub" && item.domain === "Hub") return true;
-    return false;
+    return item.title.toLowerCase().includes(searchQuery.toLowerCase()) || item.organization.toLowerCase().includes(searchQuery.toLowerCase());
   });
 
   const getIconForType = (type: CardType) => {
@@ -253,24 +244,6 @@ export default function BookmarksPage() {
               />
             </div>
           </div>
-
-          {/* TABS */}
-          <div className="flex w-full mt-2">
-            {CATEGORIES.map(cat => (
-              <button
-                key={cat}
-                onClick={() => setActiveCategory(cat)}
-                className="flex-1 relative py-3 text-sm font-bold transition-colors hover:bg-muted/30"
-              >
-                <span className={activeCategory === cat ? "text-foreground" : "text-muted-foreground"}>
-                  {cat}
-                </span>
-                {activeCategory === cat && (
-                  <motion.div layoutId="activeTab" className="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-1 bg-primary rounded-t-full" />
-                )}
-              </button>
-            ))}
-          </div>
         </div>
 
         {/* FEED CONTENT */}
@@ -333,9 +306,14 @@ export default function BookmarksPage() {
                      )}
 
                      <div className="flex items-center justify-between mt-1">
-                       <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${item.domain === 'Hub' ? 'bg-blue-500/10 text-blue-600 border border-blue-500/20' : 'bg-primary/10 text-primary border border-primary/20'}`}>
-                         {getIconForType(item.type)} {item.category}
-                       </span>
+                       <div className="flex items-center gap-2">
+                         <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${item.domain === 'Hub' ? 'bg-blue-600 text-white shadow-sm' : 'bg-primary text-primary-foreground shadow-sm'}`}>
+                           {item.domain === 'Hub' ? 'Result Hub' : 'Social Media'}
+                         </span>
+                         <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${item.domain === 'Hub' ? 'bg-blue-500/10 text-blue-600 border border-blue-500/20' : 'bg-primary/10 text-primary border border-primary/20'}`}>
+                           {getIconForType(item.type)} {item.category}
+                         </span>
+                       </div>
                        
                        <div className="flex items-center gap-4 text-muted-foreground">
                          <button className="p-1.5 hover:bg-blue-500/10 hover:text-blue-500 rounded-full transition-colors"><Share2 size={16}/></button>
