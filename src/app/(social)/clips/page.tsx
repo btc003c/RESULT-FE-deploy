@@ -102,7 +102,7 @@ export default function ClipsDiscoveryPage() {
   };
 
   return (
-    <div className="flex-1 w-full h-[calc(100dvh-48px)] md:h-[calc(100vh-2rem)] bg-zinc-50/50 flex flex-col items-center overflow-hidden animate-in fade-in duration-300 relative -mb-4">
+    <div className="flex-1 -mx-2 sm:-mx-4 lg:-mx-6 h-[calc(100dvh-48px)] md:h-[calc(100vh-2rem)] bg-zinc-50/50 flex flex-col items-center overflow-hidden animate-in fade-in duration-300 relative -mb-4">
       
 
       {/* Floating Scroll Navigation Arrows (Desktop) */}
@@ -134,11 +134,11 @@ export default function ClipsDiscoveryPage() {
           </div>
         ) : (
           filteredClips.map((clip) => (
-            <div key={clip.id} className="w-full h-full shrink-0 snap-center flex items-center justify-center p-0 sm:p-4">
-              <div className="flex items-end gap-2 sm:gap-4 h-full sm:h-[90vh] max-h-[850px] relative w-full sm:w-auto max-w-full">
+            <div key={clip.id} className="w-full h-full shrink-0 snap-center flex items-center justify-center p-0 mb-[2px] sm:py-4 sm:px-0 sm:mb-0">
+              <div className="flex items-end gap-2 sm:gap-4 h-full relative w-full sm:w-auto max-w-full">
                 
                 {/* Video Container */}
-                <div className="w-full sm:w-[400px] h-full relative rounded-none shadow-2xl border-none sm:border-solid sm:border border-zinc-200 bg-black group overflow-hidden">
+                <div className="w-full sm:w-[400px] lg:w-[450px] h-full relative rounded-none shadow-2xl border-none sm:border-solid sm:border border-zinc-200 bg-black group overflow-hidden">
               
               {/* Auto-playing Video with Poster Fallback */}
               <video 

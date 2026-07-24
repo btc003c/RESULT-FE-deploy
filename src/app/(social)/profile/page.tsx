@@ -417,7 +417,7 @@ export default function ProfilePage() {
               </div>
               
               {/* Stats Under Profile Picture */}
-              <div className="flex items-center gap-3 mt-2 w-full -ml-4 lg:-ml-8">
+              <div className="flex items-center gap-3 mt-2 w-full">
                 <button onClick={() => setFollowModal({ open: true, mode: "following" })} className="flex flex-col group items-start">
                   <span className="text-lg font-black text-zinc-900 group-hover:text-[#FFC82A] transition-colors">{fmtNum(followingCount)}</span>
                   <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Following</span>
@@ -434,7 +434,7 @@ export default function ProfilePage() {
             </div>
 
             {/* User Bio */}
-            <div className="flex-1 min-w-0 pb-2 pt-2 sm:pt-0 lg:ml-4">
+            <div className="flex-1 min-w-0 pb-2 pt-2 sm:pt-0 ml-4 sm:ml-8 lg:ml-10">
                <div className="flex items-start justify-between">
                 <div>
                   <h1 className="text-2xl lg:text-3xl font-black text-zinc-900 tracking-tight mt-2">{profile.name}</h1>
@@ -446,12 +446,10 @@ export default function ProfilePage() {
                     }`}>
                       {profile.role || "User"}
                     </span>
-                    {profile.city && (
-                      <span className="text-xs font-semibold text-zinc-500 flex items-center gap-1">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 22s8-4.5 8-11.8A8 8 0 0 0 4 10.2C4 17.5 12 22 12 22z"/><circle cx="12" cy="10" r="3"/></svg>
-                        {profile.city}
-                      </span>
-                    )}
+                    <a href="#" onClick={(e) => e.preventDefault()} className="text-xs font-semibold text-zinc-500 hover:text-zinc-700 flex items-center gap-1 transition-colors cursor-pointer">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+                      {(profile as any).website || "resulthub.com"}
+                    </a>
                   </div>
                   {profile.bio && (
                     <div className="mb-0 relative group z-30">
@@ -533,10 +531,10 @@ export default function ProfilePage() {
       {/* ══════════════════════════════════════
           BODY GRID (Vertical Tabs + Content)
           ══════════════════════════════════════ */}
-      <div className="flex flex-col lg:flex-row gap-8 pt-0 pb-8 items-start">
+      <div className="flex flex-col lg:flex-row gap-4 lg:gap-4 pt-0 pb-8 items-start">
 
         {/* ── TABS PANEL ───────────── */}
-        <div className={`w-full lg:w-20 shrink-0 sticky z-40 flex flex-row lg:flex-col justify-around lg:justify-start gap-2 overflow-x-auto hide-scrollbar py-2 lg:py-0 bg-background/80 backdrop-blur-md transition-all duration-300 ${showTabs ? 'top-[70px] translate-y-0 opacity-100' : 'top-0 -translate-y-[150%] opacity-0'}`}>
+        <div className={`w-full lg:w-20 shrink-0 sticky z-40 flex flex-row lg:flex-col justify-around lg:justify-start gap-2 overflow-x-auto hide-scrollbar py-2 lg:py-0 bg-background/80 backdrop-blur-md transition-all duration-300 lg:-ml-4 ${showTabs ? 'top-[70px] translate-y-0 opacity-100' : 'top-0 -translate-y-[150%] opacity-0'}`}>
           {TABS.map(t => (
             <button
               key={t.key}
@@ -554,20 +552,52 @@ export default function ProfilePage() {
           <div key={tab} className="animate-in fade-in slide-in-from-bottom-2 duration-500">
             
             {tab === "posts" && (
-              <div className="space-y-4">
-                 {[1, 2, 3].map(i => (
-                   <div key={i} className="bg-white rounded-2xl p-5 border border-zinc-100 shadow-sm">
-                      <div className="flex items-center gap-3 mb-4">
-                         <div className="w-10 h-10 bg-zinc-200 rounded-full shrink-0"></div>
-                         <div>
-                           <p className="font-bold text-sm text-zinc-900">Alexey Navolokin</p>
-                           <p className="text-[11px] text-zinc-400 font-semibold">{i * 2} hours ago</p>
-                         </div>
+              <div className="grid grid-cols-3 gap-[1px]">
+                {[
+                  { id: 1, type: "image", img: "https://loremflickr.com/400/400/sports?1" },
+                  { id: 2, type: "video", img: "https://loremflickr.com/400/400/fitness?2" },
+                  { id: 3, type: "text", text: "New prediction for the upcoming season! 🏀📈", bg: "bg-gradient-to-br from-zinc-800 to-black text-white" },
+                  { id: 4, type: "video", img: "https://loremflickr.com/400/400/tennis?4" },
+                  { id: 5, type: "image", img: "https://loremflickr.com/400/400/soccer?5" },
+                  { id: 6, type: "text", text: "Massive upset expected this weekend. Stay tuned.", bg: "bg-gradient-to-br from-[#00a896] to-[#028090] text-white" },
+                  { id: 7, type: "image", img: "https://loremflickr.com/400/400/football?7" },
+                  { id: 8, type: "text", text: "Who's ready for the finals? Let's go! 🔥", bg: "bg-gradient-to-br from-[#FFC82A] to-amber-500 text-zinc-900" },
+                  { id: 9, type: "video", img: "https://loremflickr.com/400/400/basketball?9" },
+                ].map((post) => (
+                  <div key={post.id} className="aspect-square relative group cursor-pointer overflow-hidden rounded-none shadow-none bg-zinc-100 flex items-center justify-center">
+                    {post.type !== "text" ? (
+                      <img src={post.img} alt="Post" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    ) : (
+                      <div className={`w-full h-full p-2 sm:p-4 lg:p-6 flex items-center justify-center text-center ${post.bg}`}>
+                        <span className="font-bold text-[9px] sm:text-sm lg:text-base leading-tight line-clamp-4">{post.text}</span>
                       </div>
-                      <p className="text-sm text-zinc-700 mb-4 font-medium leading-relaxed">Just shared a new prediction for the upcoming season! The data points strongly towards a massive upset. What do you guys think? 🏀📈</p>
-                      <div className="h-48 bg-zinc-100 rounded-xl w-full border border-zinc-200/50"></div>
-                   </div>
-                 ))}
+                    )}
+                    
+                    {/* Hover Overlay */}
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
+
+                    {/* Top Right Icon Indicator */}
+                    <div className="absolute top-1.5 right-1.5 sm:top-3 sm:right-3 drop-shadow-md z-10">
+                      {post.type === "image" && (
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" className="sm:w-5 sm:h-5">
+                          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                          <circle cx="8.5" cy="8.5" r="1.5" fill="white"></circle>
+                          <polyline points="21 15 16 10 5 21"></polyline>
+                        </svg>
+                      )}
+                      {post.type === "video" && (
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="white" stroke="white" strokeWidth="2" className="sm:w-5 sm:h-5">
+                          <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                        </svg>
+                      )}
+                      {post.type === "text" && (
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={post.id === 8 ? "rgba(0,0,0,0.4)" : "rgba(255,255,255,0.7)"} strokeWidth="2.5" className="sm:w-5 sm:h-5">
+                          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                      )}
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
             
