@@ -2,6 +2,7 @@ import BottomNav from "@/components/layout/BottomNav";
 import LeftSidebar from "@/components/feed/LeftSidebar";
 import MobileTopNav from "@/components/layout/MobileTopNav";
 import SocialAuthGuard from "@/components/layout/SocialAuthGuard";
+import FloatingChatWrapper from "@/components/chat/FloatingChatWrapper";
 
 export default function SocialLayout({
   children,
@@ -20,6 +21,7 @@ export default function SocialLayout({
           </div>
         </div>
         <BottomNav />
+        <FloatingChatWrapper />
       </div>
     </div>
   );

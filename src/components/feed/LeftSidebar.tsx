@@ -26,6 +26,7 @@ const NAV_SECTIONS = [
       {
         label: "Result Hub",
         href: "/results",
+        hiddenOnXl: true,
         icon: (
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M4 22h14a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v4" />
@@ -90,15 +91,6 @@ const NAV_SECTIONS = [
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
             <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
-          </svg>
-        ),
-      },
-      {
-        label: "Bookmarks",
-        href: "/bookmarks",
-        icon: (
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z" />
           </svg>
         ),
       },
@@ -331,7 +323,7 @@ export default function LeftSidebar() {
                 const badgeNum = (link as any).badge === "live" ? notifCount : null;
 
                 return (
-                  <div key={link.label} className="relative group/tip">
+                  <div key={link.label} className={`relative group/tip ${(link as any).hiddenOnXl ? 'xl:hidden' : ''}`}>
                     <Link
                       href={link.href}
                       className={`relative flex items-center gap-3.5 rounded-xl transition-all duration-150

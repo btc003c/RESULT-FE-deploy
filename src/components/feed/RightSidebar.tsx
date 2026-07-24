@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useEffect, useState, useCallback } from "react";
 import { api } from "@/lib/api";
-import ChatWidget from "@/components/chat/ChatWidget";
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 function formatNumber(num: number) {
@@ -88,7 +87,7 @@ export default function RightSidebar() {
   const [isLoading, setIsLoading]         = useState(true);
   const [followed, setFollowed]           = useState<Set<string>>(new Set());
   const [showAllTrending, setShowAllTrending] = useState(false);
-  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [isTrendingOpen, setIsTrendingOpen] = useState(false);
 
   const fetchData = useCallback(async () => {
     try {
@@ -119,19 +118,26 @@ export default function RightSidebar() {
   };
 
   return (
-    <aside className="sticky bottom-4 h-fit hidden xl:flex flex-col gap-4 w-[300px] pt-5 pb-2">
+    <aside className="sticky bottom-4 h-fit hidden xl:flex flex-col gap-4 w-[300px] pt-1 pb-2">
 
-      {/* ── Search ──────────────────────────────────────────────────── */}
-      <Link href="/search" className="shrink-0 group flex items-center gap-3 px-4 py-2.5 rounded-2xl bg-zinc-50 border border-zinc-200/80 hover:border-primary/40 hover:bg-white transition-all shadow-sm">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-zinc-400 group-hover:text-primary transition-colors shrink-0">
-          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-        </svg>
-        <span className="text-sm font-medium text-zinc-400 group-hover:text-zinc-600 transition-colors">Search ResultHub...</span>
-        <kbd className="ml-auto hidden sm:inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-bold text-zinc-400 border border-zinc-200 rounded-md bg-white">⌘K</kbd>
-      </Link>
+      {/* ── ResultHub Portal Button ──────────────────────────────────── */}
+      <div className="shrink-0 flex items-center justify-between px-5 py-3.5 rounded-full bg-zinc-900 text-white shadow-[0_6px_15px_rgba(0,0,0,0.2)]">
+        <Link href="/results" className="flex items-center gap-2 flex-1 hover:opacity-90 transition-opacity">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="shrink-0">
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line>
+          </svg>
+          <span className="text-[15px] font-black tracking-wide">ResultHub</span>
+        </Link>
+        <button onClick={() => setIsTrendingOpen(!isTrendingOpen)} className="p-1 hover:bg-white/20 rounded-full transition-colors ml-2">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className={`transition-transform duration-200 ${isTrendingOpen ? "rotate-180" : ""}`}>
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </button>
+      </div>
 
       {/* ── Trending ────────────────────────────────────────────────── */}
-      <div className="shrink-0 rounded-2xl border border-zinc-200/80 bg-white overflow-hidden shadow-sm">
+      {isTrendingOpen && (
+        <div className="shrink-0 rounded-2xl border border-zinc-200/80 bg-white overflow-hidden shadow-sm animate-in fade-in slide-in-from-top-2 duration-300">
         {/* Card Header */}
         <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-100">
           <div className="flex items-center gap-2.5">
@@ -220,6 +226,7 @@ export default function RightSidebar() {
           </button>
         )}
       </div>
+      )}
 
       {/* ── Suggested Publishers ─────────────────────────────────────── */}
       <div className="shrink-0 rounded-2xl border border-zinc-200/80 bg-white overflow-hidden shadow-sm">
@@ -308,24 +315,7 @@ export default function RightSidebar() {
           ))}
           <span className="w-full text-[10px] mt-0.5">© 2026 ResultHub Corp.</span>
         </div>
-        
-        <div className="flex items-center gap-3">
-          <button onClick={() => setIsChatOpen(!isChatOpen)} className="w-8 h-8 rounded-xl bg-white border border-zinc-200 flex items-center justify-center text-zinc-500 hover:bg-zinc-200 hover:text-zinc-900 transition-colors shadow-sm">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-            </svg>
-          </button>
-          <Link href="/results" className="w-8 h-8 rounded-xl bg-white border border-zinc-200 flex items-center justify-center text-zinc-500 hover:bg-zinc-200 hover:text-zinc-900 transition-colors shadow-sm">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M4 22h14a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v4"/>
-              <path d="M14 2v4a2 2 0 0 0 2 2h4"/>
-              <path d="M3 15h6"/><path d="M3 18h6"/>
-            </svg>
-          </Link>
-        </div>
       </div>
-
-      <ChatWidget isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
     </aside>
   );
 }

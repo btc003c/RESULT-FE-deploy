@@ -102,7 +102,7 @@ export default function ClipsDiscoveryPage() {
   };
 
   return (
-    <div className="flex-1 w-full h-[calc(100dvh-100px)] md:h-screen bg-zinc-50/50 flex flex-col items-center overflow-hidden animate-in fade-in duration-300 relative">
+    <div className="flex-1 w-full h-[calc(100dvh-48px)] md:h-[calc(100vh-2rem)] bg-zinc-50/50 flex flex-col items-center overflow-hidden animate-in fade-in duration-300 relative -mb-4">
       
 
       {/* Floating Scroll Navigation Arrows (Desktop) */}
@@ -134,7 +134,7 @@ export default function ClipsDiscoveryPage() {
           </div>
         ) : (
           filteredClips.map((clip) => (
-            <div key={clip.id} className="w-full h-full shrink-0 snap-center flex items-center justify-center p-0 pb-[3px] sm:p-4">
+            <div key={clip.id} className="w-full h-full shrink-0 snap-center flex items-center justify-center p-0 sm:p-4">
               <div className="flex items-end gap-2 sm:gap-4 h-full sm:h-[90vh] max-h-[850px] relative w-full sm:w-auto max-w-full">
                 
                 {/* Video Container */}
